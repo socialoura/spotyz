@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { PaymentElement, ExpressCheckoutElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { X, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import StripeProvider from './StripeProvider';
 
@@ -201,56 +201,6 @@ function PaymentForm({
       {/* Payment Form */}
       {paymentStatus !== 'success' && (
         <form onSubmit={handleSubmit}>
-          {/* Express Checkout - Apple Pay / Google Pay */}
-          <div className="mb-4">
-            <ExpressCheckoutElement
-              onConfirm={async () => {
-                if (!stripe || !elements) return;
-                
-                const { error } = await stripe.confirmPayment({
-                  elements,
-                  confirmParams: {
-                    return_url: `${window.location.origin}/payment-success`,
-                  },
-                  redirect: 'if_required',
-                });
-
-                if (error) {
-                  setErrorMessage(error.message || 'Payment failed');
-                  setPaymentStatus('error');
-                } else {
-                  setPaymentStatus('success');
-                  if (onSuccess) {
-                    onSuccess('express-checkout', email);
-                  }
-                }
-              }}
-              options={{
-                buttonType: {
-                  applePay: 'buy',
-                  googlePay: 'buy',
-                },
-                buttonTheme: {
-                  applePay: 'black',
-                  googlePay: 'black',
-                },
-                buttonHeight: 50,
-              }}
-            />
-          </div>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-gray-900 text-gray-500">
-                {language === 'fr' ? 'ou payer par carte' : 'or pay with card'}
-              </span>
-            </div>
-          </div>
-
           <div className="mb-6 relative min-h-[200px]">
             {!elementsReady && (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -270,8 +220,8 @@ function PaymentForm({
                 options={{
                   layout: 'tabs',
                   wallets: {
-                    applePay: 'never',
-                    googlePay: 'never',
+                    applePay: 'auto',
+                    googlePay: 'auto',
                   },
                 }}
               />
