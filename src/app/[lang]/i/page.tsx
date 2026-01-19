@@ -292,8 +292,8 @@ export default function InstagramPage({ params }: PageProps) {
   return (
     <div className="bg-white dark:bg-gray-950">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-purple-50 to-white dark:from-gray-950 dark:via-gray-950 dark:to-gray-950 min-h-screen flex items-center">
-        <div className="mx-auto max-w-5xl px-6 py-20 sm:py-32 lg:px-8 w-full">
+      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-purple-50 to-white dark:from-gray-950 dark:via-gray-950 dark:to-gray-950">
+        <div className="mx-auto max-w-5xl px-6 py-16 sm:py-20 lg:px-8 w-full">
           <div className="text-center">
             <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl mb-2 leading-tight uppercase">
               {t.hero.title}

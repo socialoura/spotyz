@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -24,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -43,7 +43,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${dmSans.variable} font-sans antialiased`}
+        className={`${spaceGrotesk.variable} font-sans antialiased`}
       >
         {children}
       </body>
