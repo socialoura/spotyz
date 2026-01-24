@@ -174,40 +174,54 @@ function PaymentForm({
   };
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="p-6 sm:p-8">
+      {/* Header with gradient background */}
+      <div className="mb-8 text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg shadow-purple-500/30 mb-4">
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
           {paymentStatus === 'success' ? t.titleSuccess : t.title}
         </h2>
         {productName && paymentStatus !== 'success' && (
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700/50 inline-block px-4 py-1.5 rounded-full">
             {productName}
           </p>
         )}
-        <p className="mt-1 text-lg font-semibold text-indigo-600 dark:text-indigo-400">
-          {formatAmount(amount, currency)}
-        </p>
+        <div className="mt-4 flex items-center justify-center gap-2">
+          <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            {formatAmount(amount, currency)}
+          </span>
+          {originalAmount !== amount && (
+            <span className="text-lg text-gray-400 line-through">
+              {formatAmount(originalAmount, currency)}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Success State */}
       {paymentStatus === 'success' && (
         <div className="text-center py-8">
-          <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-lg shadow-green-500/30 mb-6">
+            <CheckCircle className="h-10 w-10 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
             {t.paymentComplete}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             {t.paymentSuccessDesc}
           </p>
           {paymentIntentId && (
-            <p className="text-xs text-gray-500 dark:text-gray-500 mb-6 font-mono">
+            <p className="text-xs text-gray-500 dark:text-gray-500 mb-6 font-mono bg-gray-100 dark:bg-gray-700/50 px-4 py-2 rounded-lg inline-block">
               {t.paymentId} {paymentIntentId}
             </p>
           )}
           <button
             onClick={handleClose}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-6 rounded-xl transition-all shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 transform hover:-translate-y-0.5"
           >
             {t.close}
           </button>
@@ -216,14 +230,16 @@ function PaymentForm({
 
       {/* Error State */}
       {paymentStatus === 'error' && errorMessage && (
-        <div className="mb-6 rounded-lg bg-red-50 dark:bg-red-900/20 p-4 ring-1 ring-red-200 dark:ring-red-800">
-          <div className="flex items-start">
-            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+        <div className="mb-6 rounded-2xl bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 p-5 border border-red-200 dark:border-red-800/50">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-red-800 dark:text-red-200">
                 {t.paymentFailed}
               </h3>
-              <p className="mt-1 text-sm text-red-700 dark:text-red-300">
+              <p className="mt-1 text-sm text-red-600 dark:text-red-300">
                 {errorMessage}
               </p>
             </div>
@@ -234,11 +250,14 @@ function PaymentForm({
       {/* Payment Form */}
       {paymentStatus !== 'success' && (
         <form onSubmit={handleSubmit}>
-          <div className="mb-6 relative min-h-[200px]">
+          {/* Payment Element Container */}
+          <div className="mb-6 relative min-h-[200px] bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 border border-gray-200 dark:border-gray-600/50">
             {!elementsReady && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <Loader2 className="animate-spin h-8 w-8 mx-auto text-indigo-600 dark:text-indigo-400 mb-2" />
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 mb-3">
+                    <Loader2 className="animate-spin h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {t.loadingForm}
                   </p>
@@ -261,16 +280,19 @@ function PaymentForm({
 
           {/* Promo Code Section */}
           {promoFieldEnabled && !promoSuccess && setPromoCode && onApplyPromo && (
-            <div className="mb-4">
+            <div className="mb-5">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                {t.promoPlaceholder}
+              </label>
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
                     value={promoCode || ''}
                     onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                    placeholder={t.promoPlaceholder}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                    placeholder="PROMO20"
+                    className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-medium focus:border-purple-500 dark:focus:border-purple-500 focus:ring-0 transition-colors"
                     disabled={promoLoading}
                   />
                 </div>
@@ -278,28 +300,35 @@ function PaymentForm({
                   type="button"
                   onClick={onApplyPromo}
                   disabled={promoLoading || !promoCode?.trim()}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-400 text-white text-sm font-medium rounded-lg transition-colors"
+                  className="px-5 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-400 text-white text-sm font-semibold rounded-xl transition-all shadow-md hover:shadow-lg disabled:shadow-none"
                 >
                   {promoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : t.promoApply}
                 </button>
               </div>
               {promoError && (
-                <p className="mt-2 text-sm text-red-600 dark:text-red-400">{promoError}</p>
+                <p className="mt-2 text-sm text-red-500 dark:text-red-400 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {promoError}
+                </p>
               )}
             </div>
           )}
 
           {/* Promo Applied Banner */}
           {promoSuccess && discount && discount > 0 && (
-            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-green-700 dark:text-green-400 font-medium">
-                  <Tag className="w-4 h-4 inline mr-1" />
-                  {promoCode} {t.promoApplied}
-                </span>
+            <div className="mb-5 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-green-700 dark:text-green-400 font-semibold">
+                    {promoCode} {t.promoApplied}
+                  </span>
+                </div>
                 <div className="text-right">
-                  <span className="text-gray-500 line-through mr-2">{formatAmount(originalAmount, currency)}</span>
-                  <span className="text-green-700 dark:text-green-400 font-bold">
+                  <span className="text-gray-400 line-through text-sm mr-2">{formatAmount(originalAmount, currency)}</span>
+                  <span className="text-green-600 dark:text-green-400 font-bold text-lg">
                     {formatAmount(amount, currency)}
                   </span>
                 </div>
@@ -308,20 +337,22 @@ function PaymentForm({
           )}
 
           {/* Terms Checkbox */}
-          <div className="mb-6 flex items-start">
-            <input
-              type="checkbox"
-              id="terms"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-              {t.termsLabel}{' '}
-              <a href="#" className="text-indigo-600 dark:text-indigo-400 hover:underline">
-                {t.termsLink}
-              </a>
-              .
+          <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-200 dark:border-gray-600/50">
+            <label className="flex items-start cursor-pointer group">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-0.5 h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800"
+              />
+              <span className="ml-3 text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors">
+                {t.termsLabel}{' '}
+                <a href="#" className="text-purple-600 dark:text-purple-400 hover:underline font-medium">
+                  {t.termsLink}
+                </a>
+                .
+              </span>
             </label>
           </div>
 
@@ -329,7 +360,7 @@ function PaymentForm({
           <button
             type="submit"
             disabled={!stripe || !elements || isProcessing || !elementsReady || !acceptedTerms}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 disabled:shadow-none transform hover:-translate-y-0.5 disabled:transform-none flex items-center justify-center text-lg"
           >
             {isProcessing ? (
               <>
@@ -337,29 +368,42 @@ function PaymentForm({
                 {t.processing}
               </>
             ) : (
-              `${t.payButton} ${formatAmount(amount, currency)}`
+              <>
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                {t.payButton} {formatAmount(amount, currency)}
+              </>
             )}
           </button>
 
           {/* Trust Badges */}
-          <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-500 dark:text-gray-400">
-            <div className="flex items-center gap-1">
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span>{t.safeTransaction}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-              </svg>
-              <span>{t.secureEncryption}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span>{t.serviceGuaranteed}</span>
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-center gap-4 sm:gap-8 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                  <svg className="h-3.5 w-3.5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="font-medium">{t.safeTransaction}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <svg className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="font-medium">{t.secureEncryption}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                  <svg className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="font-medium">{t.serviceGuaranteed}</span>
+              </div>
             </div>
           </div>
         </form>
