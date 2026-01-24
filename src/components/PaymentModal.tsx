@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { X, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Loader2, CheckCircle, AlertCircle, Tag } from 'lucide-react';
 import StripeProvider from './StripeProvider';
 
 interface PaymentModalProps {
@@ -14,6 +14,7 @@ interface PaymentModalProps {
   productName?: string;
   language?: 'en' | 'fr';
   email?: string;
+  onPromoApplied?: (discount: number, finalAmount: number, promoCode: string) => void;
 }
 
 // Inner component that uses Stripe hooks
@@ -310,6 +311,14 @@ export default function PaymentModal({
   const [error, setError] = useState<string | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
+  
+  // Promo code states
+  const [promoCode, setPromoCode] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [promoSuccess, setPromoSuccess] = useState<string | null>(null);
+  const [discount, setDiscount] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(amount);
 
   // Language strings
   const text = {
@@ -317,17 +326,64 @@ export default function PaymentModal({
       initializingPayment: 'Initializing secure payment...',
       paymentSetupFailed: 'Payment Setup Failed',
       close: 'Close',
+      promoPlaceholder: 'Enter promo code',
+      promoApply: 'Apply',
+      promoApplied: 'applied!',
+      promoDiscount: 'Discount',
+      originalPrice: 'Original price',
+      youSave: 'You save',
     },
     fr: {
       initializingPayment: 'Initialisation du paiement sécurisé...',
       paymentSetupFailed: 'Échec de la Configuration',
       close: 'Fermer',
+      promoPlaceholder: 'Entrez un code promo',
+      promoApply: 'Appliquer',
+      promoApplied: 'appliqué !',
+      promoDiscount: 'Réduction',
+      originalPrice: 'Prix original',
+      youSave: 'Vous économisez',
     },
   };
 
   const t = text[language];
 
-  // Fetch PaymentIntent when modal opens
+  // Handle promo code validation
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+    
+    setPromoLoading(true);
+    setPromoError(null);
+    setPromoSuccess(null);
+    
+    try {
+      const response = await fetch('/api/promo-codes/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode, price: amount / 100 }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.valid) {
+        const discountCents = Math.round(data.discount * 100);
+        const newAmount = Math.max(amount - discountCents, 50); // Minimum 50 cents
+        setDiscount(discountCents);
+        setFinalAmount(newAmount);
+        setPromoSuccess(`${promoCode.toUpperCase()} ${t.promoApplied}`);
+        // Reset client secret to create new payment intent with discounted amount
+        setClientSecret(null);
+      } else {
+        setPromoError(data.error || 'Invalid promo code');
+      }
+    } catch {
+      setPromoError('Error validating promo code');
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  // Fetch PaymentIntent when modal opens or amount changes
   useEffect(() => {
     if (isOpen && !clientSecret) {
       const createPaymentIntent = async () => {
@@ -340,7 +396,7 @@ export default function PaymentModal({
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ amount, currency }),
+            body: JSON.stringify({ amount: finalAmount, currency }),
           });
 
           const data = await response.json();
@@ -360,7 +416,7 @@ export default function PaymentModal({
 
       createPaymentIntent();
     }
-  }, [isOpen, amount, currency, clientSecret]);
+  }, [isOpen, finalAmount, currency, clientSecret]);
 
   // Reset state when modal closes
   useEffect(() => {
@@ -370,6 +426,12 @@ export default function PaymentModal({
         setClientSecret(null);
         setError(null);
         setIsLoading(false);
+        // Reset promo code states
+        setPromoCode('');
+        setPromoError(null);
+        setPromoSuccess(null);
+        setDiscount(0);
+        setFinalAmount(amount);
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -501,15 +563,64 @@ export default function PaymentModal({
           {/* Payment Form with Stripe Elements */}
           {!isLoading && !error && clientSecret && (
             <StripeProvider clientSecret={clientSecret}>
-              <PaymentForm
-                amount={amount}
-                currency={currency}
-                onClose={onClose}
-                onSuccess={onSuccess}
-                productName={productName}
-                language={language}
-                email={email}
-              />
+              <div className="relative">
+                {/* Promo Code Section */}
+                {!promoSuccess && (
+                  <div className="px-6 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                          type="text"
+                          value={promoCode}
+                          onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                          placeholder={t.promoPlaceholder}
+                          className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                          disabled={promoLoading}
+                        />
+                      </div>
+                      <button
+                        onClick={handleApplyPromo}
+                        disabled={promoLoading || !promoCode.trim()}
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-400 text-white text-sm font-medium rounded-lg transition-colors"
+                      >
+                        {promoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : t.promoApply}
+                      </button>
+                    </div>
+                    {promoError && (
+                      <p className="mt-2 text-sm text-red-600 dark:text-red-400">{promoError}</p>
+                    )}
+                  </div>
+                )}
+                
+                {/* Promo Applied Banner */}
+                {promoSuccess && discount > 0 && (
+                  <div className="px-6 py-3 bg-green-50 dark:bg-green-900/20 border-b border-green-200 dark:border-green-800">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-green-700 dark:text-green-400 font-medium">
+                        <Tag className="w-4 h-4 inline mr-1" />
+                        {promoCode} {t.promoApplied}
+                      </span>
+                      <div className="text-right">
+                        <span className="text-gray-500 line-through mr-2">{(amount / 100).toFixed(2)}€</span>
+                        <span className="text-green-700 dark:text-green-400 font-bold">
+                          {(finalAmount / 100).toFixed(2)}€
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <PaymentForm
+                  amount={finalAmount}
+                  currency={currency}
+                  onClose={onClose}
+                  onSuccess={onSuccess}
+                  productName={productName}
+                  language={language}
+                  email={email}
+                />
+              </div>
             </StripeProvider>
           )}
         </div>
