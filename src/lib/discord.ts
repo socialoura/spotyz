@@ -5,7 +5,6 @@ interface OrderNotificationProps {
   platform: string;
   followers: number;
   price: string;
-  currency: string;
   promoCode?: string;
 }
 
@@ -16,7 +15,6 @@ export async function sendDiscordOrderNotification({
   platform,
   followers,
   price,
-  currency,
   promoCode,
 }: OrderNotificationProps) {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;

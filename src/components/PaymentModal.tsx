@@ -209,7 +209,6 @@ function PaymentForm({
                 platform: orderDetails.platform,
                 followers: orderDetails.followers,
                 price: priceFormatted,
-                currency,
                 promoCode: promoCode || undefined,
               }),
             });

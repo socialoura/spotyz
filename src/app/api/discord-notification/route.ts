@@ -4,7 +4,7 @@ import { sendDiscordOrderNotification } from '@/lib/discord';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { orderId, email, username, platform, followers, price, currency, promoCode } = body;
+    const { orderId, email, username, platform, followers, price, promoCode } = body;
 
     if (!orderId || !email || !username || !platform || !followers || !price) {
       return NextResponse.json(
@@ -20,7 +20,6 @@ export async function POST(request: NextRequest) {
       platform,
       followers,
       price,
-      currency,
       promoCode,
     });
 
