@@ -16,6 +16,7 @@ export default function Footer({ lang }: FooterProps) {
   const aboutText = lang === 'en' ? 'About' : 'À propos';
   const contactText = lang === 'en' ? 'Contact' : 'Contact';
   const privacyText = lang === 'en' ? 'Privacy' : 'Confidentialité';
+  const faqText = 'FAQ';
   const instagramText = lang === 'en' ? 'Instagram' : 'Instagram';
   const tiktokText = lang === 'en' ? 'TikTok' : 'TikTok';
 
@@ -84,6 +85,14 @@ export default function Footer({ lang }: FooterProps) {
                   className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                 >
                   {privacyText}
+                </a>
+              </li>
+              <li>
+                <a 
+                  href={`/${lang}/faq`}
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                >
+                  {faqText}
                 </a>
               </li>
             </ul>

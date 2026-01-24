@@ -87,7 +87,12 @@ export default function Header({ lang }: HeaderProps) {
             >
               {lang === 'en' ? 'Contact' : 'Contact'}
             </Link>
-            
+            <Link
+              href={`/${lang}/faq`}
+              className="text-base font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              FAQ
+            </Link>
           </nav>
 
           {/* Right side - Language & Theme */}
@@ -162,6 +167,13 @@ export default function Header({ lang }: HeaderProps) {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {lang === 'en' ? 'Contact' : 'Contact'}
+              </Link>
+              <Link
+                href={`/${lang}/faq`}
+                className="text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                FAQ
               </Link>
               
               {/* Language Switcher */}
