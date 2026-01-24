@@ -166,8 +166,12 @@ function PaymentForm({
           });
         }
 
-        // Send confirmation email
+        // Send confirmation email and Discord notification
         if (email && orderDetails) {
+          const orderId = paymentIntent.id.slice(-8).toUpperCase();
+          const priceFormatted = formatAmount(amount, currency);
+          
+          // Send confirmation email
           try {
             await fetch('/api/send-confirmation-email', {
               method: 'POST',
@@ -178,8 +182,8 @@ function PaymentForm({
                 orderDetails: {
                   platform: orderDetails.platform,
                   followers: orderDetails.followers,
-                  price: formatAmount(amount, currency),
-                  orderId: paymentIntent.id.slice(-8).toUpperCase(),
+                  price: priceFormatted,
+                  orderId,
                   date: new Date().toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -191,6 +195,26 @@ function PaymentForm({
             });
           } catch (emailError) {
             console.error('Failed to send confirmation email:', emailError);
+          }
+
+          // Send Discord notification
+          try {
+            await fetch('/api/discord-notification', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderId,
+                email,
+                username: orderDetails.username,
+                platform: orderDetails.platform,
+                followers: orderDetails.followers,
+                price: priceFormatted,
+                currency,
+                promoCode: promoCode || undefined,
+              }),
+            });
+          } catch (discordError) {
+            console.error('Failed to send Discord notification:', discordError);
           }
         }
         
