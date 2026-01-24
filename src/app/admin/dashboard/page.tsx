@@ -122,6 +122,7 @@ export default function AdminDashboard() {
     id: null,
     code: '',
   });
+  const [promoFieldEnabled, setPromoFieldEnabled] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -139,6 +140,7 @@ export default function AdminDashboard() {
       setIsLoading(false);
     } else if (activeTab === 'promo') {
       fetchPromoCodes();
+      fetchPromoFieldEnabled();
     } else {
       setIsLoading(false);
     }
@@ -212,6 +214,44 @@ export default function AdminDashboard() {
       console.error('Error fetching promo codes:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchPromoFieldEnabled = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/admin/promo-settings', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPromoFieldEnabled(data.enabled);
+      }
+    } catch (error) {
+      console.error('Error fetching promo field setting:', error);
+    }
+  };
+
+  const handleTogglePromoField = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/admin/promo-settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ enabled: !promoFieldEnabled }),
+      });
+      if (response.ok) {
+        setPromoFieldEnabled(!promoFieldEnabled);
+        setMessage(promoFieldEnabled ? 'Promo code field disabled' : 'Promo code field enabled');
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (error) {
+      console.error('Error toggling promo field:', error);
     }
   };
 
@@ -1389,6 +1429,32 @@ export default function AdminDashboard() {
                 <Plus className="w-5 h-5" />
                 New Promo Code
               </button>
+            </div>
+
+            {/* Promo Field Toggle */}
+            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                    Promo Code Field in Payment
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    {promoFieldEnabled ? 'Customers can enter promo codes during checkout' : 'Promo code field is hidden from customers'}
+                  </p>
+                </div>
+                <button
+                  onClick={handleTogglePromoField}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    promoFieldEnabled ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      promoFieldEnabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Promo Form Modal */}

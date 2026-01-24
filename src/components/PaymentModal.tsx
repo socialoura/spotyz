@@ -319,6 +319,7 @@ export default function PaymentModal({
   const [promoSuccess, setPromoSuccess] = useState<string | null>(null);
   const [discount, setDiscount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(amount);
+  const [promoFieldEnabled, setPromoFieldEnabled] = useState(true);
 
   // Language strings
   const text = {
@@ -382,6 +383,16 @@ export default function PaymentModal({
       setPromoLoading(false);
     }
   };
+
+  // Check if promo field is enabled
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/promo-codes/status')
+        .then(res => res.json())
+        .then(data => setPromoFieldEnabled(data.enabled))
+        .catch(() => setPromoFieldEnabled(true));
+    }
+  }, [isOpen]);
 
   // Fetch PaymentIntent when modal opens or amount changes
   useEffect(() => {
@@ -565,7 +576,7 @@ export default function PaymentModal({
             <StripeProvider clientSecret={clientSecret}>
               <div className="relative">
                 {/* Promo Code Section */}
-                {!promoSuccess && (
+                {promoFieldEnabled && !promoSuccess && (
                   <div className="px-6 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex gap-2">
                       <div className="relative flex-1">

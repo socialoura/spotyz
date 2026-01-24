@@ -222,6 +222,32 @@ export async function getStripeSettings() {
   }
 }
 
+export async function getPromoEnabled(): Promise<boolean> {
+  try {
+    const result = await sql`
+      SELECT value FROM settings WHERE key = 'promo_enabled'
+    `;
+    return result.rows.length > 0 ? result.rows[0].value === 'true' : true; // Default to true
+  } catch (error) {
+    console.error('Error fetching promo enabled setting:', error);
+    return true;
+  }
+}
+
+export async function setPromoEnabled(enabled: boolean): Promise<void> {
+  try {
+    await sql`
+      INSERT INTO settings (key, value) 
+      VALUES ('promo_enabled', ${enabled ? 'true' : 'false'})
+      ON CONFLICT (key) 
+      DO UPDATE SET value = ${enabled ? 'true' : 'false'}, updated_at = CURRENT_TIMESTAMP
+    `;
+  } catch (error) {
+    console.error('Error setting promo enabled:', error);
+    throw error;
+  }
+}
+
 export async function updateStripeSettings(secretKey: string, publishableKey: string) {
   try {
     // Update or insert secret key
