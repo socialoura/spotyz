@@ -55,6 +55,8 @@ export default function Header({ lang }: HeaderProps) {
                   alt="Socialoura"
                   width={128}
                   height={128}
+                  priority
+                  sizes="(min-width: 640px) 128px, 96px"
                   className="group-hover:scale-105 transition-transform"
                 />
               </div>

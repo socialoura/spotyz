@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
@@ -25,8 +26,13 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {/* Google Ads Global Site Tag */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17898687645"></script>
-        <script
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17898687645"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-ads-gtag"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
@@ -36,7 +42,9 @@ export default function RootLayout({
             `,
           }}
         />
-        <script
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               try {
