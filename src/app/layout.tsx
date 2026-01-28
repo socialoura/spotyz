@@ -11,10 +11,10 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "YouTube Vues - Achetez des vues YouTube",
-  description: "Augmentez vos vues YouTube avec YouTube Vues. Choisissez un pack, paiement sécurisé, livraison rapide.",
+  title: "ViewPlex - Achetez des vues YouTube",
+  description: "Augmentez vos vues YouTube avec ViewPlex. Choisissez un pack, paiement sécurisé, livraison rapide.",
   keywords: ["youtube vues", "acheter des vues youtube", "vues youtube", "promotion youtube", "youtube"],
-  authors: [{ name: "YouTube Vues" }],
+  authors: [{ name: "ViewPlex" }],
 };
 
 export default function RootLayout({

@@ -236,7 +236,7 @@ export default function HomePage({ params }: PageProps) {
                             </svg>
                           </div>
                           <div>
-                            <div className="text-white font-semibold text-sm">@youtubevues</div>
+                            <div className="text-white font-semibold text-sm">@viewplex</div>
                             <div className="text-purple-400 text-xs">Pro Account</div>
                           </div>
                         </div>

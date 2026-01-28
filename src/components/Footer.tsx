@@ -9,8 +9,8 @@ export default function Footer({ lang }: FooterProps) {
   const currentYear = new Date().getFullYear();
   
   const footerText = lang === 'en' 
-    ? `© ${currentYear} YouTube Vues. All rights reserved.`
-    : `© ${currentYear} YouTube Vues. Tous droits réservés.`;
+    ? `© ${currentYear} ViewPlex. All rights reserved.`
+    : `© ${currentYear} ViewPlex. Tous droits réservés.`;
     
   const linksTitle = lang === 'en' ? 'Quick Links' : 'Liens rapides';
   const contactText = lang === 'en' ? 'Contact' : 'Contact';
@@ -25,13 +25,13 @@ export default function Footer({ lang }: FooterProps) {
             <div className="flex items-center gap-3 mb-4">
               <Image
                 src="/img/a-modern-flat-vector-logo-design-featuri_ZEbfVp__QiK-0wr5MrgGJg_ZFPYEbSKRM6a11TOK-IQCQ-removebg-preview.png"
-                alt="YouTube Vues Logo"
+                alt="ViewPlex Logo"
                 width={48}
                 height={48}
                 className="w-12 h-12"
               />
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                YouTube Vues
+                ViewPlex
               </h3>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">

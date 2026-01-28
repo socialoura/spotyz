@@ -52,7 +52,7 @@ export default function Header({ lang }: HeaderProps) {
               <div className="relative w-24 h-24 sm:w-32 sm:h-32">
                 <Image
                   src="/img/a-modern-flat-vector-logo-design-featuri_ZEbfVp__QiK-0wr5MrgGJg_ZFPYEbSKRM6a11TOK-IQCQ-removebg-preview.png"
-                  alt="YouTube Vues"
+                  alt="ViewPlex"
                   width={128}
                   height={128}
                   priority
