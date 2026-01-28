@@ -11,7 +11,7 @@
    - Go to https://my.ionos.fr/ 
    
    - Click **"Connexion"** and enter your credentials
-
+ 
 2. **Create a MySQL Database**
    - Navigate to: **Hébergement** → **Votre offre** → **Bases de données & Espace Web**
    - Click **"Créer une base de données"**
