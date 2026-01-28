@@ -19,7 +19,7 @@ const DEFAULT_PRICING = {
 };
 
 // In-memory fallback for development without database
-let memoryStore: { youtube: Array<{ followers: string; price: string }> } | null = null;
+let memoryStore: { youtube: Array<{ followers: string; price: string; originalPrice?: string }> } | null = null;
 
 // Check if database is configured
 const isDBConfigured = () => {
@@ -42,7 +42,7 @@ const storage = {
     }
   },
 
-  async set(_key: string, value: { youtube: Array<{ followers: string; price: string }> }) {
+  async set(_key: string, value: { youtube: Array<{ followers: string; price: string; originalPrice?: string }> }) {
     if (isDBConfigured()) {
       try {
         await setPricing(value);
@@ -80,7 +80,7 @@ export async function GET() {
     const pricing = await storage.get();
     if (pricing) {
       // Backward compatibility: if DB has instagram/tiktok shape, map to youtube.
-      const typedPricing = pricing as Record<string, Array<{ followers: string; price: string }>>;
+      const typedPricing = pricing as Record<string, Array<{ followers: string; price: string; originalPrice?: string }>>;
       if (typedPricing.youtube) {
         return NextResponse.json({ youtube: typedPricing.youtube });
       }

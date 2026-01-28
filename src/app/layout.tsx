@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -64,7 +64,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${spaceGrotesk.variable} font-sans antialiased`}
+        className={`${inter.variable} antialiased`}
       >
         {children}
         <Analytics />

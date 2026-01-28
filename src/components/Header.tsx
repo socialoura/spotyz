@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Language, languages } from '@/i18n/config';
 import ThemeToggle from './ThemeToggle';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Play } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
 import Image from 'next/image';
 
@@ -41,7 +41,7 @@ export default function Header({ lang }: HeaderProps) {
   return (
     <header className="w-full border-b border-gray-200 bg-white/85 backdrop-blur-md sticky top-0 z-50 dark:border-gray-800 dark:bg-gray-950/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-24 sm:h-28">
+        <div className="flex items-center h-20 sm:h-24">
           {/* Logo - Left */}
           <div className="flex items-center">
             <Link 
@@ -49,7 +49,7 @@ export default function Header({ lang }: HeaderProps) {
               className="flex items-center transition-all group"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <div className="relative w-32 h-32 sm:w-44 sm:h-44 shrink-0 -my-4 sm:-my-6">
+              <div className="relative w-32 h-32 sm:w-44 sm:h-44 shrink-0 -my-2 sm:-my-4">
                 <Image
                   src="/img/a-modern-flat-vector-logo-design-featuri_ZEbfVp__QiK-0wr5MrgGJg_ZFPYEbSKRM6a11TOK-IQCQ-removebg-preview.png"
                   alt="ViewPlex"
@@ -65,6 +65,15 @@ export default function Header({ lang }: HeaderProps) {
           
           {/* Desktop Navigation - Centered */}
           <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
+            <Link
+              href={`/${lang}`}
+              className="inline-flex items-center gap-2 text-base font-semibold text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+            >
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-red-600 text-white">
+                <Play className="w-3.5 h-3.5" />
+              </span>
+              {lang === 'en' ? 'Homepage' : 'Accueil'}
+            </Link>
             <Link
               href={`/${lang}/pricing`}
               className="text-base font-semibold text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
@@ -130,6 +139,16 @@ export default function Header({ lang }: HeaderProps) {
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800">
             <nav className="flex flex-col space-y-4">
+              <Link
+                href={`/${lang}`}
+                className="inline-flex items-center gap-2 text-base font-medium text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-red-600 text-white">
+                  <Play className="w-3.5 h-3.5" />
+                </span>
+                {lang === 'en' ? 'Homepage' : 'Accueil'}
+              </Link>
               <Link
                 href={`/${lang}/pricing`}
                 className="text-base font-medium text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"

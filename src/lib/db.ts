@@ -115,7 +115,7 @@ export async function getPricing() {
     `;
     
     if (result.rows.length > 0) {
-      return result.rows[0].data as Record<string, Array<{ followers: string; price: string }>>;
+      return result.rows[0].data as Record<string, Array<{ followers: string; price: string; originalPrice?: string }>>;
     }
     return null;
   } catch (error) {
@@ -124,7 +124,7 @@ export async function getPricing() {
   }
 }
 
-export async function setPricing(data: Record<string, Array<{ followers: string; price: string }>>) {
+export async function setPricing(data: Record<string, Array<{ followers: string; price: string; originalPrice?: string }>>) {
   try {
     await sql`
       INSERT INTO pricing (id, data) 

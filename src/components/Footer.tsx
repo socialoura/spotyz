@@ -1,5 +1,6 @@
 import { Language } from '@/i18n/config';
 import Image from 'next/image';
+import { Play } from 'lucide-react';
 
 interface FooterProps {
   lang: Language;
@@ -29,9 +30,16 @@ export default function Footer({ lang }: FooterProps) {
                 height={64}
                 className="w-14 h-14"
               />
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                ViewPlex
-              </h3>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-red-600 text-white">
+                    <Play className="w-4 h-4" />
+                  </span>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    ViewPlex
+                  </h3>
+                </div>
+              </div>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {footerText}

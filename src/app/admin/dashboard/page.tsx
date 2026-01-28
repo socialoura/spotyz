@@ -8,6 +8,7 @@ import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 interface Goal {
   followers: string;
   price: string;
+  originalPrice?: string;
 }
 
 interface PricingData {
@@ -484,7 +485,7 @@ export default function AdminDashboard() {
   const handleAddGoal = (platform: 'youtube') => {
     setPricing((prev) => ({
       ...prev,
-      [platform]: [...prev[platform], { followers: '', price: '' }],
+      [platform]: [...prev[platform], { followers: '', price: '', originalPrice: '' }],
     }));
   };
 
@@ -553,7 +554,7 @@ export default function AdminDashboard() {
   const handleUpdateGoal = (
     platform: 'youtube',
     index: number,
-    field: 'followers' | 'price',
+    field: 'followers' | 'price' | 'originalPrice',
     value: string
   ) => {
     setPricing((prev) => ({
@@ -562,6 +563,17 @@ export default function AdminDashboard() {
         i === index ? { ...goal, [field]: value } : goal
       ),
     }));
+  };
+
+  const formatSavePercent = (goal: Goal) => {
+    const price = parseFloat(goal.price);
+    const original = parseFloat(goal.originalPrice || '');
+    if (!Number.isFinite(price) || !Number.isFinite(original) || original <= 0 || original <= price) {
+      return null;
+    }
+    const percent = Math.round((1 - price / original) * 100);
+    if (!Number.isFinite(percent) || percent <= 0) return null;
+    return percent;
   };
 
   const handleSave = async () => {
@@ -854,6 +866,21 @@ export default function AdminDashboard() {
                         />
                       </div>
 
+                      <div className="flex-1">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Original price (€)
+                        </label>
+                        <input
+                          type="text"
+                          value={goal.originalPrice || ''}
+                          onChange={(e) =>
+                            handleUpdateGoal('youtube', index, 'originalPrice', e.target.value)
+                          }
+                          placeholder="e.g., 2.90"
+                          className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
+                        />
+                      </div>
+
                       <button
                         onClick={() => handleRemoveGoal('youtube', index)}
                         className="p-3 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-all hover:scale-110 group-hover:shadow-md"
@@ -862,6 +889,15 @@ export default function AdminDashboard() {
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
+
+                    {formatSavePercent(goal) !== null && (
+                      <div className="mt-3">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                          <Percent className="w-3.5 h-3.5" />
+                          Save {formatSavePercent(goal)}%
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ))}
 

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { Plus, Minus, BarChart3, Calendar, MessageCircle, HeadphonesIcon, Play, CheckCircle2, ArrowRight, ShieldCheck, Zap, X } from 'lucide-react';
 import ChatWidget from '@/components/ChatWidget';
 import ReviewsSection from '@/components/ReviewsSection';
-import TrustedBrands from '@/components/TrustedBrands';
 import PaymentModal from '@/components/PaymentModal';
 
 interface PageProps {
@@ -65,19 +64,23 @@ export default function HomePage({ params }: PageProps) {
         if (!response.ok) return;
 
         const data = await response.json();
-        const platformGoals: Array<{ followers: string; price: string }> = data.youtube || data.instagram || [];
+        const platformGoals: Array<{ followers: string; price: string; originalPrice?: string }> = data.youtube || data.instagram || [];
         if (!platformGoals.length) return;
 
-        const dynamicPacks = platformGoals.reduce<RegularPack[]>((acc, goal, index) => {
+        const dynamicPacks = platformGoals.reduce<RegularPack[]>((acc, goal) => {
           const views = parseInt(goal.followers, 10);
           const priceFloat = parseFloat(goal.price);
           if (!Number.isFinite(views) || !Number.isFinite(priceFloat)) return acc;
 
           const amount = Math.round(priceFloat * 100);
           const label = formatViewsLabel(views);
-          const discountPercentage = 50 + index * 5;
-          const original = index >= 1 ? Math.round((priceFloat / (1 - discountPercentage / 100)) * 100) : undefined;
-          const badge = index >= 1 ? (lang === 'fr' ? `-${discountPercentage}%` : `save ${discountPercentage}%`) : undefined;
+          const originalFloat = goal.originalPrice ? parseFloat(goal.originalPrice) : NaN;
+          const hasOriginal = Number.isFinite(originalFloat) && originalFloat > priceFloat;
+          const original = hasOriginal ? Math.round(originalFloat * 100) : undefined;
+          const discountPercentage = hasOriginal ? Math.round((1 - priceFloat / originalFloat) * 100) : 0;
+          const badge = hasOriginal && discountPercentage > 0
+            ? (lang === 'fr' ? `-${discountPercentage}%` : `save ${discountPercentage}%`)
+            : undefined;
 
           acc.push({ views, label, amount, original, badge });
           return acc;
@@ -343,12 +346,24 @@ export default function HomePage({ params }: PageProps) {
                           setHeroSelectionError('');
                           setSelectedPack({ views: offer.views, amount: offer.amount });
                         }}
-                        className={`group rounded-2xl border bg-white px-4 py-3 text-left transition-colors dark:bg-gray-950 ${
+                        className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
                           isSelected
-                            ? 'border-red-600 bg-red-50 dark:bg-red-950/30'
-                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:hover:border-gray-700 dark:hover:bg-gray-900'
+                            ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
                         }`}
                       >
+                        <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                          <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.12),transparent_55%)]" />
+                        </div>
+
+                        {offer.badge && (
+                          <div className="absolute right-3 top-3">
+                            <div className="inline-flex items-center rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
+                              {offer.badge}
+                            </div>
+                          </div>
+                        )}
+
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="text-lg font-black text-gray-900 dark:text-white">
@@ -369,11 +384,11 @@ export default function HomePage({ params }: PageProps) {
                             )}
                           </div>
                         </div>
-                        {offer.badge && (
-                          <div className="mt-2 inline-flex items-center rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-black text-white uppercase tracking-wider">
-                            {offer.badge}
-                          </div>
-                        )}
+
+                        <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">{lang === 'fr' ? 'Sélectionner' : 'Select'}</span>
+                          <span className={`h-2.5 w-2.5 rounded-full ${isSelected ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-800'}`} />
+                        </div>
                       </button>
                       );
                     })}
@@ -418,173 +433,80 @@ export default function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section id="services" className="py-20 sm:py-28 bg-white relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_0%,rgba(239,68,68,0.08),transparent_55%)]" />
+      {/* How It Works */}
+      <section className="py-20 sm:py-28 bg-white relative overflow-hidden dark:bg-gray-950">
+        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_10%_30%,rgba(239,68,68,0.06),transparent_55%)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl mb-4 dark:text-white">
-              {lang === 'fr' ? 'Choisissez votre forfait' : 'Choose your package'}
+              {lang === 'fr' ? 'Comment ça marche' : 'How it works'}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
               {lang === 'fr'
-                ? 'Des options simples pour lancer une campagne de visibilité vidéo. Vous gardez le contrôle et la mise en place est rapide.'
-                : 'Simple options to start a video visibility campaign. You stay in control and setup is fast.'}
+                ? 'Sélectionnez un pack, renseignez votre email + lien YouTube, puis payez en toute sécurité.'
+                : 'Select a package, add your email + YouTube link, then checkout securely.'}
             </p>
             <div className="w-20 h-1 bg-red-600 mx-auto rounded-full mt-6" />
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-              <div className="flex items-start justify-between gap-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 border border-red-200">
+                  <BarChart3 className="h-6 w-6 text-red-700" />
+                </div>
                 <div>
-                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Starter' : 'Starter'}</div>
-                  <div className="mt-2 text-4xl font-black text-gray-900 dark:text-white">
-                    {lang === 'fr' ? '9,90€' : '$9.90'}
-                  </div>
-                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    {lang === 'fr' ? 'Pour tester et valider le flow.' : 'For testing and validating the flow.'}
-                  </div>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center dark:bg-gray-900 dark:border-gray-800">
-                  <Zap className="w-6 h-6 text-gray-700 dark:text-gray-200" />
-                </div>
-              </div>
-
-              <div className="mt-6 space-y-3 text-sm">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Démarrage rapide' : 'Fast start'}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Exposition progressive' : 'Progressive exposure'}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Paiement sécurisé Stripe' : 'Secure Stripe checkout'}</span>
-                </div>
-              </div>
-
-              <button
-                onClick={scrollToHero}
-                className="mt-8 w-full rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-black py-3 px-5 transition-colors"
-              >
-                {lang === 'fr' ? 'Commencer' : 'Get started'}
-              </button>
-              <div className="mt-3 text-xs text-gray-500 text-center dark:text-gray-400">
-                {lang === 'fr' ? 'Collez le lien de votre vidéo dans le champ en haut.' : 'Paste your video link in the field above.'}
-              </div>
-            </div>
-
-            <div className="rounded-3xl border-2 border-red-200 bg-white p-8 shadow-sm relative dark:bg-gray-950 dark:border-red-900">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <div className="rounded-full bg-red-600 text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider">
-                  {lang === 'fr' ? 'Populaire' : 'Most popular'}
-                </div>
-              </div>
-
-              <div className="flex items-start justify-between gap-6">
-                <div>
-                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Plus' : 'Plus'}</div>
-                  <div className="mt-2 text-4xl font-black text-gray-900 dark:text-white">
-                    {lang === 'fr' ? '29,90€' : '$29.90'}
-                  </div>
-                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    {lang === 'fr' ? 'Un bon équilibre pour booster la découverte.' : 'A balanced option to boost discovery.'}
+                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '1) Pack' : '1) Package'}</div>
+                  <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
+                    {lang === 'fr'
+                      ? 'Choisissez votre niveau de vues. Les packs viennent directement depuis l’admin.'
+                      : 'Choose the view package that fits your goal. Packages are loaded from admin pricing.'}
                   </div>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center dark:bg-red-950/40 dark:border-red-900">
-                  <BarChart3 className="w-6 h-6 text-red-700" />
-                </div>
-              </div>
-
-              <div className="mt-6 space-y-3 text-sm">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Exposition renforcée' : 'Enhanced exposure'}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Pacing progressif' : 'Progressive pacing'}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Support prioritaire' : 'Priority support'}</span>
-                </div>
-              </div>
-
-              <button
-                onClick={scrollToHero}
-                className="mt-8 w-full rounded-xl bg-red-600 hover:bg-red-700 text-white font-black py-3 px-5 transition-colors shadow-sm"
-              >
-                {lang === 'fr' ? 'Choisir Plus' : 'Choose Plus'}
-              </button>
-              <div className="mt-3 text-xs text-gray-500 text-center dark:text-gray-400">
-                {lang === 'fr' ? 'Le prix final dépend du forfait choisi dans l’étape suivante.' : 'Final price depends on the package selected in the next step.'}
               </div>
             </div>
 
             <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-              <div className="flex items-start justify-between gap-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+                  <Play className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+                </div>
                 <div>
-                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Pro' : 'Pro'}</div>
-                  <div className="mt-2 text-4xl font-black text-gray-900 dark:text-white">
-                    {lang === 'fr' ? '59,90€' : '$59.90'}
+                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '2) Infos' : '2) Details'}</div>
+                  <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
+                    {lang === 'fr'
+                      ? 'Dans le paiement, ajoutez votre email et le lien de votre vidéo YouTube.'
+                      : 'Inside checkout, add your email and your YouTube video link.'}
                   </div>
-                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    {lang === 'fr' ? 'Pour les lancements et contenus importants.' : 'For launches and important content.'}
-                  </div>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center dark:bg-gray-900 dark:border-gray-800">
-                  <ShieldCheck className="w-6 h-6 text-gray-700 dark:text-gray-200" />
                 </div>
               </div>
+            </div>
 
-              <div className="mt-6 space-y-3 text-sm">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Volume d’exposition élevé' : 'Higher exposure volume'}</span>
+            <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+                  <ShieldCheck className="h-6 w-6 text-gray-700 dark:text-gray-200" />
                 </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Suivi et accompagnement' : 'Tracking and guidance'}</span>
+                <div>
+                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '3) Paiement' : '3) Checkout'}</div>
+                  <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
+                    {lang === 'fr'
+                      ? 'Paiement sécurisé Stripe, puis démarrage rapide et confirmation.'
+                      : 'Secure Stripe payment, then fast start and confirmation.'}
+                  </div>
                 </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Paiement sécurisé Stripe' : 'Secure Stripe checkout'}</span>
-                </div>
-              </div>
-
-              <button
-                onClick={scrollToHero}
-                className="mt-8 w-full rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 font-black py-3 px-5 transition-colors dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white"
-              >
-                {lang === 'fr' ? 'Contacter' : 'Contact'}
-              </button>
-              <div className="mt-3 text-xs text-gray-500 text-center dark:text-gray-400">
-                {lang === 'fr' ? 'Idéal pour une stratégie plus complète.' : 'Ideal for a more complete strategy.'}
               </div>
             </div>
           </div>
 
-          <div className="mt-12 rounded-3xl border border-gray-200 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-900">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              {(serviceItems || []).slice(0, 3).map((item, idx) => {
-                const IconComponent = item.icon;
-                return (
-                  <div key={`${item.title}-${idx}`} className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-white border border-gray-200 flex items-center justify-center dark:bg-gray-950 dark:border-gray-800">
-                      <IconComponent className="w-6 h-6 text-gray-700 dark:text-gray-200" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-black text-gray-900 dark:text-white">{item.title}</div>
-                      <div className="mt-1 text-sm text-gray-600 leading-relaxed dark:text-gray-300">{item.description}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="mt-10 rounded-3xl border border-gray-200 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-900">
+            <div className="text-base font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Transparence & conformité' : 'Transparency & compliance'}</div>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600 max-w-3xl dark:text-gray-300">
+              {lang === 'fr'
+                ? 'Nous mettons l\'accent sur la visibilité et la découverte. Les résultats dépendent du contenu, de la niche et de la régularité. Nous ne promettons pas de métriques spécifiques.'
+                : 'We focus on visibility and discovery. Results depend on content quality, niche relevance, and consistency. We do not promise specific metrics.'}
+            </p>
           </div>
         </div>
       </section>
@@ -738,98 +660,184 @@ export default function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-20 sm:py-28 bg-white relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_10%_30%,rgba(239,68,68,0.06),transparent_55%)]" />
+      <section id="services" className="py-20 sm:py-28 bg-white relative overflow-hidden dark:bg-gray-950">
+        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_0%,rgba(239,68,68,0.08),transparent_55%)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-14">
             <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl mb-4 dark:text-white">
-              {lang === 'fr' ? 'Comment ça marche' : 'How it works'}
+              {lang === 'fr' ? 'Choisissez votre forfait' : 'Choose your package'}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
               {lang === 'fr'
-                ? 'Un parcours clair en 3 étapes, pensé pour rester simple et conforme.'
-                : 'A clear 3-step flow designed to stay simple and compliant.'}
+                ? 'Des options simples pour lancer une campagne de visibilité vidéo. Vous gardez le contrôle et la mise en place est rapide.'
+                : 'Simple options to start a video visibility campaign. You stay in control and setup is fast.'}
             </p>
             <div className="w-20 h-1 bg-red-600 mx-auto rounded-full mt-6" />
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 border border-red-200">
-                  <Play className="h-6 w-6 text-red-700" />
-                </div>
+            <div className="group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-950">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 opacity-60 dark:from-gray-200 dark:via-gray-400 dark:to-gray-200" />
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="absolute inset-0 bg-[radial-gradient(700px_circle_at_20%_0%,rgba(239,68,68,0.10),transparent_60%)]" />
+              </div>
+              <div className="flex items-start justify-between gap-6">
                 <div>
-                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '1) Vidéo' : '1) Video'}</div>
-                  <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
-                    {lang === 'fr'
-                      ? 'Vous collez le lien de votre vidéo. Aucune connexion, aucun mot de passe.'
-                      : 'Paste your video link. No login, no password.'}
+                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Starter' : 'Starter'}</div>
+                  <div className="mt-2 text-4xl font-black text-gray-900 dark:text-white">
+                    {lang === 'fr' ? '9,90€' : '$9.90'}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    {lang === 'fr' ? 'Pour tester et valider le flow.' : 'For testing and validating the flow.'}
                   </div>
                 </div>
+                <div className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center dark:bg-gray-900 dark:border-gray-800">
+                  <Zap className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-3 text-sm">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Démarrage rapide' : 'Fast start'}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Exposition progressive' : 'Progressive exposure'}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Paiement sécurisé Stripe' : 'Secure Stripe checkout'}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={scrollToHero}
+                className="mt-8 w-full rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-black py-3 px-5 transition-all hover:shadow-sm active:scale-[0.99]"
+              >
+                {lang === 'fr' ? 'Commencer' : 'Get started'}
+              </button>
+              <div className="mt-3 text-xs text-gray-500 text-center dark:text-gray-400">
+                {lang === 'fr' ? 'Sélectionnez un pack en haut pour ouvrir le paiement.' : 'Select a package at the top to open checkout.'}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-                  <BarChart3 className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+            <div className="group relative overflow-hidden rounded-3xl border-2 border-red-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-gray-950 dark:border-red-900">
+              <div className="pointer-events-none absolute inset-0 opacity-60">
+                <div className="absolute inset-0 bg-[radial-gradient(800px_circle_at_50%_0%,rgba(239,68,68,0.18),transparent_60%)]" />
+              </div>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <div className="rounded-full bg-red-600 text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider">
+                  {lang === 'fr' ? 'Populaire' : 'Most popular'}
                 </div>
+              </div>
+
+              <div className="flex items-start justify-between gap-6">
                 <div>
-                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '2) Objectif' : '2) Goal'}</div>
-                  <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
-                    {lang === 'fr'
-                      ? 'Vous choisissez un niveau d\'exposition selon votre besoin (progressif).' 
-                      : 'Choose an exposure level based on your needs (progressive pacing).'}
+                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Plus' : 'Plus'}</div>
+                  <div className="mt-2 text-4xl font-black text-gray-900 dark:text-white">
+                    {lang === 'fr' ? '29,90€' : '$29.90'}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    {lang === 'fr' ? 'Un bon équilibre pour booster la découverte.' : 'A balanced option to boost discovery.'}
                   </div>
                 </div>
+                <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center dark:bg-red-950/40 dark:border-red-900">
+                  <BarChart3 className="w-6 h-6 text-red-700" />
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-3 text-sm">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Exposition renforcée' : 'Enhanced exposure'}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Pacing progressif' : 'Progressive pacing'}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Support prioritaire' : 'Priority support'}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={scrollToHero}
+                className="mt-8 w-full rounded-xl bg-red-600 hover:bg-red-700 text-white font-black py-3 px-5 transition-all shadow-sm hover:shadow-md active:scale-[0.99]"
+              >
+                {lang === 'fr' ? 'Choisir Plus' : 'Choose Plus'}
+              </button>
+              <div className="mt-3 text-xs text-gray-500 text-center dark:text-gray-400">
+                {lang === 'fr' ? 'Sélectionnez ensuite un pack et payez en toute sécurité.' : 'Then select a pack and checkout securely.'}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-                  <CheckCircle2 className="h-6 w-6 text-gray-700 dark:text-gray-200" />
-                </div>
+            <div className="group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-950">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gray-200 via-gray-400 to-gray-200 dark:from-gray-800 dark:via-gray-600 dark:to-gray-800" />
+              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="absolute inset-0 bg-[radial-gradient(700px_circle_at_80%_0%,rgba(239,68,68,0.10),transparent_60%)]" />
+              </div>
+              <div className="flex items-start justify-between gap-6">
                 <div>
-                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '3) Paiement' : '3) Checkout'}</div>
-                  <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
-                    {lang === 'fr'
-                      ? 'Paiement sécurisé Stripe. Vous recevez un suivi et une confirmation.'
-                      : 'Secure Stripe checkout. You get tracking and confirmation.'}
+                  <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Pro' : 'Pro'}</div>
+                  <div className="mt-2 text-4xl font-black text-gray-900 dark:text-white">
+                    {lang === 'fr' ? '59,90€' : '$59.90'}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    {lang === 'fr' ? 'Pour les lancements et contenus importants.' : 'For launches and important content.'}
                   </div>
                 </div>
+                <div className="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center dark:bg-gray-900 dark:border-gray-800">
+                  <ShieldCheck className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-3 text-sm">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Volume d’exposition élevé' : 'Higher exposure volume'}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Suivi et accompagnement' : 'Tracking and guidance'}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span className="text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Paiement sécurisé Stripe' : 'Secure Stripe checkout'}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={scrollToHero}
+                className="mt-8 w-full rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 font-black py-3 px-5 transition-all hover:shadow-sm active:scale-[0.99] dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white"
+              >
+                {lang === 'fr' ? 'Contacter' : 'Contact'}
+              </button>
+              <div className="mt-3 text-xs text-gray-500 text-center dark:text-gray-400">
+                {lang === 'fr' ? 'Idéal pour une stratégie plus complète.' : 'Ideal for a more complete strategy.'}
               </div>
             </div>
           </div>
 
-          <div className="mt-10 rounded-3xl border border-gray-200 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-900">
-            <div className="text-base font-black text-gray-900 dark:text-white">{lang === 'fr' ? 'Transparence & conformité' : 'Transparency & compliance'}</div>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600 max-w-3xl dark:text-gray-300">
-              {lang === 'fr'
-                ? 'Nous mettons l\'accent sur la visibilité et la découverte. Les résultats dépendent du contenu, de la niche et de la régularité. Nous ne promettons pas de métriques spécifiques.'
-                : 'We focus on visibility and discovery. Results depend on content quality, niche relevance, and consistency. We do not promise specific metrics.'}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Trusted Brands */}
-      <section className="py-16 sm:py-20 bg-gray-50 relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute inset-0 bg-[radial-gradient(800px_circle_at_50%_50%,rgba(239,68,68,0.06),transparent_55%)]" />
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white">
-              {lang === 'fr' ? 'Ils nous font confiance' : 'Trusted by creators'}
-            </h2>
-            <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
-              {lang === 'fr' ? 'Marques et créateurs avec qui nous collaborons.' : 'Brands and creators we collaborate with.'}
-            </p>
-          </div>
-          <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-            <TrustedBrands lang={lang} />
+          <div className="mt-12 rounded-3xl border border-gray-200 bg-gray-50 p-8 dark:border-gray-800 dark:bg-gray-900">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {(serviceItems || []).slice(0, 3).map((item, idx) => {
+                const IconComponent = item.icon;
+                return (
+                  <div key={`${item.title}-${idx}`} className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-gray-200 flex items-center justify-center dark:bg-gray-950 dark:border-gray-800">
+                      <IconComponent className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-black text-gray-900 dark:text-white">{item.title}</div>
+                      <div className="mt-1 text-sm text-gray-600 leading-relaxed dark:text-gray-300">{item.description}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
