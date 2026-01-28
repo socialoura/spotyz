@@ -11,6 +11,7 @@ interface PaymentModalProps {
   currency: string;
   onClose: () => void;
   onSuccess?: (paymentIntentId: string, email?: string) => void;
+  onCollectedDetails?: (details: { email: string; youtubeVideoUrl: string }) => void;
   productName?: string;
   language?: 'en' | 'fr';
   email?: string;
@@ -29,6 +30,7 @@ function PaymentForm({
   currency, 
   onClose, 
   onSuccess,
+  onCollectedDetails,
   productName,
   language = 'en',
   email,
@@ -65,6 +67,9 @@ function PaymentForm({
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [elementsReady, setElementsReady] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [customerEmail, setCustomerEmail] = useState(email || '');
+  const [youtubeVideoUrl, setYoutubeVideoUrl] = useState(orderDetails?.username || '');
+  const [detailsError, setDetailsError] = useState<string | null>(null);
 
   // Language strings
   const text = {
@@ -120,6 +125,18 @@ function PaymentForm({
 
   const t = text[language];
 
+  const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  const validateDetails = () => {
+    if (!customerEmail.trim() || !isValidEmail(customerEmail)) {
+      return language === 'fr' ? 'Veuillez entrer un email valide.' : 'Please enter a valid email.';
+    }
+    if (!youtubeVideoUrl.trim()) {
+      return language === 'fr' ? 'Veuillez entrer le lien de votre vidéo YouTube.' : 'Please enter your YouTube video link.';
+    }
+    return null;
+  };
+
   const formatAmount = (amount: number, currency: string) => {
     const value = amount / 100;
     if (currency.toLowerCase() === 'eur') {
@@ -130,6 +147,13 @@ function PaymentForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const validationMessage = validateDetails();
+    if (validationMessage) {
+      setDetailsError(validationMessage);
+      return;
+    }
+    setDetailsError(null);
 
     if (!stripe || !elements || isProcessing) {
       return;
@@ -155,7 +179,14 @@ function PaymentForm({
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         setPaymentIntentId(paymentIntent.id);
         setPaymentStatus('success');
-        
+
+        if (onCollectedDetails) {
+          onCollectedDetails({ email: customerEmail.trim(), youtubeVideoUrl: youtubeVideoUrl.trim() });
+        }
+        if (onSuccess) {
+          onSuccess(paymentIntent.id, customerEmail.trim());
+        }
+
         // Google Ads Conversion Tracking
         if (typeof window !== 'undefined' && (window as typeof window & { gtag?: (...args: unknown[]) => void }).gtag) {
           (window as typeof window & { gtag: (...args: unknown[]) => void }).gtag('event', 'conversion', {
@@ -167,7 +198,7 @@ function PaymentForm({
         }
 
         // Send confirmation email and Discord notification
-        if (email && orderDetails) {
+        if (customerEmail && orderDetails) {
           const orderId = paymentIntent.id.slice(-8).toUpperCase();
           const priceFormatted = formatAmount(amount, currency);
           
@@ -177,8 +208,8 @@ function PaymentForm({
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                email,
-                customerName: orderDetails.username,
+                email: customerEmail,
+                customerName: youtubeVideoUrl,
                 orderDetails: {
                   platform: orderDetails.platform,
                   followers: orderDetails.followers,
@@ -204,8 +235,8 @@ function PaymentForm({
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 orderId,
-                email,
-                username: orderDetails.username,
+                email: customerEmail,
+                username: youtubeVideoUrl,
                 platform: orderDetails.platform,
                 followers: orderDetails.followers,
                 price: priceFormatted,
@@ -215,10 +246,6 @@ function PaymentForm({
           } catch (discordError) {
             console.error('Failed to send Discord notification:', discordError);
           }
-        }
-        
-        if (onSuccess) {
-          onSuccess(paymentIntent.id, email);
         }
       }
     } catch {
@@ -312,6 +339,58 @@ function PaymentForm({
       {/* Payment Form */}
       {paymentStatus !== 'success' && (
         <form onSubmit={handleSubmit}>
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 uppercase tracking-wider mb-2 dark:text-gray-300">
+                {language === 'fr' ? 'Email' : 'Email'}
+              </label>
+              <input
+                type="email"
+                value={customerEmail}
+                onChange={(e) => {
+                  setCustomerEmail(e.target.value);
+                  setDetailsError(null);
+                }}
+                placeholder={language === 'fr' ? 'vous@exemple.com' : 'you@example.com'}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm font-medium focus:border-red-600 focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-600 uppercase tracking-wider mb-2 dark:text-gray-300">
+                {language === 'fr' ? 'Lien YouTube' : 'YouTube link'}
+              </label>
+              <input
+                type="text"
+                value={youtubeVideoUrl}
+                onChange={(e) => {
+                  setYoutubeVideoUrl(e.target.value);
+                  setDetailsError(null);
+                }}
+                placeholder={language === 'fr' ? 'https://www.youtube.com/watch?v=...' : 'https://www.youtube.com/watch?v=...'}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm font-medium focus:border-red-600 focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
+              />
+            </div>
+          </div>
+
+          {detailsError && (
+            <div className="mb-6 rounded-2xl bg-red-50 p-5 border border-red-200 dark:bg-red-950/40 dark:border-red-900">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 border border-red-200 flex items-center justify-center dark:bg-red-950/40 dark:border-red-900">
+                  <AlertCircle className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-red-800 dark:text-red-300">
+                    {language === 'fr' ? 'Informations requises' : 'Required information'}
+                  </h3>
+                  <p className="mt-1 text-sm text-red-700 dark:text-red-200">
+                    {detailsError}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Payment Element Container */}
           <div className="mb-6 relative min-h-[200px] rounded-2xl p-5 border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
             {!elementsReady && (
@@ -421,7 +500,7 @@ function PaymentForm({
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={!stripe || !elements || isProcessing || !elementsReady || !acceptedTerms}
+            disabled={!stripe || !elements || isProcessing || !elementsReady || !acceptedTerms || !!validateDetails()}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-xl transition-all shadow-sm disabled:shadow-none flex items-center justify-center text-lg dark:disabled:bg-gray-800"
           >
             {isProcessing ? (

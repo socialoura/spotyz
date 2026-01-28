@@ -25,9 +25,9 @@ export default function Footer({ lang }: FooterProps) {
               <Image
                 src="/img/a-modern-flat-vector-logo-design-featuri_ZEbfVp__QiK-0wr5MrgGJg_ZFPYEbSKRM6a11TOK-IQCQ-removebg-preview.png"
                 alt="ViewPlex Logo"
-                width={48}
-                height={48}
-                className="w-12 h-12"
+                width={64}
+                height={64}
+                className="w-14 h-14"
               />
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 ViewPlex
