@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trash2, Plus, Save, LogOut, Instagram, Music, AlertCircle, Settings, ShoppingCart, Eye, EyeOff, BarChart3, Search, Filter, MessageSquare, X, ChevronDown, Tag, Percent, Calendar, Hash } from 'lucide-react';
+import { Trash2, Plus, Save, LogOut, Play, Music, AlertCircle, Settings, ShoppingCart, Eye, EyeOff, BarChart3, Search, Filter, MessageSquare, X, ChevronDown, Tag, Percent, Calendar, Hash } from 'lucide-react';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 
 interface Goal {
@@ -11,7 +11,7 @@ interface Goal {
 }
 
 interface PricingData {
-  instagram: Goal[];
+  youtube: Goal[];
   tiktok: Goal[];
 }
 
@@ -33,7 +33,7 @@ type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled';
 
 interface DeleteConfirmation {
   isOpen: boolean;
-  platform: 'instagram' | 'tiktok' | null;
+  platform: 'youtube' | 'tiktok' | null;
   index: number | null;
   followers: string;
 }
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [pricing, setPricing] = useState<PricingData>({
-    instagram: [],
+    youtube: [],
     tiktok: [],
   });
   const [orders, setOrders] = useState<Order[]>([]);
@@ -151,7 +151,10 @@ export default function AdminDashboard() {
       const response = await fetch('/api/admin/pricing');
       if (response.ok) {
         const data = await response.json();
-        setPricing(data);
+        setPricing({
+          youtube: data.youtube || [],
+          tiktok: data.tiktok || [],
+        });
       }
     } catch (error) {
       console.error('Error fetching pricing:', error);
@@ -481,14 +484,14 @@ export default function AdminDashboard() {
     return true;
   });
 
-  const handleAddGoal = (platform: 'instagram' | 'tiktok') => {
+  const handleAddGoal = (platform: 'youtube' | 'tiktok') => {
     setPricing((prev) => ({
       ...prev,
       [platform]: [...prev[platform], { followers: '', price: '' }],
     }));
   };
 
-  const handleRemoveGoal = (platform: 'instagram' | 'tiktok', index: number) => {
+  const handleRemoveGoal = (platform: 'youtube' | 'tiktok', index: number) => {
     const goal = pricing[platform][index];
     setDeleteConfirmation({
       isOpen: true,
@@ -551,7 +554,7 @@ export default function AdminDashboard() {
   };
 
   const handleUpdateGoal = (
-    platform: 'instagram' | 'tiktok',
+    platform: 'youtube' | 'tiktok',
     index: number,
     field: 'followers' | 'price',
     value: string
@@ -741,8 +744,8 @@ export default function AdminDashboard() {
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700/50'
               }`}
             >
-              <Instagram className="w-5 h-5" />
-              Social Media Pricing
+              <Play className="w-5 h-5" />
+              YouTube Pricing
             </button>
             <button
               onClick={() => setActiveTab('settings')}
@@ -796,21 +799,21 @@ export default function AdminDashboard() {
             <div className="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-purple-100 dark:border-purple-900/30">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-lg">
-                    <Instagram className="w-6 h-6 text-white" />
+                  <div className="p-3 bg-red-600 rounded-xl shadow-lg">
+                    <Play className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      Instagram Pricing
+                      YouTube Pricing
                     </h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                      {pricing.instagram.length} option{pricing.instagram.length !== 1 ? 's' : ''} available
+                      {pricing.youtube.length} option{pricing.youtube.length !== 1 ? 's' : ''} available
                     </p>
                   </div>
                 </div>
                 <button
-                  onClick={() => handleAddGoal('instagram')}
-                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+                  onClick={() => handleAddGoal('youtube')}
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   <Plus className="w-4 h-4" />
                   Add Goal
@@ -818,7 +821,7 @@ export default function AdminDashboard() {
               </div>
 
               <div className="grid gap-4">
-                {pricing.instagram.map((goal, index) => (
+                {pricing.youtube.map((goal, index) => (
                   <div
                     key={index}
                     className="group relative bg-gradient-to-br from-gray-50 to-purple-50/30 dark:from-gray-700/50 dark:to-purple-900/10 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all"
@@ -832,7 +835,7 @@ export default function AdminDashboard() {
                           type="text"
                           value={goal.followers}
                           onChange={(e) =>
-                            handleUpdateGoal('instagram', index, 'followers', e.target.value)
+                            handleUpdateGoal('youtube', index, 'followers', e.target.value)
                           }
                           placeholder="e.g., 100"
                           className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
@@ -847,7 +850,7 @@ export default function AdminDashboard() {
                           type="text"
                           value={goal.price}
                           onChange={(e) =>
-                            handleUpdateGoal('instagram', index, 'price', e.target.value)
+                            handleUpdateGoal('youtube', index, 'price', e.target.value)
                           }
                           placeholder="e.g., 1.90"
                           className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all"
@@ -855,7 +858,7 @@ export default function AdminDashboard() {
                       </div>
 
                       <button
-                        onClick={() => handleRemoveGoal('instagram', index)}
+                        onClick={() => handleRemoveGoal('youtube', index)}
                         className="p-3 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl transition-all hover:scale-110 group-hover:shadow-md"
                         title="Delete this pricing option"
                       >
@@ -865,9 +868,9 @@ export default function AdminDashboard() {
                   </div>
                 ))}
 
-                {pricing.instagram.length === 0 && (
+                {pricing.youtube.length === 0 && (
                   <div className="text-center py-12 px-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600">
-                    <Instagram className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-3" />
+                    <Play className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-3" />
                     <p className="text-gray-500 dark:text-gray-400 font-medium">
                       No pricing goals yet. Click &quot;Add Goal&quot; to create one.
                     </p>
@@ -1227,7 +1230,7 @@ export default function AdminDashboard() {
                       className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
                     >
                       <option value="all">All Platforms</option>
-                      <option value="instagram">Instagram</option>
+                      <option value="youtube">YouTube</option>
                       <option value="tiktok">TikTok</option>
                     </select>
                   </div>
@@ -1308,7 +1311,7 @@ export default function AdminDashboard() {
                         </td>
                         <td className="py-4 px-4">
                           <span className="inline-flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white capitalize">
-                            {order.platform === 'instagram' ? <Instagram className="w-4 h-4 text-pink-500" /> : <Music className="w-4 h-4 text-cyan-500" />}
+                            {order.platform === 'youtube' ? <Play className="w-4 h-4 text-red-600" /> : <Music className="w-4 h-4 text-cyan-500" />}
                             {order.platform}
                           </span>
                         </td>
