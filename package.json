@@ -17,6 +17,7 @@
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@stripe/react-stripe-js": "^5.4.1",
     "@stripe/stripe-js": "^8.6.1",
+    "@vercel/analytics": "^1.6.1",
     "@vercel/kv": "^3.0.0",
     "@vercel/postgres": "^0.10.0",
     "clsx": "^2.1.1",
