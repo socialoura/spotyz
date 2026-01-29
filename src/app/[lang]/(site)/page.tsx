@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { Language } from '@/i18n/config';
 import { useRouter } from 'next/navigation';
 import { Plus, Minus, BarChart3, Calendar, MessageCircle, HeadphonesIcon, Play, CheckCircle2, ArrowRight, ShieldCheck, Zap, X } from 'lucide-react';
-import Image from 'next/image';
 import ChatWidget from '@/components/ChatWidget';
 import ReviewsSection from '@/components/ReviewsSection';
 import PaymentModal from '@/components/PaymentModal';
@@ -286,13 +285,13 @@ export default function HomePage({ params }: PageProps) {
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(1200px_circle_at_10%_20%,rgba(239,68,68,0.10),transparent_55%),radial-gradient(900px_circle_at_90%_35%,rgba(239,68,68,0.06),transparent_55%)]" />
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(2,6,23,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(2,6,23,0.04)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30 dark:opacity-15" />
         <div className="absolute inset-0 pointer-events-none [mask-image:radial-gradient(60%_55%_at_50%_35%,black,transparent)] bg-gradient-to-b from-white/0 via-white/40 to-white dark:from-gray-950/0 dark:via-gray-950/70 dark:to-gray-950" />
-@@
+
         <div className="relative z-10 mx-auto max-w-7xl px-6 pt-8 pb-8 sm:pt-14 sm:pb-12 lg:px-8 lg:pt-20 lg:pb-16">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-center lg:gap-10">
             <div className="lg:col-span-5">
               <div className="inline-flex items-center gap-3">
                 <span className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 dark:text-white">
-                  {lang === 'fr' ? 'Boostez vos vues YouTube' : 'Boost YouTube Views'}
+                  {lang === 'fr' ? 'Faites la promotion de votre vidéo YouTube' : 'Promote your YouTube video'}
                 </span>
                 <span className="inline-flex items-center rounded-lg bg-red-600 px-3 py-1.5 text-sm font-black text-white">
                   {lang === 'fr' ? 'Instantané' : 'Instantly'}
@@ -301,8 +300,8 @@ export default function HomePage({ params }: PageProps) {
 
               <p className="mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
                 {lang === 'fr'
-                  ? 'ViewPlex est une solution simple pour lancer une campagne de visibilité sur votre vidéo. Choisissez un pack, payez en toute sécurité et démarrez rapidement.'
-                  : 'ViewPlex is a simple way to start a visibility campaign for your video. Choose a pack, checkout securely, and get started fast.'}
+                  ? 'ViewPlex vous aide à lancer une campagne publicitaire pour promouvoir votre vidéo sur YouTube via Google Ads. Choisissez une option, payez en toute sécurité et démarrez rapidement.'
+                  : 'ViewPlex helps you launch an ad campaign to promote your video on YouTube via Google Ads. Choose an option, checkout securely, and get started fast.'}
               </p>
 
               <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
@@ -325,7 +324,7 @@ export default function HomePage({ params }: PageProps) {
               <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-950">
                 <div className="border-b border-gray-200 bg-gray-50 px-6 py-3 dark:border-gray-800 dark:bg-gray-900">
                   <div className="text-sm font-black text-gray-900 dark:text-white">
-                    {lang === 'fr' ? 'Vues' : 'Views'}
+                    {lang === 'fr' ? 'Budget' : 'Budget'}
                   </div>
                 </div>
 
@@ -333,8 +332,8 @@ export default function HomePage({ params }: PageProps) {
                   <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-600 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
                     <span className="font-bold">{lang === 'fr' ? 'Info' : 'Info'}:</span>{' '}
                     {lang === 'fr'
-                      ? 'Choisissez un pack. Le paiement s’ouvre ensuite et vous ajoutez votre email + lien YouTube.'
-                      : 'Pick a package. Checkout opens next and you’ll add your email + YouTube link.'}
+                      ? 'Choisissez un budget. Le paiement s’ouvre ensuite et vous ajoutez votre email + lien YouTube.'
+                      : 'Pick a budget. Checkout opens next and you’ll add your email + YouTube link.'}
                   </div>
 
                   <div className="mt-4 grid grid-cols-2 gap-3">
@@ -371,7 +370,7 @@ export default function HomePage({ params }: PageProps) {
                               {offer.label}
                             </div>
                             <div className="text-xs text-gray-500 dark:text-gray-400">
-                              {lang === 'fr' ? 'vues' : 'views'}
+                              {lang === 'fr' ? 'budget' : 'budget'}
                             </div>
                           </div>
                           <div className="text-right">
@@ -421,7 +420,7 @@ export default function HomePage({ params }: PageProps) {
                                 {formatViewsLabel(customViews)}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
-                                {lang === 'fr' ? 'vues' : 'views'}
+                                {lang === 'fr' ? 'budget' : 'budget'}
                               </div>
                             </div>
 
@@ -430,7 +429,7 @@ export default function HomePage({ params }: PageProps) {
                                 {formatHeroPrice(customAmount)}
                               </div>
                               <div className="text-xs text-gray-400 dark:text-gray-500">
-                                {lang === 'fr' ? '0,40€/100 vues' : '$0.40/100 views'}
+                                {lang === 'fr' ? 'Estimation indicative' : 'Indicative estimate'}
                               </div>
                             </div>
                           </div>
@@ -482,11 +481,11 @@ export default function HomePage({ params }: PageProps) {
                   <div className="mt-4 hidden grid-cols-2 gap-3 border-t border-gray-200 pt-4 text-sm text-gray-700 dark:border-gray-800 dark:text-gray-200 sm:grid">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-red-600" />
-                      <span>{lang === 'fr' ? 'Vues réelles & organiques' : 'Real & organic views'}</span>
+                      <span>{lang === 'fr' ? 'Promotion via Google Ads' : 'Promotion via Google Ads'}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-red-600" />
-                      <span>{lang === 'fr' ? 'Refill garanti' : 'Refill guaranteed'}</span>
+                      <span>{lang === 'fr' ? 'Ciblage & diffusion progressive' : 'Targeting & progressive delivery'}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-red-600" />

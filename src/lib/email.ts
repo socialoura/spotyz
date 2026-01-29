@@ -32,8 +32,8 @@ export async function sendOrderConfirmationEmail({
   const isEnglish = language === 'en';
 
   const subject = isEnglish
-    ? `Order Confirmation - SocialOura #${orderDetails.orderId}`
-    : `Confirmation de commande - SocialOura #${orderDetails.orderId}`;
+    ? `Order Confirmation - ViewPlex #${orderDetails.orderId}`
+    : `Confirmation de commande - ViewPlex #${orderDetails.orderId}`;
 
   const platformName = orderDetails.platform.charAt(0).toUpperCase() + orderDetails.platform.slice(1);
 
@@ -55,7 +55,7 @@ export async function sendOrderConfirmationEmail({
           <tr>
             <td style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); padding: 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
-                SocialOura
+                ViewPlex
               </h1>
               <p style="margin: 10px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">
                 ${isEnglish ? 'Order Confirmation' : 'Confirmation de commande'}
@@ -154,8 +154,8 @@ export async function sendOrderConfirmationEmail({
                     <p style="margin: 0; color: #4338CA; font-size: 14px; line-height: 1.6;">
                       <strong>${isEnglish ? 'What happens next?' : 'Et maintenant ?'}</strong><br>
                       ${isEnglish 
-                        ? 'Your order is being processed. You will start seeing results within 24-48 hours. The delivery will be gradual to ensure natural growth.'
-                        : 'Votre commande est en cours de traitement. Vous commencerez à voir les résultats dans les 24 à 48 heures. La livraison sera progressive pour assurer une croissance naturelle.'
+                        ? 'Your campaign is being set up. You will receive updates within 24-48 hours. Delivery is progressive for a natural distribution.'
+                        : 'Votre campagne est en cours de configuration. Vous recevrez des mises à jour dans les 24 à 48 heures. La diffusion est progressive pour une distribution naturelle.'
                       }
                     </p>
                   </td>
@@ -169,10 +169,10 @@ export async function sendOrderConfirmationEmail({
             <td style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px;">
                 ${isEnglish ? 'Questions? Contact us at' : 'Des questions ? Contactez-nous à'}
-                <a href="mailto:support@view-plex.com" style="color: #8B5CF6; text-decoration: none;"> support@socialoura.com</a>
+                <a href="mailto:support@view-plex.com" style="color: #8B5CF6; text-decoration: none;"> support@view-plex.com</a>
               </p>
               <p style="margin: 0; color: #9ca3af; font-size: 12px;">
-                © ${new Date().getFullYear()} SocialOura. ${isEnglish ? 'All rights reserved.' : 'Tous droits réservés.'}
+                © ${new Date().getFullYear()} ViewPlex. ${isEnglish ? 'All rights reserved.' : 'Tous droits réservés.'}
               </p>
             </td>
           </tr>
@@ -194,7 +194,7 @@ export async function sendOrderConfirmationEmail({
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'SocialOura <noreply@socialoura.com>',
+      from: 'ViewPlex <noreply@view-plex.com>',
       to: [to],
       subject,
       html: htmlContent,

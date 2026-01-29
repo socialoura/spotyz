@@ -158,16 +158,16 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
 
   const content = {
     en: {
-      title: 'Trusted for YouTube Views',
-      subtitle: 'Real feedback from customers using ViewPlex to run YouTube visibility campaigns.',
+      title: 'Trusted for YouTube Promotion',
+      subtitle: 'Real feedback from customers using ViewPlex to run YouTube ad campaigns.',
       verified: 'Verified Purchase',
-      views: 'views delivered',
+      views: 'campaign reach',
     },
     fr: {
-      title: 'Approuvé pour les vues YouTube',
-      subtitle: 'Retours de clients qui utilisent ViewPlex pour lancer des campagnes de visibilité YouTube.',
+      title: 'Approuvé pour la promotion YouTube',
+      subtitle: 'Retours de clients qui utilisent ViewPlex pour lancer des campagnes publicitaires YouTube.',
       verified: 'Achat Vérifié',
-      views: 'vues livrées',
+      views: 'portée campagne',
     },
   };
 
@@ -238,7 +238,7 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
               <div className="text-3xl font-black text-gray-900 dark:text-white">
                 10M+
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">{lang === 'en' ? 'Views delivered' : 'Vues livrées'}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">{lang === 'en' ? 'Campaigns launched' : 'Campagnes lancées'}</div>
             </div>
           </div>
         </div>
