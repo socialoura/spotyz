@@ -356,16 +356,15 @@ export default function HomePage({ params }: PageProps) {
                           <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.12),transparent_55%)]" />
                         </div>
 
-                        {offer.badge && (
-                          <div className="absolute left-3 top-3">
-                            <div className="inline-flex items-center rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
-                              {offer.badge}
-                            </div>
-                          </div>
-                        )}
-
                         <div className="flex items-center justify-between">
                           <div>
+                            {offer.badge && (
+                              <div className="mb-2">
+                                <div className="inline-flex items-center rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
+                                  {offer.badge}
+                                </div>
+                              </div>
+                            )}
                             <div className="text-lg font-black text-gray-900 dark:text-white">
                               {offer.label}
                             </div>
