@@ -357,7 +357,7 @@ export default function HomePage({ params }: PageProps) {
                         </div>
 
                         {offer.badge && (
-                          <div className="absolute right-3 top-3">
+                          <div className="absolute left-3 top-3">
                             <div className="inline-flex items-center rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
                               {offer.badge}
                             </div>
