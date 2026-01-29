@@ -21,7 +21,7 @@ export default function HomePage({ params }: PageProps) {
   const [selectedPack, setSelectedPack] = useState<{ views: number; amount: number } | null>(null);
   const [checkoutDetails, setCheckoutDetails] = useState<{ email: string; youtubeVideoUrl: string } | null>(null);
   const [heroSelectionError, setHeroSelectionError] = useState<string>('');
-  const [customViewsInput, setCustomViewsInput] = useState<string>('');
+  const [customViews, setCustomViews] = useState<number>(100);
   const [regularPacks, setRegularPacks] = useState<Array<{ views: number; label: string; amount: number; original?: number; badge?: string }>>([
     { views: 100, label: '100', amount: 149 },
     { views: 1000, label: '1.0k', amount: 440, original: 650, badge: lang === 'fr' ? '-32%' : 'save 32%' },
@@ -44,14 +44,6 @@ export default function HomePage({ params }: PageProps) {
   };
 
   const getCurrency = () => (lang === 'fr' ? 'eur' : 'usd');
-
-  const parseCustomViews = (value: string) => {
-    const normalized = value.replace(/\D/g, '');
-    if (!normalized) return null;
-    const views = parseInt(normalized, 10);
-    if (!Number.isFinite(views) || views <= 0) return null;
-    return views;
-  };
 
   const formatViewsLabel = (views: number) => {
     if (views >= 1000) {
@@ -402,88 +394,70 @@ export default function HomePage({ params }: PageProps) {
                     })}
 
                     {(() => {
-                      const customViews = parseCustomViews(customViewsInput);
-                      const customAmount = customViews ? Math.round(customViews * 0.4) : 0;
-                      const isCustomSelected = !!customViews && selectedPack?.views === customViews && selectedPack?.amount === customAmount;
-                      const hasCustomError = customViewsInput.trim().length > 0 && !customViews;
+                      const customAmount = Math.round(customViews * 0.4);
+                      const isCustomSelected = selectedPack?.views === customViews && selectedPack?.amount === customAmount;
 
                       return (
                         <div
-                          className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
+                          className={`group relative col-span-2 overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
                             isCustomSelected
                               ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
                               : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
                           }`}
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => {
-                            const parsed = parseCustomViews(customViewsInput);
-                            if (!parsed) {
-                              setHeroSelectionError(lang === 'fr' ? 'Entrez un nombre de vues valide.' : 'Enter a valid view count.');
-                              return;
-                            }
-                            setHeroSelectionError('');
-                            setSelectedPack({ views: parsed, amount: Math.round(parsed * 0.4) });
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key !== 'Enter' && e.key !== ' ') return;
-                            const parsed = parseCustomViews(customViewsInput);
-                            if (!parsed) {
-                              setHeroSelectionError(lang === 'fr' ? 'Entrez un nombre de vues valide.' : 'Enter a valid view count.');
-                              return;
-                            }
-                            setHeroSelectionError('');
-                            setSelectedPack({ views: parsed, amount: Math.round(parsed * 0.4) });
-                          }}
                         >
                           <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
                             <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.10),transparent_55%)]" />
                           </div>
 
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-start justify-between gap-6">
                             <div>
                               <div className="mb-2">
                                 <div className="inline-flex items-center rounded-full bg-gray-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider dark:bg-gray-800">
                                   {lang === 'fr' ? 'Custom' : 'Custom'}
                                 </div>
                               </div>
-
-                              <div className="text-xs text-gray-500 dark:text-gray-400">
-                                {lang === 'fr' ? 'Nombre de vues' : 'View count'}
+                              <div className="text-xl font-black text-gray-900 dark:text-white">
+                                {formatViewsLabel(customViews)}
                               </div>
-                              <input
-                                value={customViewsInput}
-                                onChange={(e) => {
-                                  setHeroSelectionError('');
-                                  setCustomViewsInput(e.target.value);
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                                placeholder={lang === 'fr' ? 'ex: 7500' : 'e.g. 7500'}
-                                inputMode="numeric"
-                                className={`mt-2 w-full rounded-xl border-2 bg-white px-3 py-2 text-sm font-bold text-gray-900 outline-none transition-all dark:bg-gray-950 dark:text-white ${
-                                  hasCustomError
-                                    ? 'border-red-300 focus:border-red-600'
-                                    : 'border-gray-200 focus:border-red-600 dark:border-gray-800'
-                                }`}
-                              />
-                              <div className="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
-                                {lang === 'fr' ? '0,40€/100 vues' : '$0.40/100 views'}
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                {lang === 'fr' ? 'vues' : 'views'}
                               </div>
                             </div>
 
                             <div className="text-right">
-                              <div className="text-base font-black text-red-600">
-                                {customViews ? formatHeroPrice(customAmount) : '--'}
+                              <div className="text-xl font-black text-red-600">
+                                {formatHeroPrice(customAmount)}
                               </div>
                               <div className="text-xs text-gray-400 dark:text-gray-500">
-                                {lang === 'fr' ? 'prix estimé' : 'estimated'}
+                                {lang === 'fr' ? '0,40€/100 vues' : '$0.40/100 views'}
                               </div>
                             </div>
                           </div>
 
-                          <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">{lang === 'fr' ? 'Sélectionner' : 'Select'}</span>
-                            <span className={`h-2.5 w-2.5 rounded-full ${isCustomSelected ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-800'}`} />
+                          <div className="mt-5">
+                            <input
+                              type="range"
+                              min={100}
+                              max={50000}
+                              step={100}
+                              value={customViews}
+                              onChange={(e) => {
+                                const next = parseInt(e.target.value, 10);
+                                if (!Number.isFinite(next)) return;
+                                setHeroSelectionError('');
+                                setCustomViews(next);
+                                setSelectedPack({ views: next, amount: Math.round(next * 0.4) });
+                              }}
+                              className="slider w-full"
+                            />
+
+                            <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                              <span>100</span>
+                              <span>12.5k</span>
+                              <span>25k</span>
+                              <span>37.5k</span>
+                              <span>50k</span>
+                            </div>
                           </div>
                         </div>
                       );
