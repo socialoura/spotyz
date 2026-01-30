@@ -11,7 +11,7 @@ First, set up your environment variables:
 ```bash
 cp .env.local.example .env.local
 ``` 
-
+ 
 Then, run the development server:
 
 ```bash
