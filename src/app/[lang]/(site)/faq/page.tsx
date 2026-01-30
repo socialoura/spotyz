@@ -189,7 +189,7 @@ export default function FAQPage({ params }: PageProps) {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(2,6,23,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(2,6,23,0.04)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30 dark:opacity-15" />
         <div className="absolute inset-0 [mask-image:radial-gradient(60%_55%_at_50%_35%,black,transparent)] bg-gradient-to-b from-white/0 via-white/40 to-white dark:from-gray-950/0 dark:via-gray-950/70 dark:to-gray-950" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10 sm:pt-28 sm:pb-16 text-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 sm:pt-16 sm:pb-10 text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-red-600 shadow-sm mb-5 sm:mb-6 border border-red-700/10">
             <HelpCircle className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
           </div>
@@ -200,7 +200,7 @@ export default function FAQPage({ params }: PageProps) {
             {t.subtitle}
           </p>
 
-          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => setActiveCategory('all')}
@@ -230,7 +230,7 @@ export default function FAQPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="py-10 sm:py-16">
+      <section className="py-6 sm:py-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-4">
             {filteredFaqs.map((faq, index) => {

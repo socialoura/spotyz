@@ -504,11 +504,11 @@ export default function HomePage({ params }: PageProps) {
       </section>
 
       {/* How It Works */}
-      <section className="py-6 sm:py-20 lg:py-28 bg-white relative overflow-hidden dark:bg-gray-950">
+      <section className="py-6 sm:py-12 lg:py-16 bg-white relative overflow-hidden dark:bg-gray-950">
         <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_10%_30%,rgba(239,68,68,0.06),transparent_55%)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl mb-4 dark:text-white">
               {lang === 'fr' ? 'Comment ça marche' : 'How it works'}
             </h2>
@@ -581,10 +581,10 @@ export default function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="py-12 sm:py-20 lg:py-28 bg-gray-50 relative overflow-hidden dark:bg-gray-950">
+      <section className="py-8 sm:py-12 lg:py-16 bg-gray-50 relative overflow-hidden dark:bg-gray-950">
         <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_80%_20%,rgba(239,68,68,0.06),transparent_55%)]" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl mb-4 dark:text-white">
               {lang === 'fr' ? 'Comparaison' : 'Comparison'}
             </h2>
@@ -686,11 +686,11 @@ export default function HomePage({ params }: PageProps) {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-12 sm:py-20 lg:py-28 bg-gray-50 relative overflow-hidden dark:bg-gray-950">
+      <section id="faq" className="py-8 sm:py-12 lg:py-16 bg-gray-50 relative overflow-hidden dark:bg-gray-950">
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
         
         <div className="relative mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl mb-4 dark:text-white">
               {t.faq.title}
             </h2>
@@ -734,11 +734,11 @@ export default function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section id="services" className="py-12 sm:py-20 lg:py-28 bg-white relative overflow-hidden dark:bg-gray-950">
+      <section id="services" className="py-8 sm:py-12 lg:py-16 bg-white relative overflow-hidden dark:bg-gray-950">
         <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_0%,rgba(239,68,68,0.08),transparent_55%)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl mb-4 dark:text-white">
               {lang === 'fr' ? 'Choisissez votre forfait' : 'Choose your package'}
             </h2>
@@ -797,12 +797,12 @@ export default function HomePage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-3xl border-2 border-red-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-gray-950 dark:border-red-900">
+            <div className="group relative overflow-visible rounded-3xl border-2 border-red-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-gray-950 dark:border-red-900">
               <div className="pointer-events-none absolute inset-0 opacity-60">
                 <div className="absolute inset-0 bg-[radial-gradient(800px_circle_at_50%_0%,rgba(239,68,68,0.18),transparent_60%)]" />
               </div>
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <div className="rounded-full bg-red-600 text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider">
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-20">
+                <div className="rounded-full bg-red-600 text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider shadow-sm ring-1 ring-red-700/20">
                   {lang === 'fr' ? 'Populaire' : 'Most popular'}
                 </div>
               </div>
@@ -917,7 +917,7 @@ export default function HomePage({ params }: PageProps) {
       </section>
 
       {/* Reviews Section */}
-      <section className="py-16 sm:py-20 bg-white relative overflow-hidden dark:bg-gray-950">
+      <section className="py-10 sm:py-14 bg-white relative overflow-hidden dark:bg-gray-950">
         <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_50%,rgba(239,68,68,0.06),transparent_55%)]" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center mb-10">

@@ -157,9 +157,9 @@ export default function ContactPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
-      <main className="pt-12 pb-10 sm:pt-20 sm:pb-16">
+      <main className="pt-8 pb-6 sm:pt-12 sm:pb-10">
         {/* Hero Section */}
-        <section className="px-4 sm:px-6 lg:px-8 mb-10 sm:mb-16">
+        <section className="px-4 sm:px-6 lg:px-8 mb-6 sm:mb-10">
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6">
               {t.title}
