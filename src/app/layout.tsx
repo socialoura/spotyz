@@ -11,9 +11,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ViewPlex - Achetez des vues YouTube",
-  description: "Augmentez vos vues YouTube avec ViewPlex. Choisissez un pack, paiement sécurisé, livraison rapide.",
-  keywords: ["youtube vues", "acheter des vues youtube", "vues youtube", "promotion youtube", "youtube"],
+  title: "ViewPlex - Promouvoir sa vidéo YouTube",
+  description: "Augmentez la visibilité de vos vidéos YouTube via des campagnes publicitaires (Google Ads). Choisissez un pack, paiement sécurisé, mise en place rapide.",
+  keywords: ["promotion youtube", "visibilité youtube", "google ads youtube", "publicité youtube", "campagne youtube"],
   authors: [{ name: "ViewPlex" }],
 };
 
