@@ -58,10 +58,7 @@ export default function InstagramPage({ params }: PageProps) {
     setIsPaymentModalOpen(true);
   };
 
-  const handlePaymentSuccess = async (
-    paymentIntentIdParam: string,
-    _details?: { email: string; youtubeVideoUrl: string }
-  ) => {
+  const handlePaymentSuccess = async (paymentIntentIdParam: string) => {
     setPaymentIntentId(paymentIntentIdParam);
     setIsPaymentModalOpen(false);
     setIsSuccessModalOpen(true);
