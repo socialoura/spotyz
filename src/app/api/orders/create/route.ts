@@ -33,13 +33,13 @@ export async function POST(request: NextRequest) {
 
     // Check if order with this payment_id already exists
     const existing = await sql`
-      SELECT id FROM orders WHERE payment_id = ${paymentId} OR payment_intent_id = ${paymentId}
+      SELECT id FROM public.orders WHERE payment_id = ${paymentId} OR payment_intent_id = ${paymentId}
     `;
     
     if (existing.rows.length > 0) {
       // Order already exists, return existing ID (idempotent)
-      const countResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
-      const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM orders`;
+      const countResult = await sql`SELECT COUNT(*)::int AS count FROM public.orders`;
+      const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM public.orders`;
       const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
       const serverResult = await sql`SELECT inet_server_addr()::text AS server_ip, inet_server_port()::int AS server_port`;
       const res = NextResponse.json({
@@ -61,15 +61,15 @@ export async function POST(request: NextRequest) {
 
     // Insert the order
     const result = await sql`
-      INSERT INTO orders (username, email, platform, followers, amount, price, payment_id, payment_intent_id, status, payment_status, youtube_video_url) 
+      INSERT INTO public.orders (username, email, platform, followers, amount, price, payment_id, payment_intent_id, status, payment_status, youtube_video_url) 
       VALUES (${username}, ${email || null}, ${platform}, ${followers}, ${amount}, ${amount}, ${paymentId}, ${paymentId}, 'completed', 'completed', ${youtubeVideoUrl || null})
       RETURNING id
     `;
 
     console.log('Order created:', result.rows[0]?.id, 'for payment:', paymentId);
 
-    const countResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
-    const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM orders`;
+    const countResult = await sql`SELECT COUNT(*)::int AS count FROM public.orders`;
+    const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM public.orders`;
     const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
     const serverResult = await sql`SELECT inet_server_addr()::text AS server_ip, inet_server_port()::int AS server_port`;
 

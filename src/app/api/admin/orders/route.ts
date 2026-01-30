@@ -48,12 +48,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const ordersResult = await sql`SELECT * FROM orders ORDER BY created_at DESC`;
+    const ordersResult = await sql`SELECT * FROM public.orders ORDER BY created_at DESC`;
     const orders = ordersResult.rows;
 
     if (debug) {
-      const countResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
-      const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM orders`;
+      const countResult = await sql`SELECT COUNT(*)::int AS count FROM public.orders`;
+      const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM public.orders`;
       const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
       const serverResult = await sql`SELECT inet_server_addr()::text AS server_ip, inet_server_port()::int AS server_port`;
       const identityResult = await sql`
@@ -62,7 +62,13 @@ export async function GET(request: NextRequest) {
           current_setting('server_version') AS server_version,
           current_setting('server_version_num')::int AS server_version_num
       `;
-      const recentIdsResult = await sql`SELECT id FROM orders ORDER BY created_at DESC LIMIT 50`;
+      const recentIdsResult = await sql`SELECT id FROM public.orders ORDER BY created_at DESC LIMIT 50`;
+      const resolutionResult = await sql`
+        SELECT
+          current_setting('search_path') AS search_path,
+          to_regclass('orders')::text AS reg_orders,
+          to_regclass('public.orders')::text AS reg_public_orders
+      `;
       const res = NextResponse.json({
         orders,
         meta: {
@@ -76,6 +82,9 @@ export async function GET(request: NextRequest) {
           server_version: identityResult.rows?.[0]?.server_version ?? null,
           server_version_num: identityResult.rows?.[0]?.server_version_num ?? null,
           recent_ids: recentIdsResult.rows?.map((r) => r.id) ?? [],
+          search_path: resolutionResult.rows?.[0]?.search_path ?? null,
+          reg_orders: resolutionResult.rows?.[0]?.reg_orders ?? null,
+          reg_public_orders: resolutionResult.rows?.[0]?.reg_public_orders ?? null,
         },
       });
       res.headers.set('Cache-Control', 'no-store');
