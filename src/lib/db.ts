@@ -223,7 +223,7 @@ export async function getAllOrders() {
     return result.rows;
   } catch (error) {
     console.error('Error fetching orders:', error);
-    return [];
+    throw error;
   }
 }
 
