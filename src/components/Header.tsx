@@ -49,7 +49,7 @@ export default function Header({ lang }: HeaderProps) {
               className="flex items-center transition-all group"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <div className="relative w-52 h-28 sm:w-64 sm:h-32 shrink-0 -my-8 sm:-my-10 animate-float motion-reduce:animate-none">
+              <div className="relative w-52 h-28 sm:w-64 sm:h-32 shrink-0 -my-8 sm:-my-10">
                 <Image
                   src="/img/a-modern-flat-vector-logo-design-featuri_ZEbfVp__QiK-0wr5MrgGJg_ZFPYEbSKRM6a11TOK-IQCQ-removebg-preview.png"
                   alt="ViewPlex"

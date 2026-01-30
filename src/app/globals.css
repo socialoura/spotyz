@@ -72,34 +72,6 @@ input[type="range"].slider::-moz-range-thumb:hover {
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.6);
 }
 
-/* Floating Animation */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes float-delayed {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float-delayed 4s ease-in-out infinite;
-  animation-delay: 1s;
-}
-
 /* Hero Section Animations */
 @keyframes pulse-glow {
   0%, 100% {
