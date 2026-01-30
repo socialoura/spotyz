@@ -82,7 +82,7 @@ export async function sendOrderConfirmationEmail({
               <p style="margin: 15px 0 0; color: #6b7280; font-size: 16px; line-height: 1.6;">
                 ${isEnglish 
                   ? `Hi${customerName ? ` ${customerName}` : ''}, your payment has been successfully processed.`
-                  : `Bonjour : ''}, votre paiement a été traité avec succès.`
+                  : `Bonjour, votre paiement a été traité avec succès.`
                 }
               </p>
             </td>
