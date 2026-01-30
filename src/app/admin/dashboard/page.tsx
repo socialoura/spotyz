@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trash2, Plus, Save, LogOut, Play, AlertCircle, Settings, ShoppingCart, Eye, EyeOff, BarChart3, Search, Filter, MessageSquare, X, ChevronDown, Tag, Percent, Calendar, Hash } from 'lucide-react';
+import { Trash2, Plus, Save, LogOut, Play, AlertCircle, Settings, ShoppingCart, Eye, EyeOff, BarChart3, Search, Filter, MessageSquare, X, ChevronDown, Tag, Percent, Calendar, Hash, RefreshCw } from 'lucide-react';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 
 interface Goal {
@@ -1227,6 +1227,15 @@ export default function AdminDashboard() {
                     className="pl-10 pr-4 py-2 w-64 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
+                <button
+                  onClick={fetchOrders}
+                  disabled={isLoading}
+                  className="p-2 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Refresh"
+                  aria-label="Refresh orders"
+                >
+                  <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+                </button>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`p-2 rounded-xl border transition-colors ${
