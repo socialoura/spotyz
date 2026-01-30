@@ -21,7 +21,7 @@ export default function HomePage({ params }: PageProps) {
   const [selectedPack, setSelectedPack] = useState<{ views: number; amount: number } | null>(null);
   const [checkoutDetails, setCheckoutDetails] = useState<{ email: string; youtubeVideoUrl: string } | null>(null);
   const [heroSelectionError, setHeroSelectionError] = useState<string>('');
-  const [customViews, setCustomViews] = useState<number>(100);
+  const [customViews, setCustomViews] = useState<number>(200);
   const [regularPacks, setRegularPacks] = useState<Array<{ views: number; label: string; amount: number; original?: number; badge?: string }>>([
     { views: 100, label: '100', amount: 149 },
     { views: 1000, label: '1.0k', amount: 440, original: 650, badge: lang === 'fr' ? '-32%' : 'save 32%' },
@@ -437,9 +437,9 @@ export default function HomePage({ params }: PageProps) {
                           <div className="mt-5">
                             <input
                               type="range"
-                              min={100}
+                              min={200}
                               max={1000000}
-                              step={1000}
+                              step={100}
                               value={customViews}
                               onChange={(e) => {
                                 const next = parseInt(e.target.value, 10);
