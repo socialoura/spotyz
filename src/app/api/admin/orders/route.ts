@@ -56,6 +56,13 @@ export async function GET(request: NextRequest) {
       const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM orders`;
       const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
       const serverResult = await sql`SELECT inet_server_addr()::text AS server_ip, inet_server_port()::int AS server_port`;
+      const identityResult = await sql`
+        SELECT
+          (SELECT oid FROM pg_database WHERE datname = current_database())::int AS db_oid,
+          current_setting('server_version') AS server_version,
+          current_setting('server_version_num')::int AS server_version_num
+      `;
+      const recentIdsResult = await sql`SELECT id FROM orders ORDER BY created_at DESC LIMIT 50`;
       const res = NextResponse.json({
         orders,
         meta: {
@@ -65,6 +72,10 @@ export async function GET(request: NextRequest) {
           schema: dbResult.rows?.[0]?.schema ?? null,
           server_ip: serverResult.rows?.[0]?.server_ip ?? null,
           server_port: serverResult.rows?.[0]?.server_port ?? null,
+          db_oid: identityResult.rows?.[0]?.db_oid ?? null,
+          server_version: identityResult.rows?.[0]?.server_version ?? null,
+          server_version_num: identityResult.rows?.[0]?.server_version_num ?? null,
+          recent_ids: recentIdsResult.rows?.map((r) => r.id) ?? [],
         },
       });
       res.headers.set('Cache-Control', 'no-store');
