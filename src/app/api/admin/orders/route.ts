@@ -53,18 +53,27 @@ export async function GET(request: NextRequest) {
 
     if (debug) {
       const countResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
+      const maxIdResult = await sql`SELECT MAX(id)::int AS max_id FROM orders`;
       const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
-      return NextResponse.json({
+      const serverResult = await sql`SELECT inet_server_addr()::text AS server_ip, inet_server_port()::int AS server_port`;
+      const res = NextResponse.json({
         orders,
         meta: {
           count: countResult.rows?.[0]?.count ?? null,
+          max_id: maxIdResult.rows?.[0]?.max_id ?? null,
           db: dbResult.rows?.[0]?.db ?? null,
           schema: dbResult.rows?.[0]?.schema ?? null,
+          server_ip: serverResult.rows?.[0]?.server_ip ?? null,
+          server_port: serverResult.rows?.[0]?.server_port ?? null,
         },
       });
+      res.headers.set('Cache-Control', 'no-store');
+      return res;
     }
 
-    return NextResponse.json(orders);
+    const res = NextResponse.json(orders);
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
   } catch (error) {
     console.error('Error fetching orders:', error);
     return NextResponse.json(

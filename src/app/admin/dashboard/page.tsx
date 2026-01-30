@@ -1347,7 +1347,7 @@ export default function AdminDashboard() {
                           </span>
                         </td>
                         <td className="py-4 px-4 text-sm text-gray-600 dark:text-gray-400">{order.followers.toLocaleString()}</td>
-                        <td className="py-4 px-4 text-sm font-semibold text-gray-900 dark:text-white">€{Number(order.price).toFixed(2)}</td>
+                        <td className="py-4 px-4 text-sm font-semibold text-gray-900 dark:text-white">€{(Number(order.price) / 100).toFixed(2)}</td>
                         <td className="py-4 px-4">
                           {editingCost === order.id ? (
                             <div className="flex items-center gap-2">
