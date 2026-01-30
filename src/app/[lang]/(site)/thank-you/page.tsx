@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Language } from '@/i18n/config';
@@ -25,6 +25,15 @@ export default function ThankYouPage({ params }: PageProps) {
   const amount = searchParams.get('amount') || '0';
   const videoUrl = searchParams.get('video') || '';
 
+  const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || '';
+  const googleAdsConversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL || '';
+
+  const purchaseValue = useMemo(() => {
+    const cents = parseInt(amount);
+    if (!Number.isFinite(cents)) return 0;
+    return cents / 100;
+  }, [amount]);
+
   // Format amount
   const formattedAmount = (parseInt(amount) / 100).toFixed(2) + '€';
   const formattedViews = parseInt(views).toLocaleString();
@@ -34,6 +43,22 @@ export default function ThankYouPage({ params }: PageProps) {
     const timer = setTimeout(() => setShowConfetti(false), 5000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!googleAdsId || !googleAdsConversionLabel) return;
+    if (!paymentId) return;
+    const w = window as unknown as {
+      gtag?: (...args: any[]) => void;
+    };
+    if (typeof w.gtag !== 'function') return;
+
+    w.gtag('event', 'conversion', {
+      send_to: `${googleAdsId}/${googleAdsConversionLabel}`,
+      value: purchaseValue,
+      currency: 'EUR',
+      transaction_id: paymentId,
+    });
+  }, [googleAdsId, googleAdsConversionLabel, paymentId, purchaseValue]);
 
   const copyOrderId = () => {
     navigator.clipboard.writeText(orderId);
