@@ -38,10 +38,17 @@ export async function POST(request: NextRequest) {
     
     if (existing.rows.length > 0) {
       // Order already exists, return existing ID (idempotent)
+      const countResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
+      const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
       return NextResponse.json({
         success: true,
         orderId: existing.rows[0].id,
-        existing: true
+        existing: true,
+        meta: {
+          count: countResult.rows?.[0]?.count ?? null,
+          db: dbResult.rows?.[0]?.db ?? null,
+          schema: dbResult.rows?.[0]?.schema ?? null,
+        },
       });
     }
 
@@ -54,10 +61,18 @@ export async function POST(request: NextRequest) {
 
     console.log('Order created:', result.rows[0]?.id, 'for payment:', paymentId);
 
+    const countResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
+    const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
+
     return NextResponse.json({
       success: true,
       orderId: result.rows[0].id,
-      created: true
+      created: true,
+      meta: {
+        count: countResult.rows?.[0]?.count ?? null,
+        db: dbResult.rows?.[0]?.db ?? null,
+        schema: dbResult.rows?.[0]?.schema ?? null,
+      },
     });
   } catch (error) {
     console.error('Error saving order:', error);

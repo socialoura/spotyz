@@ -205,7 +205,7 @@ export default function AdminDashboard() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/admin/orders', {
+      const response = await fetch(`/api/admin/orders?ts=${Date.now()}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
