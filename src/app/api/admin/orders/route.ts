@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllOrders, initDatabase, isDBConfigured } from '@/lib/db';
+import { sql } from '@vercel/postgres';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,6 +27,8 @@ function verifyToken(token: string | null): boolean {
 // GET orders
 export async function GET(request: NextRequest) {
   try {
+    const debug = request.nextUrl.searchParams.get('debug') === '1';
+
     // Check authorization
     const authHeader = request.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '') || null;
@@ -46,6 +49,20 @@ export async function GET(request: NextRequest) {
     }
 
     const orders = await getAllOrders();
+
+    if (debug) {
+      const countResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
+      const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
+      return NextResponse.json({
+        orders,
+        meta: {
+          count: countResult.rows?.[0]?.count ?? null,
+          db: dbResult.rows?.[0]?.db ?? null,
+          schema: dbResult.rows?.[0]?.schema ?? null,
+        },
+      });
+    }
+
     return NextResponse.json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
