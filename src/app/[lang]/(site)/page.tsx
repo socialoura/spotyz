@@ -114,7 +114,7 @@ export default function HomePage({ params }: PageProps) {
     setIsPaymentModalOpen(false);
 
     try {
-      await fetch('/api/orders/create', {
+      const response = await fetch('/api/orders/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -127,8 +127,13 @@ export default function HomePage({ params }: PageProps) {
           youtubeVideoUrl: checkoutDetails?.youtubeVideoUrl || '',
         }),
       });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        console.error('Order creation failed:', data);
+      }
     } catch {
-      // keep silent, payment already succeeded
+      console.error('Order creation failed');
     }
 
     router.push(`/${lang}?success=1&payment_id=${encodeURIComponent(paymentIntentIdParam)}`);

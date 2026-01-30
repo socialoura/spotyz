@@ -6,18 +6,6 @@ export const dynamic = 'force-dynamic';
 // Initialize database on module load
 initDatabase().catch(console.error);
 
-// In-memory fallback
-const memoryOrders: Array<{
-  id: number;
-  email: string;
-  platform: string;
-  followers: number;
-  price: number;
-  cost?: number;
-  payment_status: string;
-  payment_intent_id: string | null;
-  created_at: string;
-}> = [];
 
 // Verify admin token
 function verifyToken(token: string | null): boolean {
@@ -49,19 +37,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get orders from database or memory
-    let orders;
-    if (isDBConfigured()) {
-      try {
-        orders = await getAllOrders();
-      } catch (error) {
-        console.error('Database error, using memory:', error);
-        orders = memoryOrders;
-      }
-    } else {
-      orders = memoryOrders;
+    // Get orders from database
+    if (!isDBConfigured()) {
+      return NextResponse.json(
+        { error: 'Database is not configured. Please set POSTGRES_URL in Vercel environment variables.' },
+        { status: 500 }
+      );
     }
 
+    const orders = await getAllOrders();
     return NextResponse.json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);

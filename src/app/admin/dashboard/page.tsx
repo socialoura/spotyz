@@ -213,9 +213,15 @@ export default function AdminDashboard() {
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        setMessage(errorData.error || 'Failed to fetch orders');
+        setTimeout(() => setMessage(''), 5000);
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
+      setMessage('Error connecting to server');
+      setTimeout(() => setMessage(''), 5000);
     } finally {
       setIsLoading(false);
     }

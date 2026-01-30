@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initDatabase } from '@/lib/db';
+import { initDatabase, isDBConfigured } from '@/lib/db';
 import { sql } from '@vercel/postgres';
 
 // Initialize database on module load
@@ -7,6 +7,13 @@ initDatabase().catch(console.error);
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isDBConfigured()) {
+      return NextResponse.json(
+        { error: 'Database is not configured' },
+        { status: 500 }
+      );
+    }
+
     const { username, email, platform, followers, amount, paymentId, youtubeVideoUrl } = await request.json();
 
     // Validate required fields
