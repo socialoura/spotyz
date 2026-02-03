@@ -24,27 +24,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch all orders
+    // Fetch all orders using SELECT * to avoid column mismatch issues
     const result = await sql`
-      SELECT 
-        id,
-        username,
-        email,
-        platform,
-        followers,
-        amount,
-        price,
-        payment_id,
-        status,
-        payment_status,
-        order_status,
-        notes,
-        youtube_video_url,
-        cost,
-        created_at,
-        updated_at
-      FROM public.orders 
-      ORDER BY created_at DESC
+      SELECT * FROM public.orders ORDER BY created_at DESC
     `;
 
     const response = NextResponse.json(result.rows);
