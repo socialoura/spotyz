@@ -14,8 +14,9 @@ function verifyToken(token: string | null): boolean {
   }
 }
 
-// GET all orders for admin dashboard
+// GET all orders for admin dashboard - v2 uses SELECT * FROM public.orders
 export async function GET(request: NextRequest) {
+  console.log('[ADMIN ORDERS v2] Fetching from public.orders');
   try {
     const debug = request.nextUrl.searchParams.get('debug') === '1';
 
