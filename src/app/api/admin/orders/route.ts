@@ -54,7 +54,10 @@ export async function GET(request: NextRequest) {
     console.log('[ADMIN ORDERS]', { count: orders.length });
 
     if (debug) {
+      const unqualifiedCountResult = await sql`SELECT COUNT(*)::int AS count FROM orders`;
+      const unqualifiedIdsResult = await sql`SELECT id FROM orders ORDER BY created_at DESC LIMIT 50`;
       const countResult = await sql`SELECT COUNT(*)::int AS count FROM public.orders`;
+      const qualifiedIdsResult = await sql`SELECT id FROM public.orders ORDER BY created_at DESC LIMIT 50`;
       const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
       const resolutionResult = await sql`
         SELECT
@@ -65,12 +68,16 @@ export async function GET(request: NextRequest) {
       const res = NextResponse.json({
         orders,
         meta: {
+          select_rows: orders.length,
           count: countResult.rows?.[0]?.count ?? null,
+          unqualified_count: unqualifiedCountResult.rows?.[0]?.count ?? null,
           db: dbResult.rows?.[0]?.db ?? null,
           schema: dbResult.rows?.[0]?.schema ?? null,
           search_path: resolutionResult.rows?.[0]?.search_path ?? null,
           reg_orders: resolutionResult.rows?.[0]?.reg_orders ?? null,
           reg_public_orders: resolutionResult.rows?.[0]?.reg_public_orders ?? null,
+          public_order_ids: qualifiedIdsResult.rows?.map((r) => r.id) ?? [],
+          unqualified_order_ids: unqualifiedIdsResult.rows?.map((r) => r.id) ?? [],
         },
       });
       res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
