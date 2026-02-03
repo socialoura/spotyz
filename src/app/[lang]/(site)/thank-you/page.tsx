@@ -25,8 +25,8 @@ export default function ThankYouPage({ params }: PageProps) {
   const amount = searchParams.get('amount') || '0';
   const videoUrl = searchParams.get('video') || '';
 
-  const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-17912563309';
-  const googleAdsConversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL || 'SI5ACKbi6O8bEO2MsN1C';
+  const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-17929444405';
+  const googleAdsConversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL || 'GDjKCNbTlPIbELW4tuVC';
 
   const purchaseValue = useMemo(() => {
     const cents = parseInt(amount);

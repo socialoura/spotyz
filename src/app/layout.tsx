@@ -28,7 +28,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {/* Google Ads Global Site Tag */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17898687645"
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17929444405"
           strategy="afterInteractive"
         />
         <Script
@@ -39,7 +39,7 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'AW-17898687645');
+              gtag('config', 'AW-17929444405');
             `,
           }}
         />

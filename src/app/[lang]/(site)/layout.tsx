@@ -15,7 +15,7 @@ export default function SiteLayout({ children, params }: LayoutProps) {
   }
 
   const lang = params.lang as Language;
-  const googleAdsId = 'AW-17912563309';
+  const googleAdsId = 'AW-17929444405';
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
