@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
 
     // Insert the order
     const result = await sql`
-      INSERT INTO public.orders (username, email, platform, followers, amount, price, payment_id, payment_intent_id, status, payment_status, youtube_video_url) 
-      VALUES (${username}, ${email || null}, ${platform}, ${followers}, ${amount}, ${amount}, ${paymentId}, ${paymentId}, 'completed', 'completed', ${youtubeVideoUrl || null})
+      INSERT INTO public.orders (username, email, platform, followers, amount, price, payment_id, payment_intent_id, status, payment_status, order_status, youtube_video_url) 
+      VALUES (${username}, ${email || null}, ${platform}, ${followers}, ${amount}, ${amount}, ${paymentId}, ${paymentId}, 'completed', 'completed', 'pending', ${youtubeVideoUrl || null})
       RETURNING id
     `;
 
