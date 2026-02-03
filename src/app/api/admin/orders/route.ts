@@ -42,6 +42,16 @@ export async function GET(request: NextRequest) {
       const countResult = await sql`SELECT COUNT(*)::int AS count FROM public.orders`;
       const qualifiedIdsResult = await sql`SELECT id FROM public.orders ORDER BY created_at DESC LIMIT 50`;
       const dbResult = await sql`SELECT current_database() AS db, current_schema() AS schema`;
+      const serverResult = await sql`
+        SELECT
+          inet_server_addr()::text AS server_ip,
+          inet_server_port()::int AS server_port,
+          current_setting('server_version') AS server_version,
+          current_setting('server_version_num')::int AS server_version_num,
+          (SELECT oid FROM pg_database WHERE datname = current_database())::int AS db_oid,
+          current_user AS current_user,
+          txid_current()::text AS txid
+      `;
       const resolutionResult = await sql`
         SELECT
           current_setting('search_path') AS search_path,
@@ -56,11 +66,21 @@ export async function GET(request: NextRequest) {
           unqualified_count: unqualifiedCountResult.rows?.[0]?.count ?? null,
           db: dbResult.rows?.[0]?.db ?? null,
           schema: dbResult.rows?.[0]?.schema ?? null,
+          server_ip: serverResult.rows?.[0]?.server_ip ?? null,
+          server_port: serverResult.rows?.[0]?.server_port ?? null,
+          server_version: serverResult.rows?.[0]?.server_version ?? null,
+          server_version_num: serverResult.rows?.[0]?.server_version_num ?? null,
+          db_oid: serverResult.rows?.[0]?.db_oid ?? null,
+          current_user: serverResult.rows?.[0]?.current_user ?? null,
+          txid: serverResult.rows?.[0]?.txid ?? null,
           search_path: resolutionResult.rows?.[0]?.search_path ?? null,
           reg_orders: resolutionResult.rows?.[0]?.reg_orders ?? null,
           reg_public_orders: resolutionResult.rows?.[0]?.reg_public_orders ?? null,
           public_order_ids: qualifiedIdsResult.rows?.map((r) => r.id) ?? [],
           unqualified_order_ids: unqualifiedIdsResult.rows?.map((r) => r.id) ?? [],
+          vercel_env: process.env.VERCEL_ENV ?? null,
+          vercel_region: process.env.VERCEL_REGION ?? null,
+          vercel_commit_sha: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
         },
       });
       res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
