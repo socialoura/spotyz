@@ -1,44 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initDatabase } from '@/lib/db';
 import { sql } from '@vercel/postgres';
 
 export const dynamic = 'force-dynamic';
 
-// Initialize database on module load
-initDatabase().catch(console.error);
+// Verify admin token
+function verifyToken(token: string | null): boolean {
+  if (!token) return false;
+  try {
+    const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
+    return decoded.exp && decoded.exp > Date.now() && decoded.role === 'admin';
+  } catch {
+    return false;
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
-    // Verify admin token
-    const authHeader = request.headers.get('authorization') ?? request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Check authorization
+    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
+    const token = authHeader?.replace('Bearer ', '') || null;
 
-    const token = authHeader.substring(7);
-    
-    // Decode and verify token
-    try {
-      const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
-      if (decoded.exp < Date.now()) {
-        return NextResponse.json({ error: 'Token expired' }, { status: 401 });
-      }
-    } catch {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    if (!verifyToken(token)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Fetch all orders
     const result = await sql`
-      SELECT id, username, platform, followers, amount, payment_id, status, youtube_video_url, created_at 
+      SELECT 
+        id,
+        username,
+        email,
+        platform,
+        followers,
+        amount,
+        price,
+        payment_id,
+        status,
+        payment_status,
+        order_status,
+        notes,
+        youtube_video_url,
+        cost,
+        created_at,
+        updated_at
       FROM public.orders 
       ORDER BY created_at DESC
     `;
 
-    return NextResponse.json({ orders: result.rows });
+    const response = NextResponse.json(result.rows);
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    return response;
+
   } catch (error) {
-    console.error('Error fetching orders:', error);
+    console.error('[ORDERS LIST ERROR]', error);
     return NextResponse.json(
-      { error: 'Failed to fetch orders' },
+      { error: 'Failed to fetch orders', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

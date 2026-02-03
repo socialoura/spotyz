@@ -32,7 +32,7 @@ export async function initDatabase() {
     
     // Create orders table if it doesn't exist
     await sql`
-      CREATE TABLE IF NOT EXISTS orders (
+      CREATE TABLE IF NOT EXISTS public.orders (
         id SERIAL PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         email VARCHAR(255),
@@ -53,10 +53,10 @@ export async function initDatabase() {
     
     // Add order_status and notes columns if they don't exist (for existing tables)
     try {
-      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS order_status VARCHAR(50) DEFAULT 'pending'`;
-      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS notes TEXT DEFAULT ''`;
-      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS youtube_video_url TEXT`;
-      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS cost DECIMAL(10, 2) DEFAULT 0`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS order_status VARCHAR(50) DEFAULT 'pending'`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS notes TEXT DEFAULT ''`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS youtube_video_url TEXT`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS cost DECIMAL(10, 2) DEFAULT 0`;
     } catch (e) {
       // Columns might already exist
       console.log('Columns may already exist:', e);
@@ -74,10 +74,10 @@ export async function initDatabase() {
     `;
     
     // Create indexes if they don't exist
-    await sql`CREATE INDEX IF NOT EXISTS idx_username ON orders(username)`;
-    await sql`CREATE INDEX IF NOT EXISTS idx_email ON orders(email)`;
-    await sql`CREATE INDEX IF NOT EXISTS idx_payment_status ON orders(payment_status)`;
-    await sql`CREATE INDEX IF NOT EXISTS idx_created_at ON orders(created_at)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_username ON public.orders(username)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_email ON public.orders(email)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_payment_status ON public.orders(payment_status)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_created_at ON public.orders(created_at)`;
     
     // Create promo_codes table if it doesn't exist
     await sql`
@@ -107,8 +107,8 @@ export async function initDatabase() {
     
     // Add promo_code column to orders if it doesn't exist
     try {
-      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS promo_code VARCHAR(50) DEFAULT NULL`;
-      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS discount_amount DECIMAL(10, 2) DEFAULT 0`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS promo_code VARCHAR(50) DEFAULT NULL`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS discount_amount DECIMAL(10, 2) DEFAULT 0`;
     } catch (e) {
       console.log('Promo columns may already exist:', e);
     }
