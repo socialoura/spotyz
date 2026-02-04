@@ -21,6 +21,17 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    try {
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS impressions_delivered INTEGER DEFAULT 0`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS cost DECIMAL(10, 2) DEFAULT 0`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS notes TEXT DEFAULT ''`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS completed_at TIMESTAMP`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP`;
+    } catch {
+      // Ignore if we don't have permissions; update below will still work if columns already exist.
+    }
+
     const { orderId } = await params;
     const body = await request.json();
     const { status, cost, notes, impressionsDelivered } = body;
@@ -62,7 +73,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       updates.push('updated_at = CURRENT_TIMESTAMP');
       values.push(orderId);
       await sql.query(
-        `UPDATE orders SET ${updates.join(', ')} WHERE id::text = $${values.length}`,
+        `UPDATE public.orders SET ${updates.join(', ')} WHERE id::text = $${values.length}`,
         values
       );
     }
@@ -82,9 +93,15 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    try {
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP`;
+    } catch {
+      // Ignore if we don't have permissions; delete below will still work if column already exists.
+    }
+
     const { orderId } = await params;
 
-    await sql`UPDATE orders SET deleted_at = CURRENT_TIMESTAMP WHERE id::text = ${orderId}`;
+    await sql`UPDATE public.orders SET deleted_at = CURRENT_TIMESTAMP WHERE id::text = ${orderId}`;
 
     return NextResponse.json({ success: true });
   } catch (error) {

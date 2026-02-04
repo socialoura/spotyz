@@ -27,6 +27,19 @@ export async function GET(request: NextRequest) {
     const dateRange = searchParams.get('dateRange');
     const search = searchParams.get('search');
 
+    try {
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS impressions_delivered INTEGER DEFAULT 0`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS cost DECIMAL(10, 2) DEFAULT 0`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS notes TEXT DEFAULT ''`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS promo_code VARCHAR(50) DEFAULT NULL`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS discount_amount DECIMAL(10, 2) DEFAULT 0`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS completed_at TIMESTAMP`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP`;
+    } catch {
+      // Ignore if we don't have permissions; query below should still work if columns already exist.
+    }
+
     // Query from the actual orders table used by /api/orders/create
     // Map columns to match expected frontend format
     let query = `
@@ -47,7 +60,7 @@ export async function GET(request: NextRequest) {
         updated_at,
         completed_at,
         deleted_at
-      FROM orders 
+      FROM public.orders 
       WHERE deleted_at IS NULL
     `;
     const conditions: string[] = [];
