@@ -17,17 +17,22 @@ export default function HomePage({ params }: PageProps) {
   const router = useRouter();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
+  type RegularPack = { views: number; label: string; amount: number; original?: number; badge?: string };
+
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedPack, setSelectedPack] = useState<{ views: number; amount: number } | null>(null);
   const [checkoutDetails, setCheckoutDetails] = useState<{ email: string; youtubeVideoUrl: string } | null>(null);
   const [heroSelectionError, setHeroSelectionError] = useState<string>('');
   const [customViews, setCustomViews] = useState<number>(200);
-  const [regularPacks, setRegularPacks] = useState<Array<{ views: number; label: string; amount: number; original?: number; badge?: string }>>([
+  const [packsLoading, setPacksLoading] = useState(true);
+  const [regularPacks, setRegularPacks] = useState<RegularPack[]>([]);
+
+  const fallbackRegularPacks: RegularPack[] = [
     { views: 100, label: '100', amount: 149 },
     { views: 1000, label: '1.0k', amount: 440, original: 650, badge: lang === 'fr' ? '-32%' : 'save 32%' },
     { views: 2500, label: '2.5k', amount: 1090, original: 1600, badge: lang === 'fr' ? '-32%' : 'save 32%' },
     { views: 5000, label: '5.0k', amount: 2198, original: 3300, badge: lang === 'fr' ? '-33%' : 'save 33%' },
-  ]);
+  ];
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -57,12 +62,17 @@ export default function HomePage({ params }: PageProps) {
   useEffect(() => {
     let cancelled = false;
 
-    type RegularPack = { views: number; label: string; amount: number; original?: number; badge?: string };
-
     const fetchPricing = async () => {
       try {
+        if (!cancelled) setPacksLoading(true);
         const response = await fetch('/api/admin/pricing');
-        if (!response.ok) return;
+        if (!response.ok) {
+          if (!cancelled) {
+            setRegularPacks(fallbackRegularPacks);
+            setPacksLoading(false);
+          }
+          return;
+        }
 
         const data = await response.json();
         
@@ -77,7 +87,13 @@ export default function HomePage({ params }: PageProps) {
           packagesArray = data.youtube || data.instagram || [];
         }
         
-        if (!packagesArray.length) return;
+        if (!packagesArray.length) {
+          if (!cancelled) {
+            setRegularPacks(fallbackRegularPacks);
+            setPacksLoading(false);
+          }
+          return;
+        }
 
         const dynamicPacks = packagesArray.reduce<RegularPack[]>((acc, pkg) => {
           // Support both new format (impressions/price/original_price) and legacy (followers/price/originalPrice)
@@ -102,7 +118,13 @@ export default function HomePage({ params }: PageProps) {
           return acc;
         }, []);
 
-        if (!dynamicPacks.length) return;
+        if (!dynamicPacks.length) {
+          if (!cancelled) {
+            setRegularPacks(fallbackRegularPacks);
+            setPacksLoading(false);
+          }
+          return;
+        }
 
         // Sort by views ascending
         dynamicPacks.sort((a, b) => a.views - b.views);
@@ -116,9 +138,13 @@ export default function HomePage({ params }: PageProps) {
             if (updated.amount === prev.amount) return prev;
             return { views: prev.views, amount: updated.amount };
           });
+          setPacksLoading(false);
         }
       } catch {
-        // ignore and keep fallback
+        if (!cancelled) {
+          setRegularPacks(fallbackRegularPacks);
+          setPacksLoading(false);
+        }
       }
     };
 
@@ -374,132 +400,158 @@ export default function HomePage({ params }: PageProps) {
                   </div>
 
                   <div className="mt-4 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {regularPacks.map((offer) => {
-                      const isSelected = selectedPack?.views === offer.views;
-                      return (
-                      <button
-                        key={`regular-${offer.views}-${offer.amount}`}
-                        type="button"
-                        onClick={() => {
-                          setHeroSelectionError('');
-                          setSelectedPack({ views: offer.views, amount: offer.amount });
-                        }}
-                        className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
-                          isSelected
-                            ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
-                            : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
-                        }`}
-                      >
-                        <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
-                          <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.12),transparent_55%)]" />
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div>
-                            {offer.badge && (
-                              <div className="mb-2">
-                                <div className="inline-flex items-center rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
-                                  {offer.badge}
-                                </div>
-                              </div>
-                            )}
-                            <div className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
-                              {offer.label}
-                            </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
-                              {lang === 'fr' ? 'impressions' : 'impressions'}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-sm sm:text-base font-black text-red-600">
-                              {formatHeroPrice(offer.amount)}
-                            </div>
-                            {offer.original && (
-                              <div className="text-xs text-gray-400 line-through dark:text-gray-500">
-                                {formatHeroPrice(offer.original)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold">{lang === 'fr' ? 'Sélectionner' : 'Select'}</span>
-                          <span className={`h-2.5 w-2.5 rounded-full ${isSelected ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-800'}`} />
-                        </div>
-                      </button>
-                      );
-                    })}
-
-                    {(() => {
-                      const customAmount = Math.round(customViews * 0.4);
-                      const isCustomSelected = selectedPack?.views === customViews && selectedPack?.amount === customAmount;
-
-                      return (
+                    {packsLoading ? (
+                      Array.from({ length: 6 }).map((_, index) => (
                         <div
-                          className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
-                            isCustomSelected
+                          key={`regular-skeleton-${index}`}
+                          className="animate-pulse rounded-2xl border border-gray-200 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-950"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="h-5 w-16 rounded bg-gray-200 dark:bg-gray-800" />
+                              <div className="mt-2 h-3 w-20 rounded bg-gray-200 dark:bg-gray-800" />
+                            </div>
+                            <div className="h-5 w-14 rounded bg-gray-200 dark:bg-gray-800" />
+                          </div>
+                          <div className="mt-3 flex items-center justify-between">
+                            <div className="h-3 w-16 rounded bg-gray-200 dark:bg-gray-800" />
+                            <div className="h-2.5 w-2.5 rounded-full bg-gray-200 dark:bg-gray-800" />
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      regularPacks.map((offer) => {
+                        const isSelected = selectedPack?.views === offer.views;
+                        return (
+                        <button
+                          key={`regular-${offer.views}-${offer.amount}`}
+                          type="button"
+                          onClick={() => {
+                            setHeroSelectionError('');
+                            setSelectedPack({ views: offer.views, amount: offer.amount });
+                          }}
+                          className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
+                            isSelected
                               ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
                               : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
                           }`}
                         >
-                          <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
-                            <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.10),transparent_55%)]" />
+                          <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                            <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.12),transparent_55%)]" />
                           </div>
 
-                          <div className="flex items-start justify-between gap-6">
+                          <div className="flex items-center justify-between">
                             <div>
-                              <div className="mb-2">
-                                <div className="inline-flex items-center rounded-full bg-gray-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider dark:bg-gray-800">
-                                  {lang === 'fr' ? 'Custom' : 'Custom'}
+                              {offer.badge && (
+                                <div className="mb-2">
+                                  <div className="inline-flex items-center rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
+                                    {offer.badge}
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="text-xl font-black text-gray-900 dark:text-white">
-                                {formatViewsLabel(customViews)}
+                              )}
+                              <div className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
+                                {offer.label}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
                                 {lang === 'fr' ? 'impressions' : 'impressions'}
                               </div>
                             </div>
-
                             <div className="text-right">
-                              <div className="text-xl font-black text-red-600">
-                                {formatHeroPrice(customAmount)}
+                              <div className="text-sm sm:text-base font-black text-red-600">
+                                {formatHeroPrice(offer.amount)}
                               </div>
-                              <div className="text-xs text-gray-400 dark:text-gray-500">
-                                {lang === 'fr' ? 'Estimation indicative' : 'Indicative estimate'}
-                              </div>
+                              {offer.original && (
+                                <div className="text-xs text-gray-400 line-through dark:text-gray-500">
+                                  {formatHeroPrice(offer.original)}
+                                </div>
+                              )}
                             </div>
                           </div>
 
-                          <div className="mt-5">
-                            <input
-                              type="range"
-                              min={200}
-                              max={1000000}
-                              step={100}
-                              value={customViews}
-                              onChange={(e) => {
-                                const next = parseInt(e.target.value, 10);
-                                if (!Number.isFinite(next)) return;
-                                setHeroSelectionError('');
-                                setCustomViews(next);
-                                setSelectedPack({ views: next, amount: Math.round(next * 0.4) });
-                              }}
-                              className="slider w-full"
-                            />
+                          <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                            <span className="font-semibold">{lang === 'fr' ? 'Sélectionner' : 'Select'}</span>
+                            <span className={`h-2.5 w-2.5 rounded-full ${isSelected ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-800'}`} />
+                          </div>
+                        </button>
+                        );
+                      })
+                    )}
+                  </div>
 
-                            <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
-                              <span>100</span>
-                              <span>250k</span>
-                              <span>500k</span>
-                              <span>750k</span>
-                              <span>1M</span>
+                  {(() => {
+                    const customAmount = Math.round(customViews * 0.4);
+                    const isCustomSelected = selectedPack?.views === customViews;
+
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHeroSelectionError('');
+                          setSelectedPack({ views: customViews, amount: customAmount });
+                        }}
+                        className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
+                          isCustomSelected
+                            ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
+                        }`}
+                      >
+                        <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isCustomSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                          <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.10),transparent_55%)]" />
+                        </div>
+
+                        <div className="flex items-start justify-between gap-6">
+                          <div>
+                            <div className="mb-2">
+                              <div className="inline-flex items-center rounded-full bg-gray-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider dark:bg-gray-800">
+                                {lang === 'fr' ? 'Custom' : 'Custom'}
+                              </div>
+                            </div>
+                            <div className="text-xl font-black text-gray-900 dark:text-white">
+                              {formatViewsLabel(customViews)}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {lang === 'fr' ? 'impressions' : 'impressions'}
+                            </div>
+                          </div>
+
+                          <div className="text-right">
+                            <div className="text-xl font-black text-red-600">
+                              {formatHeroPrice(customAmount)}
+                            </div>
+                            <div className="text-xs text-gray-400 dark:text-gray-500">
+                              {lang === 'fr' ? 'Estimation indicative' : 'Indicative estimate'}
                             </div>
                           </div>
                         </div>
-                      );
-                    })()}
-                  </div>
+
+                        <div className="mt-5">
+                          <input
+                            type="range"
+                            min={200}
+                            max={1000000}
+                            step={100}
+                            value={customViews}
+                            onChange={(e) => {
+                              const next = parseInt(e.target.value, 10);
+                              if (!Number.isFinite(next)) return;
+                              setHeroSelectionError('');
+                              setCustomViews(next);
+                              setSelectedPack({ views: next, amount: Math.round(next * 0.4) });
+                            }}
+                            className="slider w-full"
+                          />
+
+                          <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                            <span>100</span>
+                            <span>250k</span>
+                            <span>500k</span>
+                            <span>750k</span>
+                            <span>1M</span>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })()}
 
                   {heroSelectionError && (
                     <div className="mt-4 text-sm text-red-700 dark:text-red-200">
