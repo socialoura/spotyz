@@ -65,17 +65,32 @@ export default function HomePage({ params }: PageProps) {
         if (!response.ok) return;
 
         const data = await response.json();
-        const platformGoals: Array<{ followers: string; price: string; originalPrice?: string }> = data.youtube || data.instagram || [];
-        if (!platformGoals.length) return;
+        
+        // Handle both formats: array from admin API or legacy {youtube/instagram} format
+        let packagesArray: Array<{ impressions?: number; price?: number | string; original_price?: number | string; is_active?: boolean; followers?: string; originalPrice?: string }> = [];
+        
+        if (Array.isArray(data)) {
+          // New format: direct array from /api/admin/pricing
+          packagesArray = data.filter((pkg: { is_active?: boolean }) => pkg.is_active !== false);
+        } else if (data.youtube || data.instagram) {
+          // Legacy format
+          packagesArray = data.youtube || data.instagram || [];
+        }
+        
+        if (!packagesArray.length) return;
 
-        const dynamicPacks = platformGoals.reduce<RegularPack[]>((acc, goal) => {
-          const views = parseInt(goal.followers, 10);
-          const priceFloat = parseFloat(goal.price);
-          if (!Number.isFinite(views) || !Number.isFinite(priceFloat)) return acc;
+        const dynamicPacks = packagesArray.reduce<RegularPack[]>((acc, pkg) => {
+          // Support both new format (impressions/price/original_price) and legacy (followers/price/originalPrice)
+          const views = pkg.impressions ?? parseInt(String(pkg.followers || '0'), 10);
+          const priceRaw = pkg.price;
+          const priceFloat = typeof priceRaw === 'number' ? priceRaw : parseFloat(String(priceRaw || '0'));
+          if (!Number.isFinite(views) || views <= 0 || !Number.isFinite(priceFloat) || priceFloat <= 0) return acc;
 
           const amount = Math.round(priceFloat * 100);
           const label = formatViewsLabel(views);
-          const originalFloat = goal.originalPrice ? parseFloat(goal.originalPrice) : NaN;
+          
+          const originalRaw = pkg.original_price ?? pkg.originalPrice;
+          const originalFloat = typeof originalRaw === 'number' ? originalRaw : parseFloat(String(originalRaw || ''));
           const hasOriginal = Number.isFinite(originalFloat) && originalFloat > priceFloat;
           const original = hasOriginal ? Math.round(originalFloat * 100) : undefined;
           const discountPercentage = hasOriginal ? Math.round((1 - priceFloat / originalFloat) * 100) : 0;
@@ -88,6 +103,9 @@ export default function HomePage({ params }: PageProps) {
         }, []);
 
         if (!dynamicPacks.length) return;
+
+        // Sort by views ascending
+        dynamicPacks.sort((a, b) => a.views - b.views);
 
         if (!cancelled) {
           setRegularPacks(dynamicPacks);
