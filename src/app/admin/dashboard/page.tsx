@@ -59,6 +59,15 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
 
+  const toNumber = (value: unknown): number => {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+    return 0;
+  };
+
   const [packages, setPackages] = useState<Package[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
@@ -86,7 +95,20 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/pricing', { headers: getAuthHeaders() });
       const data = await res.json();
-      if (Array.isArray(data)) setPackages(data);
+      if (Array.isArray(data)) {
+        const normalized: Package[] = data.map((pkgUnknown: unknown) => {
+          const pkg = pkgUnknown as Partial<Package> & Record<string, unknown>;
+          return {
+            ...(pkg as Package),
+            impressions: Number(pkg.impressions ?? 0),
+            price: toNumber(pkg.price),
+            original_price: toNumber(pkg.original_price),
+            discount_percentage: toNumber(pkg.discount_percentage),
+            is_active: Boolean(pkg.is_active),
+          };
+        });
+        setPackages(normalized);
+      }
     } catch (e) { console.error('Failed to fetch pricing:', e); }
   }, [getAuthHeaders]);
 
@@ -94,7 +116,20 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/orders', { headers: getAuthHeaders() });
       const data = await res.json();
-      if (Array.isArray(data)) setOrders(data);
+      if (Array.isArray(data)) {
+        const normalized: Order[] = data.map((orderUnknown: unknown) => {
+          const order = orderUnknown as Partial<Order> & Record<string, unknown>;
+          return {
+            ...(order as Order),
+            impressions: Number(order.impressions ?? 0),
+            impressions_delivered: Number(order.impressions_delivered ?? 0),
+            price: toNumber(order.price),
+            cost: toNumber(order.cost),
+            discount_amount: toNumber(order.discount_amount),
+          };
+        });
+        setOrders(normalized);
+      }
     } catch (e) { console.error('Failed to fetch orders:', e); }
   }, [getAuthHeaders]);
 
@@ -102,7 +137,21 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/promo-codes', { headers: getAuthHeaders() });
       const data = await res.json();
-      if (Array.isArray(data)) setPromoCodes(data);
+      if (Array.isArray(data)) {
+        const normalized: PromoCode[] = data.map((promoUnknown: unknown) => {
+          const promo = promoUnknown as Partial<PromoCode> & Record<string, unknown>;
+          const minPurchaseRaw = promo.min_purchase;
+          return {
+            ...(promo as PromoCode),
+            discount_value: toNumber(promo.discount_value),
+            min_purchase: minPurchaseRaw === null || minPurchaseRaw === undefined ? null : toNumber(minPurchaseRaw),
+            max_uses: Number(promo.max_uses ?? -1),
+            current_uses: Number(promo.current_uses ?? 0),
+            is_active: Boolean(promo.is_active),
+          };
+        });
+        setPromoCodes(normalized);
+      }
     } catch (e) { console.error('Failed to fetch promo codes:', e); }
   }, [getAuthHeaders]);
 
@@ -118,7 +167,16 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/google-ads-expenses', { headers: getAuthHeaders() });
       const data = await res.json();
-      if (Array.isArray(data)) setGoogleAdsExpenses(data);
+      if (Array.isArray(data)) {
+        const normalized: GoogleAdsExpense[] = data.map((expenseUnknown: unknown) => {
+          const expense = expenseUnknown as Partial<GoogleAdsExpense> & Record<string, unknown>;
+          return {
+            ...(expense as GoogleAdsExpense),
+            amount: toNumber(expense.amount),
+          };
+        });
+        setGoogleAdsExpenses(normalized);
+      }
     } catch (e) { console.error('Failed to fetch ads expenses:', e); }
   }, [getAuthHeaders]);
 

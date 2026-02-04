@@ -17,6 +17,15 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
   const getAuthHeaders = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` });
 
   const formatImpressions = (n: number) => n >= 1000 ? (n / 1000) + 'k' : n.toString();
+ 
+   const asNumber = (value: unknown) => {
+     if (typeof value === 'number') return value;
+     if (typeof value === 'string') {
+       const parsed = Number.parseFloat(value);
+       return Number.isFinite(parsed) ? parsed : 0;
+     }
+     return 0;
+   };
 
   const handleSave = async () => {
     const body = {
@@ -96,9 +105,9 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
             {packages.map((pkg) => (
               <tr key={pkg.id} className="hover:bg-gray-700/20">
                 <td className="px-6 py-4 text-white font-medium">{formatImpressions(pkg.impressions)} views</td>
-                <td className="px-6 py-4 text-green-400">{pkg.price.toFixed(2)}</td>
-                <td className="px-6 py-4 text-gray-400 line-through">{pkg.original_price.toFixed(2)}</td>
-                <td className="px-6 py-4"><span className="px-2 py-1 bg-red-500/20 text-red-400 rounded-lg text-sm">-{pkg.discount_percentage}%</span></td>
+                <td className="px-6 py-4 text-green-400">{asNumber(pkg.price).toFixed(2)}</td>
+                <td className="px-6 py-4 text-gray-400 line-through">{asNumber(pkg.original_price).toFixed(2)}</td>
+                <td className="px-6 py-4"><span className="px-2 py-1 bg-red-500/20 text-red-400 rounded-lg text-sm">-{asNumber(pkg.discount_percentage)}%</span></td>
                 <td className="px-6 py-4"><span className={`px-2 py-1 rounded-lg text-sm ${pkg.is_active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>{pkg.is_active ? 'Active' : 'Inactive'}</span></td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end space-x-2">
