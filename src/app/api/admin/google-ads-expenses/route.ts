@@ -22,24 +22,22 @@ export async function GET(request: NextRequest) {
     }
 
     await sql`
-      CREATE TABLE IF NOT EXISTS settings (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      CREATE TABLE IF NOT EXISTS google_ads_expenses (
+        month TEXT PRIMARY KEY,
+        amount DECIMAL(10,2) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
 
-    const result = await sql`SELECT value FROM settings WHERE key = 'promo_field_enabled'`;
-    const enabled = result.rows.length === 0 || result.rows[0].value !== 'false';
-
-    return NextResponse.json({ enabled });
+    const result = await sql`SELECT * FROM google_ads_expenses ORDER BY month DESC`;
+    return NextResponse.json(result.rows);
   } catch (error) {
-    console.error('[GET PROMO SETTINGS ERROR]', error);
-    return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
+    console.error('[GET GOOGLE ADS EXPENSES ERROR]', error);
+    return NextResponse.json({ error: 'Failed to fetch expenses' }, { status: 500 });
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '') || null;
@@ -47,16 +45,21 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { enabled } = await request.json();
+    const { month, amount } = await request.json();
+
+    if (!month || amount === undefined) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
 
     await sql`
-      INSERT INTO settings (key, value) VALUES ('promo_field_enabled', ${enabled ? 'true' : 'false'})
-      ON CONFLICT (key) DO UPDATE SET value = ${enabled ? 'true' : 'false'}, updated_at = CURRENT_TIMESTAMP
+      INSERT INTO google_ads_expenses (month, amount)
+      VALUES (${month}, ${amount})
+      ON CONFLICT (month) DO UPDATE SET amount = ${amount}
     `;
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('[UPDATE PROMO SETTINGS ERROR]', error);
-    return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
+    console.error('[CREATE GOOGLE ADS EXPENSE ERROR]', error);
+    return NextResponse.json({ error: 'Failed to create expense' }, { status: 500 });
   }
 }

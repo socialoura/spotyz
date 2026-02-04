@@ -1,111 +1,88 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getStripeSettings, updateStripeSettings, initDatabase } from '@/lib/db';
+import { sql } from '@vercel/postgres';
 
 export const dynamic = 'force-dynamic';
 
-// Initialize database on module load
-initDatabase().catch(console.error);
-
-// Verify admin token
-function verifyToken(token: string | null): { username: string; role: string } | null {
-  if (!token) return null;
-
+function verifyToken(token: string | null): boolean {
+  if (!token) return false;
   try {
     const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
-    // Check if token is expired (24 hours)
-    if (decoded.exp && decoded.exp > Date.now() && decoded.role === 'admin') {
-      return decoded;
-    }
-    return null;
+    return decoded.exp && decoded.exp > Date.now() && decoded.role === 'admin';
   } catch {
-    return null;
+    return false;
   }
 }
 
-// GET - Get Stripe settings
 export async function GET(request: NextRequest) {
   try {
-    // Check authorization
     const authHeader = request.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '') || null;
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    if (!verifyToken(token)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const settings = await getStripeSettings();
-    
-    // Return full keys since this is an authenticated admin endpoint
+    await sql`
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
+    const secretResult = await sql`SELECT value FROM settings WHERE key = 'stripe_secret_key'`;
+    const publishableResult = await sql`SELECT value FROM settings WHERE key = 'stripe_publishable_key'`;
+
+    const secretKey = secretResult.rows.length > 0 ? secretResult.rows[0].value : '';
+    const publishableKey = publishableResult.rows.length > 0 ? publishableResult.rows[0].value : '';
+
+    const maskedSecret = secretKey ? secretKey.slice(0, 7) + '...' + secretKey.slice(-4) : '';
+
     return NextResponse.json({
-      secretKey: settings.secretKey || '',
-      publishableKey: settings.publishableKey || '',
-      hasSecretKey: !!settings.secretKey,
-      hasPublishableKey: !!settings.publishableKey,
+      secretKey: maskedSecret,
+      publishableKey,
+      connected: !!(secretKey && publishableKey && secretKey.startsWith('sk_') && publishableKey.startsWith('pk_')),
     });
   } catch (error) {
-    console.error('Error fetching Stripe settings:', error);
-    return NextResponse.json(
-      { error: 'An error occurred while fetching settings' },
-      { status: 500 }
-    );
+    console.error('[GET STRIPE SETTINGS ERROR]', error);
+    return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
   }
 }
 
-// PUT - Update Stripe settings
 export async function PUT(request: NextRequest) {
   try {
-    // Check authorization
     const authHeader = request.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '') || null;
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    if (!verifyToken(token)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { secretKey, publishableKey } = body;
+    const { secretKey, publishableKey } = await request.json();
 
-    if (!secretKey || !publishableKey) {
-      return NextResponse.json(
-        { error: 'Both secret key and publishable key are required' },
-        { status: 400 }
-      );
+    if (secretKey && !secretKey.startsWith('sk_') && !secretKey.includes('...')) {
+      return NextResponse.json({ error: 'Secret key must start with sk_' }, { status: 400 });
     }
 
-    // Validate key formats
-    if (!secretKey.startsWith('sk_')) {
-      return NextResponse.json(
-        { error: 'Invalid secret key format. Must start with sk_' },
-        { status: 400 }
-      );
+    if (publishableKey && !publishableKey.startsWith('pk_')) {
+      return NextResponse.json({ error: 'Publishable key must start with pk_' }, { status: 400 });
     }
 
-    if (!publishableKey.startsWith('pk_')) {
-      return NextResponse.json(
-        { error: 'Invalid publishable key format. Must start with pk_' },
-        { status: 400 }
-      );
+    if (secretKey && !secretKey.includes('...')) {
+      await sql`
+        INSERT INTO settings (key, value) VALUES ('stripe_secret_key', ${secretKey})
+        ON CONFLICT (key) DO UPDATE SET value = ${secretKey}, updated_at = CURRENT_TIMESTAMP
+      `;
     }
 
-    await updateStripeSettings(secretKey, publishableKey);
+    if (publishableKey) {
+      await sql`
+        INSERT INTO settings (key, value) VALUES ('stripe_publishable_key', ${publishableKey})
+        ON CONFLICT (key) DO UPDATE SET value = ${publishableKey}, updated_at = CURRENT_TIMESTAMP
+      `;
+    }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Stripe settings updated successfully' 
-    });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating Stripe settings:', error);
-    return NextResponse.json(
-      { error: 'An error occurred while updating settings' },
-      { status: 500 }
-    );
+    console.error('[UPDATE STRIPE SETTINGS ERROR]', error);
+    return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
   }
 }
