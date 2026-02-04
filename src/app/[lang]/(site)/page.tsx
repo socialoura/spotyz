@@ -476,82 +476,81 @@ export default function HomePage({ params }: PageProps) {
                         );
                       })
                     )}
-                  </div>
+                    {(() => {
+                      const customAmount = Math.round(customViews * 0.4);
+                      const isCustomSelected = selectedPack?.views === customViews;
 
-                  {(() => {
-                    const customAmount = Math.round(customViews * 0.4);
-                    const isCustomSelected = selectedPack?.views === customViews;
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setHeroSelectionError('');
+                            setSelectedPack({ views: customViews, amount: customAmount });
+                          }}
+                          className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
+                            isCustomSelected
+                              ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
+                              : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
+                          }`}
+                        >
+                          <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isCustomSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                            <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.10),transparent_55%)]" />
+                          </div>
 
-                    return (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setHeroSelectionError('');
-                          setSelectedPack({ views: customViews, amount: customAmount });
-                        }}
-                        className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
-                          isCustomSelected
-                            ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
-                            : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
-                        }`}
-                      >
-                        <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isCustomSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
-                          <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.10),transparent_55%)]" />
-                        </div>
-
-                        <div className="flex items-start justify-between gap-6">
-                          <div>
-                            <div className="mb-2">
-                              <div className="inline-flex items-center rounded-full bg-gray-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider dark:bg-gray-800">
-                                {lang === 'fr' ? 'Custom' : 'Custom'}
+                          <div className="flex items-start justify-between gap-6">
+                            <div>
+                              <div className="mb-2">
+                                <div className="inline-flex items-center rounded-full bg-gray-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider dark:bg-gray-800">
+                                  {lang === 'fr' ? 'Custom' : 'Custom'}
+                                </div>
+                              </div>
+                              <div className="text-xl font-black text-gray-900 dark:text-white">
+                                {formatViewsLabel(customViews)}
+                              </div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                {lang === 'fr' ? 'impressions' : 'impressions'}
                               </div>
                             </div>
-                            <div className="text-xl font-black text-gray-900 dark:text-white">
-                              {formatViewsLabel(customViews)}
-                            </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
-                              {lang === 'fr' ? 'impressions' : 'impressions'}
+
+                            <div className="text-right">
+                              <div className="text-xl font-black text-red-600">
+                                {formatHeroPrice(customAmount)}
+                              </div>
+                              <div className="text-xs text-gray-400 dark:text-gray-500">
+                                {lang === 'fr' ? 'Estimation indicative' : 'Indicative estimate'}
+                              </div>
                             </div>
                           </div>
 
-                          <div className="text-right">
-                            <div className="text-xl font-black text-red-600">
-                              {formatHeroPrice(customAmount)}
-                            </div>
-                            <div className="text-xs text-gray-400 dark:text-gray-500">
-                              {lang === 'fr' ? 'Estimation indicative' : 'Indicative estimate'}
+                          <div className="mt-5">
+                            <input
+                              type="range"
+                              min={200}
+                              max={1000000}
+                              step={100}
+                              value={customViews}
+                              onChange={(e) => {
+                                const next = parseInt(e.target.value, 10);
+                                if (!Number.isFinite(next)) return;
+                                setHeroSelectionError('');
+                                setCustomViews(next);
+                                setSelectedPack({ views: next, amount: Math.round(next * 0.4) });
+                              }}
+                              className="slider w-full"
+                            />
+
+                            <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                              <span>100</span>
+                              <span>250k</span>
+                              <span>500k</span>
+                              <span>750k</span>
+                              <span>1M</span>
                             </div>
                           </div>
-                        </div>
-
-                        <div className="mt-5">
-                          <input
-                            type="range"
-                            min={200}
-                            max={1000000}
-                            step={100}
-                            value={customViews}
-                            onChange={(e) => {
-                              const next = parseInt(e.target.value, 10);
-                              if (!Number.isFinite(next)) return;
-                              setHeroSelectionError('');
-                              setCustomViews(next);
-                              setSelectedPack({ views: next, amount: Math.round(next * 0.4) });
-                            }}
-                            className="slider w-full"
-                          />
-
-                          <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
-                            <span>100</span>
-                            <span>250k</span>
-                            <span>500k</span>
-                            <span>750k</span>
-                            <span>1M</span>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })()}
+                        </button>
+                      );
+                    })()}
+                  </div>
 
                   {heroSelectionError && (
                     <div className="mt-4 text-sm text-red-700 dark:text-red-200">
