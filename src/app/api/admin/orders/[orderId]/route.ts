@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       if (!validStatuses.includes(status)) {
         return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
       }
-      updates.push(`status = $${values.length + 1}`);
+      updates.push(`order_status = $${values.length + 1}`);
       values.push(status);
       if (status === 'completed') {
         updates.push(`completed_at = CURRENT_TIMESTAMP`);
@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       updates.push('updated_at = CURRENT_TIMESTAMP');
       values.push(orderId);
       await sql.query(
-        `UPDATE youtube_orders SET ${updates.join(', ')} WHERE order_id = $${values.length}`,
+        `UPDATE orders SET ${updates.join(', ')} WHERE id::text = $${values.length}`,
         values
       );
     }
@@ -84,7 +84,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
     const { orderId } = await params;
 
-    await sql`UPDATE youtube_orders SET deleted_at = CURRENT_TIMESTAMP WHERE order_id = ${orderId}`;
+    await sql`UPDATE orders SET deleted_at = CURRENT_TIMESTAMP WHERE id::text = ${orderId}`;
 
     return NextResponse.json({ success: true });
   } catch (error) {

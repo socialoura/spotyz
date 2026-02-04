@@ -27,44 +27,44 @@ export async function GET(request: NextRequest) {
     const dateRange = searchParams.get('dateRange');
     const search = searchParams.get('search');
 
-    await sql`
-      CREATE TABLE IF NOT EXISTS youtube_orders (
-        order_id TEXT PRIMARY KEY,
-        email TEXT NOT NULL,
-        youtube_url TEXT NOT NULL,
-        package_id TEXT,
-        impressions INT NOT NULL,
-        impressions_delivered INT DEFAULT 0,
-        price DECIMAL(10,2) NOT NULL,
-        cost DECIMAL(10,2) DEFAULT 0,
-        status TEXT DEFAULT 'pending',
-        notes TEXT DEFAULT '',
-        stripe_transaction_id TEXT,
-        promo_code TEXT,
-        discount_amount DECIMAL(10,2) DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        completed_at TIMESTAMP,
-        deleted_at TIMESTAMP
-      )
+    // Query from the actual orders table used by /api/orders/create
+    // Map columns to match expected frontend format
+    let query = `
+      SELECT 
+        id::text as order_id,
+        email,
+        youtube_video_url as youtube_url,
+        followers as impressions,
+        COALESCE(impressions_delivered, 0) as impressions_delivered,
+        COALESCE(amount, price, 0) as price,
+        COALESCE(cost, 0) as cost,
+        COALESCE(order_status, status, 'pending') as status,
+        COALESCE(notes, '') as notes,
+        payment_id as stripe_transaction_id,
+        promo_code,
+        COALESCE(discount_amount, 0) as discount_amount,
+        created_at,
+        updated_at,
+        completed_at,
+        deleted_at
+      FROM orders 
+      WHERE deleted_at IS NULL
     `;
-
-    let query = `SELECT * FROM youtube_orders WHERE deleted_at IS NULL`;
     const conditions: string[] = [];
     const values: (string | number)[] = [];
 
     if (status && status !== 'all') {
-      conditions.push(`status = $${values.length + 1}`);
+      conditions.push(`COALESCE(order_status, status, 'pending') = $${values.length + 1}`);
       values.push(status);
     }
 
     if (packageFilter && packageFilter !== 'all') {
-      conditions.push(`impressions = $${values.length + 1}`);
+      conditions.push(`followers = $${values.length + 1}`);
       values.push(parseInt(packageFilter));
     }
 
     if (search) {
-      conditions.push(`(email ILIKE $${values.length + 1} OR youtube_url ILIKE $${values.length + 1})`);
+      conditions.push(`(email ILIKE $${values.length + 1} OR youtube_video_url ILIKE $${values.length + 1})`);
       values.push(`%${search}%`);
     }
 
