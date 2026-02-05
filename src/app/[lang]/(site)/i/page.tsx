@@ -76,7 +76,7 @@ export default function InstagramPage({ params }: PageProps) {
           email: email,
           platform: 'instagram',
           followers: selectedGoal?.followers || 0,
-          amount: selectedGoal?.price || 0,
+          amount: selectedGoal ? Math.round(selectedGoal.price * 100) : 0,
           paymentId: paymentIntentIdParam,
         }),
       });

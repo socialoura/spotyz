@@ -18,6 +18,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Convert cents to euros (amount always comes in cents from frontend, e.g. 249 = 2.49€)
+    const amountInEuros = Number((amount / 100).toFixed(2));
+
     // Check if order already exists (idempotency)
     const existing = await sql`
       SELECT id FROM public.orders WHERE payment_id = ${paymentId}
@@ -52,8 +55,8 @@ export async function POST(request: NextRequest) {
         ${email || null},
         ${platform},
         ${followers},
-        ${amount},
-        ${amount},
+        ${amountInEuros},
+        ${amountInEuros},
         ${paymentId},
         ${paymentId},
         'completed',

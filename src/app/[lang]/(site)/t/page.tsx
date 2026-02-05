@@ -76,7 +76,7 @@ export default function TikTokPage({ params }: PageProps) {
           email: email,
           platform: 'tiktok',
           followers: selectedGoal?.followers || 0,
-          amount: selectedGoal?.price || 0,
+          amount: selectedGoal ? Math.round(selectedGoal.price * 100) : 0,
           paymentId: paymentIntentIdParam,
         }),
       });
