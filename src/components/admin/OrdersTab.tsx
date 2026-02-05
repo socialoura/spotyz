@@ -102,6 +102,7 @@ export default function OrdersTab({ orders: initialOrders, token, onRefresh }: P
             <tr>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-300">Order ID</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-300">Client</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-gray-300">Country</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-300">YouTube URL</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-300">Package</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-gray-300">Price</th>
@@ -117,6 +118,7 @@ export default function OrdersTab({ orders: initialOrders, token, onRefresh }: P
               <tr key={order.order_id} className="hover:bg-gray-700/20">
                 <td className="px-4 py-3 text-white font-mono text-sm">{order.order_id.slice(0, 8)}...</td>
                 <td className="px-4 py-3 text-gray-300 text-sm">{order.email}</td>
+                <td className="px-4 py-3 text-gray-300 text-sm">{order.country || 'Unknown'}</td>
                 <td className="px-4 py-3 text-sm">
                   {order.youtube_url && (
                     <a href={order.youtube_url} target="_blank" rel="noopener noreferrer" className="text-red-400 hover:text-red-300 truncate max-w-[150px] block">
@@ -157,7 +159,7 @@ export default function OrdersTab({ orders: initialOrders, token, onRefresh }: P
               </tr>
             ))}
             {orders.length === 0 && (
-              <tr><td colSpan={10} className="px-4 py-8 text-center text-gray-400">No orders found</td></tr>
+              <tr><td colSpan={11} className="px-4 py-8 text-center text-gray-400">No orders found</td></tr>
             )}
           </tbody>
         </table>

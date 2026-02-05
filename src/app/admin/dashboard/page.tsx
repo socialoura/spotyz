@@ -34,6 +34,7 @@ export interface Order {
   stripe_transaction_id?: string;
   promo_code?: string;
   discount_amount: number;
+  country: string;
   created_at: string;
 }
 

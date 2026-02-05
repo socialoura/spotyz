@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
       await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`;
       await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS completed_at TIMESTAMP`;
       await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS country VARCHAR(10) DEFAULT 'Unknown'`;
     } catch {
       // Ignore if we don't have permissions; query below should still work if columns already exist.
     }
@@ -56,6 +57,7 @@ export async function GET(request: NextRequest) {
         payment_id as stripe_transaction_id,
         promo_code,
         COALESCE(discount_amount, 0) as discount_amount,
+        COALESCE(country, 'Unknown') as country,
         created_at,
         updated_at,
         completed_at,

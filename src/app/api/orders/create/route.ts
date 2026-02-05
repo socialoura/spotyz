@@ -4,6 +4,19 @@ import { sql } from '@vercel/postgres';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+async function getCountryFromIP(ip: string): Promise<string> {
+  try {
+    const cleanIp = ip.split(',')[0].trim();
+    if (!cleanIp || cleanIp === '127.0.0.1' || cleanIp === '::1') return 'Unknown';
+    const res = await fetch(`http://ip-api.com/json/${cleanIp}?fields=status,countryCode,country`, { signal: AbortSignal.timeout(3000) });
+    const data = await res.json();
+    if (data.status === 'success') return data.countryCode || 'Unknown';
+    return 'Unknown';
+  } catch {
+    return 'Unknown';
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Parse request body
@@ -20,6 +33,15 @@ export async function POST(request: NextRequest) {
 
     // Convert cents to euros (amount always comes in cents from frontend, e.g. 249 = 2.49€)
     const amountInEuros = Number((amount / 100).toFixed(2));
+
+    // Detect country from client IP
+    const forwarded = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+    const country = await getCountryFromIP(forwarded);
+
+    // Ensure country column exists
+    try {
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS country VARCHAR(10) DEFAULT 'Unknown'`;
+    } catch { /* column may already exist */ }
 
     // Check if order already exists (idempotency)
     const existing = await sql`
@@ -49,6 +71,7 @@ export async function POST(request: NextRequest) {
         payment_status,
         order_status,
         youtube_video_url,
+        country,
         created_at
       ) VALUES (
         ${username},
@@ -63,6 +86,7 @@ export async function POST(request: NextRequest) {
         'completed',
         'pending',
         ${youtubeVideoUrl || null},
+        ${country},
         NOW()
       )
       RETURNING id, created_at
