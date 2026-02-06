@@ -13,6 +13,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!email || email === 'Non fourni' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json(
+        { error: 'A valid email is required' },
+        { status: 400 }
+      );
+    }
+
     const supportEmail = process.env.SUPPORT_EMAIL || 'support@socialoura.com';
     const timestamp = new Date().toLocaleString(language === 'fr' ? 'fr-FR' : 'en-US', {
       dateStyle: 'full',

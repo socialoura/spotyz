@@ -14,6 +14,7 @@ export default function ChatWidget({ lang }: ChatWidgetProps) {
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [emailError, setEmailError] = useState('');
   const [messages, setMessages] = useState<Array<{ text: string; sender: 'user' | 'support'; timestamp: Date }>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +29,9 @@ export default function ChatWidget({ lang }: ChatWidgetProps) {
       initialMessage: 'Hi! How can we help you today? Leave your message and email, we\'ll get back to you shortly.',
       closeChat: 'Close chat',
       minimizeChat: 'Minimize chat',
-      emailPlaceholder: 'Your email (optional)',
+      emailPlaceholder: 'Your email (required)',
+      emailRequired: 'Please enter your email address first.',
+      emailInvalid: 'Please enter a valid email address.',
       messageSent: 'Message sent! We\'ll reply to your email soon.',
       messageError: 'Error sending message. Please try again.',
     },
@@ -42,7 +45,9 @@ export default function ChatWidget({ lang }: ChatWidgetProps) {
       initialMessage: 'Bonjour ! Comment pouvons-nous vous aider ? Laissez votre message et email, nous vous répondrons rapidement.',
       closeChat: 'Fermer le chat',
       minimizeChat: 'Minimiser le chat',
-      emailPlaceholder: 'Votre email (optionnel)',
+      emailPlaceholder: 'Votre email (obligatoire)',
+      emailRequired: 'Veuillez entrer votre adresse email.',
+      emailInvalid: 'Veuillez entrer une adresse email valide.',
       messageSent: 'Message envoyé ! Nous répondrons à votre email bientôt.',
       messageError: 'Erreur lors de l\'envoi. Veuillez réessayer.',
     },
@@ -74,6 +79,17 @@ export default function ChatWidget({ lang }: ChatWidgetProps) {
     e.preventDefault();
     if (!message.trim() || isSending) return;
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      setEmailError(t.emailRequired);
+      return;
+    }
+    if (!emailRegex.test(email.trim())) {
+      setEmailError(t.emailInvalid);
+      return;
+    }
+    setEmailError('');
+
     const userMessage = message;
     const userEmail = email;
 
@@ -94,7 +110,7 @@ export default function ChatWidget({ lang }: ChatWidgetProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
-          email: userEmail || 'Non fourni',
+          email: userEmail,
           language: lang,
         }),
       });
@@ -234,13 +250,17 @@ export default function ChatWidget({ lang }: ChatWidgetProps) {
 
               {/* Chat Input */}
               <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 space-y-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t.emailPlaceholder}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-600 transition-colors text-sm"
-                />
+                <div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setEmailError(''); }}
+                    placeholder={t.emailPlaceholder}
+                    required
+                    className={`w-full px-4 py-2 rounded-lg border bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-600 transition-colors text-sm ${emailError ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'}`}
+                  />
+                  {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+                </div>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -251,7 +271,7 @@ export default function ChatWidget({ lang }: ChatWidgetProps) {
                   />
                   <button
                     type="submit"
-                    disabled={!message.trim() || isSending}
+                    disabled={!message.trim() || !email.trim() || isSending}
                     className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-full p-2.5 transition-all hover:scale-105 disabled:hover:scale-100"
                     aria-label={t.send}
                   >
