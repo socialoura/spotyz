@@ -387,7 +387,7 @@ export default function HomePage({ params }: PageProps) {
               <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-950">
                 <div className="border-b border-gray-200 bg-gray-50 px-6 py-3 dark:border-gray-800 dark:bg-gray-900">
                   <div className="text-sm font-black text-gray-900 dark:text-white">
-                    {lang === 'fr' ? 'Impressions' : 'Impressions'}
+                    {lang === 'fr' ? 'Vues' : 'Impressions'}
                   </div>
                 </div>
 
@@ -453,7 +453,7 @@ export default function HomePage({ params }: PageProps) {
                                 {offer.label}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
-                                {lang === 'fr' ? 'impressions' : 'impressions'}
+                                {lang === 'fr' ? 'vues' : 'impressions'}
                               </div>
                             </div>
                             <div className="text-right">
@@ -508,7 +508,7 @@ export default function HomePage({ params }: PageProps) {
                                 {formatViewsLabel(customViews)}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
-                                {lang === 'fr' ? 'impressions' : 'impressions'}
+                                {lang === 'fr' ? 'vues' : 'impressions'}
                               </div>
                             </div>
 

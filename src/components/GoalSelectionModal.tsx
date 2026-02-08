@@ -39,9 +39,9 @@ export default function GoalSelectionModal({
 
   const getUnitLabel = () => {
     if (platform === 'youtube') {
-      return language === 'fr' ? 'impressions' : 'impressions';
+      return language === 'fr' ? 'vues' : 'impressions';
     }
-    return language === 'fr' ? 'impressions' : 'impressions';
+    return language === 'fr' ? 'vues' : 'impressions';
   };
 
   const isYoutube = platform === 'youtube';
