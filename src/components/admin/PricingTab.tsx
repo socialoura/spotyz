@@ -83,7 +83,7 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-white">Pricing & Packages</h2>
         <button onClick={() => { setEditing(null); setForm({ impressions: '', price: '', originalPrice: '', isActive: true, description: '' }); setShowModal(true); }}
-          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg text-white hover:from-red-600 hover:to-pink-600 transition-all">
+          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700 transition-all">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
           <span>New Package</span>
         </button>
@@ -152,7 +152,7 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
             </div>
             <div className="flex justify-end space-x-3 mt-6">
               <button onClick={() => { setShowModal(false); setEditing(null); }} className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white">Cancel</button>
-              <button onClick={handleSave} className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg text-white hover:from-red-600 hover:to-pink-600">Save</button>
+              <button onClick={handleSave} className="px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700">Save</button>
             </div>
           </div>
         </div>

@@ -271,7 +271,7 @@ export default function AnalyticsDashboard({ orders, googleAdsExpenses, token, o
             <input type="number" value={adsForm.amount} onChange={(e) => setAdsForm({ ...adsForm, amount: e.target.value })}
               className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white" step="0.01" min="0" />
           </div>
-          <button onClick={handleSaveAdsExpense} className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg text-white hover:from-red-600 hover:to-pink-600">Save</button>
+          <button onClick={handleSaveAdsExpense} className="px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700">Save</button>
         </div>
 
         <table className="w-full">

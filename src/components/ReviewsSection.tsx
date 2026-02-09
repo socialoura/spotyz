@@ -6,7 +6,7 @@ import { Language } from '@/i18n/config';
 
 interface ReviewsSectionProps {
   lang: Language;
-  platform?: 'youtube' | 'all';
+  platform?: 'spotify' | 'all';
 }
 
 interface Review {
@@ -15,7 +15,7 @@ interface Review {
   username: string;
   avatar: string;
   rating: number;
-  platform: 'youtube';
+  platform: 'spotify';
   views: string;
   text: {
     en: string;
@@ -32,11 +32,11 @@ const reviews: Review[] = [
     username: '@sarahcreates',
     avatar: 'SM',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+25k',
     text: {
-      en: 'Super smooth checkout and the campaign started fast. My video picked up more views and the pacing looked natural. Great experience.',
-      fr: 'Paiement super simple et la campagne a démarré rapidement. Ma vidéo a pris plus de vues avec un rythme naturel. Très bonne expérience.',
+      en: 'Super smooth checkout and the campaign started fast. My track picked up more streams and the pacing looked natural. Great experience.',
+      fr: 'Paiement super simple et la campagne a démarré rapidement. Mon titre a gagné plus de streams avec un rythme naturel. Très bonne expérience.',
     },
     date: '2 days ago',
     verified: true,
@@ -47,11 +47,11 @@ const reviews: Review[] = [
     username: '@marcusfit',
     avatar: 'MJ',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+50k',
     text: {
-      en: 'Perfect for a new upload. I chose a package, added my YouTube link at checkout, and everything was handled quickly. Support was responsive too.',
-      fr: 'Parfait pour une nouvelle vidéo. J\'ai choisi un pack, ajouté mon lien YouTube au paiement, et tout a été géré rapidement. Support réactif aussi.',
+      en: 'Perfect for a new upload. I chose a package, added my Spotify link at checkout, and everything was handled quickly. Support was responsive too.',
+      fr: 'Parfait pour une nouvelle vidéo. J\'ai choisi un pack, ajouté mon lien Spotify au paiement, et tout a été géré rapidement. Support réactif aussi.',
     },
     date: '1 week ago',
     verified: true,
@@ -62,11 +62,11 @@ const reviews: Review[] = [
     username: '@emmalooks',
     avatar: 'EL',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+100k',
     text: {
-      en: 'The custom slider is awesome. I set my own view count, saw the price instantly, and checked out. Clean and easy.',
-      fr: 'Le curseur custom est top. J\'ai choisi mon nombre de vues, vu le prix instantanément, puis payé. Simple et efficace.',
+      en: 'The custom slider is awesome. I set my own stream count, saw the price instantly, and checked out. Clean and easy.',
+      fr: 'Le curseur custom est top. J\'ai choisi mon nombre de streams, vu le prix instantanément, puis payé. Simple et efficace.',
     },
     date: '3 days ago',
     verified: true,
@@ -77,11 +77,11 @@ const reviews: Review[] = [
     username: '@davidkphoto',
     avatar: 'DK',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+10k',
     text: {
-      en: 'Clear pricing, no account access needed, and I got confirmation right away. Exactly what I wanted for YouTube visibility.',
-      fr: 'Tarifs clairs, pas d\'accès au compte requis, et confirmation immédiate. Exactement ce que je voulais pour la visibilité YouTube.',
+      en: 'Clear pricing, no account access needed, and I got confirmation right away. Exactly what I wanted for Spotify visibility.',
+      fr: 'Tarifs clairs, pas d\'accès au compte requis, et confirmation immédiate. Exactement ce que je voulais pour la visibilité Spotify.',
     },
     date: '5 days ago',
     verified: true,
@@ -92,11 +92,11 @@ const reviews: Review[] = [
     username: '@lisatravels',
     avatar: 'LT',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+30k',
     text: {
-      en: 'Great pacing and the dashboard pricing is transparent. My video gained traction and the overall flow feels premium.',
-      fr: 'Bon pacing et tarifs transparents. Ma vidéo a gagné en traction et l\'expérience globale est premium.',
+      en: 'Great pacing and the dashboard pricing is transparent. My track gained traction and the overall flow feels premium.',
+      fr: 'Bon pacing et tarifs transparents. Mon titre a gagné en traction et l\'expérience globale est premium.',
     },
     date: '1 week ago',
     verified: true,
@@ -107,11 +107,11 @@ const reviews: Review[] = [
     username: '@alexrmusic',
     avatar: 'AR',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+75k',
     text: {
-      en: 'My music video got a solid visibility boost. The results came in progressively and looked normal in analytics.',
-      fr: 'Mon clip a eu un bon boost de visibilité. Les résultats sont arrivés progressivement et ça reste naturel dans les stats.',
+      en: 'My track got a solid visibility boost. The results came in progressively and looked normal in analytics.',
+      fr: 'Mon titre a eu un bon boost de visibilité. Les résultats sont arrivés progressivement et ça reste naturel dans les stats.',
     },
     date: '4 days ago',
     verified: true,
@@ -122,11 +122,11 @@ const reviews: Review[] = [
     username: '@ninabeauty',
     avatar: 'NP',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+40k',
     text: {
-      en: 'No weird steps: just choose the package and paste the video link. Clean UI and secure payment.',
-      fr: 'Pas d\'étapes bizarres : tu choisis un pack et tu colles le lien de la vidéo. UI propre et paiement sécurisé.',
+      en: 'No weird steps: just choose the package and paste the track link. Clean UI and secure payment.',
+      fr: 'Pas d\'étapes bizarres : tu choisis un pack et tu colles le lien du titre. UI propre et paiement sécurisé.',
     },
     date: '6 days ago',
     verified: true,
@@ -137,7 +137,7 @@ const reviews: Review[] = [
     username: '@tomhcooks',
     avatar: 'TH',
     rating: 5,
-    platform: 'youtube',
+    platform: 'spotify',
     views: '+20k',
     text: {
       en: 'Fast support, clear pricing, and the campaign launched quickly. I\'ll use it again for future uploads.',
@@ -158,14 +158,14 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
 
   const content = {
     en: {
-      title: 'Trusted for YouTube Promotion',
-      subtitle: 'Real feedback from customers using ViewPlex to run YouTube ad campaigns.',
+      title: 'Trusted for Spotify Promotion',
+      subtitle: 'Real feedback from customers using Spotyz to boost their Spotify tracks.',
       verified: 'Verified Purchase',
       views: 'campaign reach',
     },
     fr: {
-      title: 'Approuvé pour la promotion YouTube',
-      subtitle: 'Retours de clients qui utilisent ViewPlex pour lancer des campagnes publicitaires YouTube.',
+      title: 'Approuvé pour la promotion Spotify',
+      subtitle: 'Retours de clients qui utilisent Spotyz pour booster leurs titres Spotify.',
       verified: 'Achat Vérifié',
       views: 'portée campagne',
     },
@@ -206,7 +206,7 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
 
   return (
     <section className="py-16 sm:py-20 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_30%_10%,rgba(239,68,68,0.08),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_30%_10%,rgba(29,185,84,0.08),transparent_55%)]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -269,14 +269,14 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
                 }`}
               >
                 {/* Quote Icon */}
-                <div className="absolute top-4 right-4 text-red-600/10">
+                <div className="absolute top-4 right-4 text-[#1DB954]/10">
                   <Quote className="w-12 h-12" />
                 </div>
 
                 {/* Header */}
                 <div className="flex items-start gap-4 mb-4">
                   {/* Avatar */}
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center text-white font-black text-lg bg-gradient-to-br from-red-600 to-red-500">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center text-white font-black text-lg bg-gradient-to-br from-[#1DB954] to-emerald-500">
                     {review.avatar}
                   </div>
                   
@@ -313,11 +313,11 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
                 {/* Footer */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-800">
                   <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/30 dark:text-red-300 dark:border-red-900">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-900">
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M23.498 6.186a2.999 2.999 0 0 0-2.112-2.122C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.386.519A2.999 2.999 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a2.999 2.999 0 0 0 2.112 2.122c1.881.519 9.386.519 9.386.519s7.505 0 9.386-.519a2.999 2.999 0 0 0 2.112-2.122C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
                       </svg>
-                      YouTube
+                      Spotify
                     </span>
                     <span className="text-sm text-green-600 font-medium dark:text-green-400">
                       {review.views} {t.views}
@@ -347,7 +347,7 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
                   }}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === currentIndex
-                      ? 'w-6 bg-red-600'
+                      ? 'w-6 bg-[#1DB954]'
                       : 'bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600'
                   }`}
                 />
@@ -377,7 +377,7 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
             <span className="text-sm">{lang === 'en' ? 'Secure Payments' : 'Paiements Sécurisés'}</span>
           </div>
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 text-[#1DB954]" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
             <span className="text-sm">{lang === 'en' ? '5-Star Service' : 'Service 5 Étoiles'}</span>

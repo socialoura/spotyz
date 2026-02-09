@@ -16,7 +16,7 @@ export default function AppleIcon() {
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)',
+          background: '#1DB954',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -26,7 +26,7 @@ export default function AppleIcon() {
           position: 'relative',
         }}
       >
-        {/* Growth Arrow Icon */}
+        {/* Spotify-style music icon */}
         <svg
           width="120"
           height="120"
@@ -34,13 +34,10 @@ export default function AppleIcon() {
           fill="none"
           style={{ position: 'relative', zIndex: 1 }}
         >
-          <path
-            d="M7 17L17 7M17 7H8M17 7V16"
-            stroke="white"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2" />
+          <path d="M8 16c2.5-1.2 5.5-1.2 8 0" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M9 13c2-1 4-1 6 0" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M10 10c1.5-.8 3-.8 4.5 0" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
         </svg>
       </div>
     ),

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    const { username, email, platform, followers, amount, paymentId, youtubeVideoUrl } = body;
+    const { username, email, platform, followers, amount, paymentId, spotifyUrl } = body;
 
     // Validate required fields
     if (!username || !platform || !followers || !amount || !paymentId) {
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
         'completed',
         'completed',
         'pending',
-        ${youtubeVideoUrl || null},
+        ${spotifyUrl || null},
         ${country},
         NOW()
       )

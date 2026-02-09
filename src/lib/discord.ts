@@ -64,7 +64,7 @@ export async function sendDiscordOrderNotification({
     ],
     timestamp: new Date().toISOString(),
     footer: {
-      text: 'SocialOura',
+      text: 'Spotyz',
     },
   };
 

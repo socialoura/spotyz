@@ -63,9 +63,9 @@ export default function OrdersTab({ orders: initialOrders, token, onRefresh }: P
 
       <div className="grid grid-cols-4 gap-4">
         <input type="text" placeholder="Search email or URL..." value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500" />
+          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1DB954]" />
         <select value={filters.package} onChange={(e) => setFilters({ ...filters, package: e.target.value })}
-          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#1DB954]">
           <option value="all">All Packages</option>
           <option value="250">250 views</option>
           <option value="500">500 views</option>
@@ -78,7 +78,7 @@ export default function OrdersTab({ orders: initialOrders, token, onRefresh }: P
           <option value="250000">250k views</option>
         </select>
         <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#1DB954]">
           <option value="all">All Status</option>
           <option value="pending">Pending</option>
           <option value="processing">Processing</option>
@@ -88,7 +88,7 @@ export default function OrdersTab({ orders: initialOrders, token, onRefresh }: P
           <option value="refunded">Refunded</option>
         </select>
         <select value={filters.dateRange} onChange={(e) => setFilters({ ...filters, dateRange: e.target.value })}
-          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#1DB954]">
           <option value="all">All Time</option>
           <option value="today">Today</option>
           <option value="week">This Week</option>

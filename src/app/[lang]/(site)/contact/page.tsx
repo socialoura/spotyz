@@ -22,7 +22,7 @@ export default function ContactPage({ params }: PageProps) {
 
   const content = {
     en: {
-      title: 'Contact ViewPlex',
+      title: 'Contact Spotyz',
       subtitle: 'Questions about your campaign, billing, or setup? Our team is here to help.',
       form: {
         name: 'Your Name',
@@ -32,7 +32,7 @@ export default function ContactPage({ params }: PageProps) {
         subject: 'Topic',
         subjectPlaceholder: 'Campaign question / Billing / Technical help',
         message: 'Message',
-        messagePlaceholder: 'Tell us what you need and include your video link if relevant.',
+        messagePlaceholder: 'Tell us what you need and include your track link if relevant.',
         submit: 'Send message',
         submitting: 'Sending...',
       },
@@ -41,7 +41,7 @@ export default function ContactPage({ params }: PageProps) {
         description: 'We usually reply within 24 hours (often faster).',
         email: {
           label: 'Email',
-          value: 'support@view-plex.com',
+          value: 'support@spotyz.com',
         },
         phone: {
           label: 'Phone',
@@ -64,7 +64,7 @@ export default function ContactPage({ params }: PageProps) {
       error: 'Failed to send message. Please try again.',
     },
     fr: {
-      title: 'Contacter ViewPlex',
+      title: 'Contacter Spotyz',
       subtitle: 'Questions sur votre campagne, la facturation ou la mise en place ? Notre équipe est là pour vous.',
       form: {
         name: 'Votre Nom',
@@ -74,7 +74,7 @@ export default function ContactPage({ params }: PageProps) {
         subject: 'Sujet',
         subjectPlaceholder: 'Question campagne / Facturation / Assistance technique',
         message: 'Message',
-        messagePlaceholder: 'Dites-nous ce dont vous avez besoin et ajoutez le lien de la vidéo si utile.',
+        messagePlaceholder: 'Dites-nous ce dont vous avez besoin et ajoutez le lien du titre si utile.',
         submit: 'Envoyer',
         submitting: 'Envoi...',
       },
@@ -83,7 +83,7 @@ export default function ContactPage({ params }: PageProps) {
         description: 'Réponse sous 24h (souvent plus rapide).',
         email: {
           label: 'Email',
-          value: 'support@view-plex.com',
+          value: 'support@spotyz.com',
         },
         phone: {
           label: 'Téléphone',
@@ -189,7 +189,7 @@ export default function ContactPage({ params }: PageProps) {
                       onChange={handleChange}
                       required
                       placeholder={t.form.namePlaceholder}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                     />
                   </div>
 
@@ -206,7 +206,7 @@ export default function ContactPage({ params }: PageProps) {
                       onChange={handleChange}
                       required
                       placeholder={t.form.emailPlaceholder}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                     />
                   </div>
 
@@ -223,7 +223,7 @@ export default function ContactPage({ params }: PageProps) {
                       onChange={handleChange}
                       required
                       placeholder={t.form.subjectPlaceholder}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                     />
                   </div>
 
@@ -240,7 +240,7 @@ export default function ContactPage({ params }: PageProps) {
                       required
                       rows={6}
                       placeholder={t.form.messagePlaceholder}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors resize-none"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors resize-none"
                     />
                   </div>
 
@@ -248,7 +248,7 @@ export default function ContactPage({ params }: PageProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-300 dark:disabled:bg-gray-800 text-white font-black py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm"
+                    className="w-full bg-[#1DB954] hover:bg-emerald-600 disabled:bg-gray-300 dark:disabled:bg-gray-800 text-white font-black py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm"
                   >
                     <Send className="h-5 w-5" />
                     {isSubmitting ? t.form.submitting : t.form.submit}
@@ -283,14 +283,14 @@ export default function ContactPage({ params }: PageProps) {
                 <div className="space-y-4">
                   {/* Email */}
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-xl bg-red-50 border border-red-200 dark:bg-red-950/40 dark:border-red-900">
-                      <Mail className="h-5 w-5 text-red-700 dark:text-red-200" />
+                    <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-900">
+                      <Mail className="h-5 w-5 text-emerald-700 dark:text-emerald-200" />
                     </div>
                     <div>
                       <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         {t.contactInfo.email.label}
                       </div>
-                      <a href={`mailto:${t.contactInfo.email.value}`} className="text-red-600 dark:text-red-300 hover:underline">
+                      <a href={`mailto:${t.contactInfo.email.value}`} className="text-[#1DB954] dark:text-emerald-300 hover:underline">
                         {t.contactInfo.email.value}
                       </a>
                     </div>
@@ -331,7 +331,7 @@ export default function ContactPage({ params }: PageProps) {
               {/* Response Time Card */}
               <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-5 sm:p-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <MessageSquare className="h-6 w-6 text-red-700 dark:text-red-200" />
+                  <MessageSquare className="h-6 w-6 text-emerald-700 dark:text-emerald-200" />
                   <h3 className="text-lg font-black text-gray-900 dark:text-white">
                     {t.responseTime.title}
                   </h3>
@@ -361,7 +361,7 @@ export default function ContactPage({ params }: PageProps) {
       {/* Footer */}
       <footer className="border-t border-gray-200 dark:border-gray-800 py-8 mt-10 sm:mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 dark:text-gray-400">
-          <p>&copy; 2026 ViewPlex. All rights reserved.</p>
+          <p>&copy; 2026 Spotyz. All rights reserved.</p>
         </div>
       </footer>
 

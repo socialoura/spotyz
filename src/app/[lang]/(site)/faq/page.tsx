@@ -31,8 +31,8 @@ export default function FAQPage({ params }: PageProps) {
       faqs: [
         {
           category: 'general',
-          question: 'What is ViewPlex?',
-          answer: 'ViewPlex helps you run a visibility campaign for your YouTube video with a simple setup and secure checkout. We focus on discovery and reach, not artificial engagement.',
+          question: 'What is Spotyz?',
+          answer: 'Spotyz helps you run a visibility campaign for your Spotify track with a simple setup and secure checkout. We focus on discovery and reach, not artificial engagement.',
         },
         {
           category: 'general',
@@ -42,7 +42,7 @@ export default function FAQPage({ params }: PageProps) {
         {
           category: 'general',
           question: 'Do you need access to my account?',
-          answer: 'No. For YouTube visibility campaigns, we only require your public video link. No login or private account access is requested.',
+          answer: 'No. For Spotify visibility campaigns, we only require your public track link. No login or private account access is requested.',
         },
         {
           category: 'orders',
@@ -52,7 +52,7 @@ export default function FAQPage({ params }: PageProps) {
         {
           category: 'orders',
           question: 'Do I need to provide my password?',
-          answer: 'No, never. We only need your public YouTube video link and a contact email for the receipt and follow-up.',
+          answer: 'No, never. We only need your public Spotify track link and a contact email for the receipt and follow-up.',
         },
         {
           category: 'orders',
@@ -61,8 +61,8 @@ export default function FAQPage({ params }: PageProps) {
         },
         {
           category: 'orders',
-          question: 'Can I run campaigns for multiple videos?',
-          answer: 'Yes. Submit one order per video link so each campaign can be tracked independently.',
+          question: 'Can I run campaigns for multiple tracks?',
+          answer: 'Yes. Submit one order per track link so each campaign can be tracked independently.',
         },
         {
           category: 'payment',
@@ -82,7 +82,7 @@ export default function FAQPage({ params }: PageProps) {
         {
           category: 'support',
           question: 'How can I contact support?',
-          answer: 'Use the chat widget on the site or email support@view-plex.com. We typically respond within 24 hours.',
+          answer: 'Use the chat widget on the site or email support@spotyz.com. We typically respond within 24 hours.',
         },
         {
           category: 'support',
@@ -108,8 +108,8 @@ export default function FAQPage({ params }: PageProps) {
       faqs: [
         {
           category: 'general',
-          question: 'Qu\'est-ce que ViewPlex ?',
-          answer: 'ViewPlex vous aide à lancer une campagne de visibilité pour votre vidéo YouTube avec une mise en place simple et un paiement sécurisé. Nous mettons l\'accent sur la découverte et la portée.',
+          question: 'Qu\'est-ce que Spotyz ?',
+          answer: 'Spotyz vous aide à lancer une campagne de visibilité pour votre vidéo Spotify avec une mise en place simple et un paiement sécurisé. Nous mettons l\'accent sur la découverte et la portée.',
         },
         {
           category: 'general',
@@ -119,7 +119,7 @@ export default function FAQPage({ params }: PageProps) {
         {
           category: 'general',
           question: 'Avez-vous besoin d\'accéder à mon compte ?',
-          answer: 'Non. Pour les campagnes YouTube, nous avons seulement besoin du lien public de la vidéo. Aucune connexion n\'est demandée.',
+          answer: 'Non. Pour les campagnes Spotify, nous avons seulement besoin du lien public du titre. Aucune connexion n\'est demandée.',
         },
         {
           category: 'orders',
@@ -129,7 +129,7 @@ export default function FAQPage({ params }: PageProps) {
         {
           category: 'orders',
           question: 'Dois-je fournir mon mot de passe ?',
-          answer: 'Non, jamais. Nous avons besoin uniquement du lien public de votre vidéo et d\'un email pour le reçu et le suivi.',
+          answer: 'Non, jamais. Nous avons besoin uniquement du lien public de votre titre et d\'un email pour le reçu et le suivi.',
         },
         {
           category: 'orders',
@@ -138,8 +138,8 @@ export default function FAQPage({ params }: PageProps) {
         },
         {
           category: 'orders',
-          question: 'Puis-je lancer des campagnes pour plusieurs vidéos ?',
-          answer: 'Oui. Passez une commande par lien vidéo afin de suivre chaque campagne séparément.',
+          question: 'Puis-je lancer des campagnes pour plusieurs titres ?',
+          answer: 'Oui. Passez une commande par lien de titre afin de suivre chaque campagne séparément.',
         },
         {
           category: 'payment',
@@ -159,7 +159,7 @@ export default function FAQPage({ params }: PageProps) {
         {
           category: 'support',
           question: 'Comment puis-je contacter le support ?',
-          answer: 'Via le widget de chat sur le site, ou par email à support@view-plex.com. Réponse généralement sous 24 heures.',
+          answer: 'Via le widget de chat sur le site, ou par email à support@spotyz.com. Réponse généralement sous 24 heures.',
         },
         {
           category: 'support',
@@ -185,12 +185,12 @@ export default function FAQPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_10%_20%,rgba(239,68,68,0.10),transparent_55%),radial-gradient(900px_circle_at_90%_35%,rgba(239,68,68,0.06),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_10%_20%,rgba(29,185,84,0.10),transparent_55%),radial-gradient(900px_circle_at_90%_35%,rgba(29,185,84,0.06),transparent_55%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(2,6,23,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(2,6,23,0.04)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30 dark:opacity-15" />
         <div className="absolute inset-0 [mask-image:radial-gradient(60%_55%_at_50%_35%,black,transparent)] bg-gradient-to-b from-white/0 via-white/40 to-white dark:from-gray-950/0 dark:via-gray-950/70 dark:to-gray-950" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 sm:pt-16 sm:pb-10 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-red-600 shadow-sm mb-5 sm:mb-6 border border-red-700/10">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#1DB954] shadow-sm mb-5 sm:mb-6 border border-emerald-700/10">
             <HelpCircle className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
           </div>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4">
@@ -206,7 +206,7 @@ export default function FAQPage({ params }: PageProps) {
               onClick={() => setActiveCategory('all')}
               className={`rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-sm font-semibold border transition-colors ${
                 activeCategory === 'all'
-                  ? 'bg-red-600 text-white border-red-600'
+                  ? 'bg-[#1DB954] text-white border-[#1DB954]'
                   : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 dark:bg-gray-950 dark:text-gray-200 dark:border-gray-800 dark:hover:bg-gray-900'
               }`}
             >
@@ -219,7 +219,7 @@ export default function FAQPage({ params }: PageProps) {
                 onClick={() => setActiveCategory(category)}
                 className={`rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-sm font-semibold border transition-colors ${
                   activeCategory === category
-                    ? 'bg-red-600 text-white border-red-600'
+                    ? 'bg-[#1DB954] text-white border-[#1DB954]'
                     : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 dark:bg-gray-950 dark:text-gray-200 dark:border-gray-800 dark:hover:bg-gray-900'
                 }`}
               >
@@ -255,7 +255,7 @@ export default function FAQPage({ params }: PageProps) {
                         {faq.question}
                       </div>
                     </div>
-                    <div className={`ml-4 w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isOpen ? 'bg-red-600 rotate-180' : 'bg-gray-100 dark:bg-gray-900'}`}>
+                    <div className={`ml-4 w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isOpen ? 'bg-[#1DB954] rotate-180' : 'bg-gray-100 dark:bg-gray-900'}`}>
                       {isOpen ? (
                         <Minus className="h-4 w-4 text-white" />
                       ) : (
@@ -291,7 +291,7 @@ export default function FAQPage({ params }: PageProps) {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
-                href={`mailto:support@view-plex.com`}
+                href={`mailto:support@spotyz.com`}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl transition-colors"
               >
                 <Mail className="w-5 h-5" />
@@ -299,7 +299,7 @@ export default function FAQPage({ params }: PageProps) {
               </a>
               <a
                 href={`/${lang}/contact`}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#1DB954] hover:bg-emerald-600 text-white font-black rounded-xl transition-colors"
               >
                 {lang === 'fr' ? 'Ouvrir la page contact' : 'Open contact page'}
                 <ArrowRight className="w-5 h-5" />

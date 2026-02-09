@@ -194,7 +194,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1DB954]"></div>
       </div>
     );
   }
@@ -212,7 +212,7 @@ export default function AdminDashboard() {
       <header className="bg-gray-800/50 border-b border-gray-700/50 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
             <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
@@ -229,7 +229,7 @@ export default function AdminDashboard() {
           <nav className="space-y-2">
             {tabs.map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-gradient-to-r from-red-500/20 to-pink-500/20 text-white border border-red-500/30' : 'text-gray-400 hover:text-white hover:bg-gray-700/30'}`}>
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id ? 'bg-gradient-to-r from-[#1DB954]/20 to-emerald-600/20 text-white border border-[#1DB954]/30' : 'text-gray-400 hover:text-white hover:bg-gray-700/30'}`}>
                 {tab.icon}
                 <span>{tab.label}</span>
               </button>

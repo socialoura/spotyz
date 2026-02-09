@@ -104,7 +104,7 @@ export default function SettingsTab({ token }: Props) {
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white" />
           </div>
         </div>
-        <button onClick={handleChangePassword} className="mt-4 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg text-white hover:from-red-600 hover:to-pink-600">
+        <button onClick={handleChangePassword} className="mt-4 px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700">
           Update Password
         </button>
       </div>
@@ -124,7 +124,7 @@ export default function SettingsTab({ token }: Props) {
           </div>
           <div className="flex items-center space-x-4">
             <button onClick={handleTestStripeConnection} className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white">Test Connection</button>
-            <button onClick={handleSaveStripeSettings} className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg text-white hover:from-red-600 hover:to-pink-600">Save</button>
+            <button onClick={handleSaveStripeSettings} className="px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700">Save</button>
             <span className={`flex items-center space-x-2 ${stripeSettings.connected ? 'text-green-400' : 'text-gray-400'}`}>
               {stripeSettings.connected ? (
                 <><svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg><span>Connected</span></>
@@ -173,7 +173,7 @@ export default function SettingsTab({ token }: Props) {
             <input type="email" value={serviceSettings.adminEmail} onChange={(e) => setServiceSettings({ ...serviceSettings, adminEmail: e.target.value })}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white" placeholder="admin@example.com" />
           </div>
-          <button onClick={handleSaveServiceSettings} className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg text-white hover:from-red-600 hover:to-pink-600">
+          <button onClick={handleSaveServiceSettings} className="px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700">
             Save Settings
           </button>
         </div>

@@ -16,7 +16,7 @@ interface GoalSelectionModalProps {
   onClose: () => void;
   onSelectGoal: (goal: FollowerGoal, email: string) => void;
   username: string;
-  platform: 'youtube' | 'instagram' | 'tiktok';
+  platform: 'spotify' | 'instagram' | 'tiktok';
   language?: 'en' | 'fr';
 }
 
@@ -38,18 +38,18 @@ export default function GoalSelectionModal({
   const [customFollowers, setCustomFollowers] = useState(100);
 
   const getUnitLabel = () => {
-    if (platform === 'youtube') {
-      return language === 'fr' ? 'vues' : 'impressions';
+    if (platform === 'spotify') {
+      return language === 'fr' ? 'streams' : 'streams';
     }
-    return language === 'fr' ? 'vues' : 'impressions';
+    return language === 'fr' ? 'streams' : 'streams';
   };
 
-  const isYoutube = platform === 'youtube';
-  const accentBorder = isYoutube ? 'border-red-200' : 'border-gray-200';
-  const accentBtn = isYoutube
-    ? 'bg-red-600 hover:bg-red-700 shadow-red-600/10'
+  const isSpotify = platform === 'spotify';
+  const accentBorder = isSpotify ? 'border-emerald-200' : 'border-gray-200';
+  const accentBtn = isSpotify
+    ? 'bg-[#1DB954] hover:bg-emerald-600 shadow-emerald-600/10'
     : 'bg-gray-900 hover:bg-gray-800 shadow-gray-900/10';
-  const accentRing = isYoutube ? 'focus:ring-red-500' : 'focus:ring-gray-900';
+  const accentRing = isSpotify ? 'focus:ring-emerald-500' : 'focus:ring-gray-900';
 
   const text = {
     en: {
@@ -57,9 +57,9 @@ export default function GoalSelectionModal({
       emailLabel: 'Email address',
       emailPlaceholder: 'your@email.com',
       continue: 'Continue',
-      disclaimer: '**ViewPlex is fully aligned with the terms of service of YouTube and Google Ads. Our approach is based on authentic marketing strategies and professional partnerships.**',
-      disclaimerPart2: 'We enhance your profile\'s visibility by sharing your content through our global partner network, including real creators, mobile platforms, influencer groups, and niche communities. The package you select defines the level of exposure delivered through these partnerships.',
-      disclaimerPart3: '**Disclaimer:** Results depend on your content quality, niche relevance, and consistency. While ViewPlex provides exposure tools, we do not promise specific performance metrics.',
+      disclaimer: '**Spotyz is fully aligned with the terms of service of Spotify. Our approach is based on authentic marketing strategies and professional partnerships.**',
+      disclaimerPart2: 'We enhance your music\'s visibility by sharing your tracks through our global partner network, including real listeners, playlist curators, influencer groups, and niche communities. The package you select defines the level of exposure delivered through these partnerships.',
+      disclaimerPart3: '**Disclaimer:** Results depend on your content quality, niche relevance, and consistency. While Spotyz provides exposure tools, we do not promise specific performance metrics.',
       mostPopular: 'Most popular',
       custom: 'Custom',
       customFollowers: 'Custom package',
@@ -70,9 +70,9 @@ export default function GoalSelectionModal({
       emailLabel: 'Adresse e-mail',
       emailPlaceholder: 'votre@email.com',
       continue: 'Continuer',
-      disclaimer: '**ViewPlex est entièrement conforme aux conditions d\'utilisation de YouTube et Google Ads. Notre approche est basée sur des stratégies marketing authentiques et des partenariats professionnels.**',
+      disclaimer: '**Spotyz est entièrement conforme aux conditions d\'utilisation de Spotify. Notre approche est basée sur des stratégies marketing authentiques et des partenariats professionnels.**',
       disclaimerPart2: '**Nous améliorons la visibilité de votre profil en partageant votre contenu à travers notre réseau mondial de partenaires, incluant de vrais créateurs, des plateformes mobiles, des groupes d\'influenceurs et des communautés de niche. Le forfait que vous sélectionnez définit le niveau d\'exposition fourni par ces partenariats.**',
-      disclaimerPart3: '**Avertissement :** Les résultats de visibilité dépendent de la qualité de votre contenu, de la pertinence de votre niche et de votre régularité. Bien que ViewPlex fournisse des outils d\'exposition, nous ne promettons pas de mesures de performance spécifiques.',
+      disclaimerPart3: '**Avertissement :** Les résultats de visibilité dépendent de la qualité de votre contenu, de la pertinence de votre niche et de votre régularité. Bien que Spotyz fournisse des outils d\'exposition, nous ne promettons pas de mesures de performance spécifiques.',
       mostPopular: 'Plus populaire',
       custom: 'Personnalisé',
       customFollowers: 'Forfait personnalisé',
@@ -281,12 +281,12 @@ export default function GoalSelectionModal({
             {/* Header with username badge */}
             <div className="text-center mb-8">
               <div className={`inline-flex items-center gap-3 px-5 py-3 border ${accentBorder} rounded-2xl mb-6 bg-white`}>
-                <div className={`w-12 h-12 rounded-xl ${isYoutube ? 'bg-red-600' : 'bg-gray-900'} flex items-center justify-center shadow-sm`}>
+                <div className={`w-12 h-12 rounded-xl ${isSpotify ? 'bg-[#1DB954]' : 'bg-gray-900'} flex items-center justify-center shadow-sm`}>
                   <span className="text-white text-xl font-bold">{username.charAt(0).toUpperCase()}</span>
                 </div>
                 <div className="text-left">
-                  <div className="text-xs text-gray-500 uppercase tracking-wider dark:text-gray-400">{platform === 'youtube' ? 'Video' : 'Account'}</div>
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">{platform === 'youtube' ? username : `@${username}`}</div>
+                  <div className="text-xs text-gray-500 uppercase tracking-wider dark:text-gray-400">{platform === 'spotify' ? 'Track' : 'Account'}</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">{platform === 'spotify' ? username : `@${username}`}</div>
                 </div>
               </div>
               <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-2">
@@ -301,7 +301,7 @@ export default function GoalSelectionModal({
             {isLoading ? (
               <div className="flex justify-center items-center py-12">
                 <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-2 border-[#1DB954] border-t-transparent rounded-full animate-spin" />
                   <span className="text-gray-600">Loading...</span>
                 </div>
               </div>
@@ -317,13 +317,13 @@ export default function GoalSelectionModal({
                   onClick={() => handleGoalSelect(goal)}
                   className={`relative p-4 rounded-2xl border transition-all duration-300 group ${
                     selectedGoal?.followers === goal.followers
-                      ? (isYoutube ? 'border-red-600 bg-red-50 shadow-sm scale-[1.01]' : 'border-gray-900 bg-gray-50 shadow-sm scale-[1.01]')
+                      ? (isSpotify ? 'border-[#1DB954] bg-emerald-50 shadow-sm scale-[1.01]' : 'border-gray-900 bg-gray-50 shadow-sm scale-[1.01]')
                       : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-900'
                   }`}
                 >
                   {goal.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap uppercase tracking-wider shadow-sm">
+                      <span className="bg-[#1DB954] text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap uppercase tracking-wider shadow-sm">
                         {t.mostPopular}
                       </span>
                     </div>
@@ -338,7 +338,7 @@ export default function GoalSelectionModal({
                     <div className="text-[10px] text-gray-500 uppercase tracking-wider -mt-1 mb-2 dark:text-gray-400">
                       {getUnitLabel()}
                     </div>
-                    <div className={`text-xl font-black ${isYoutube ? 'text-red-600' : 'text-gray-900'}`}>
+                    <div className={`text-xl font-black ${isSpotify ? 'text-[#1DB954]' : 'text-gray-900'}`}>
                       {language === 'fr' ? `${goal.price.toFixed(2)}€` : `$${goal.price.toFixed(2)}`}
                     </div>
                     <div className="text-xs text-gray-400 line-through">
@@ -347,7 +347,7 @@ export default function GoalSelectionModal({
                   </div>
                   {/* Selection indicator */}
                   {selectedGoal?.followers === goal.followers && (
-                    <div className={`absolute top-2 right-2 w-5 h-5 rounded-full ${isYoutube ? 'bg-red-600' : 'bg-gray-900'} flex items-center justify-center`}>
+                    <div className={`absolute top-2 right-2 w-5 h-5 rounded-full ${isSpotify ? 'bg-[#1DB954]' : 'bg-gray-900'} flex items-center justify-center`}>
                       <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
@@ -361,12 +361,12 @@ export default function GoalSelectionModal({
                 onClick={() => handleGoalSelect({ followers: 0, price: 0, originalPrice: 0, discount: 50 })}
                 className={`relative p-4 rounded-2xl border transition-all duration-300 col-span-2 sm:col-span-4 group ${
                   showCustomSlider
-                    ? (isYoutube ? 'border-red-600 bg-red-50' : 'border-gray-900 bg-gray-50')
+                    ? (isSpotify ? 'border-[#1DB954] bg-emerald-50' : 'border-gray-900 bg-gray-50')
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-900'
                 }`}
               >
                 <div className="flex items-center justify-center gap-3">
-                  <div className={`w-8 h-8 rounded-lg ${isYoutube ? 'bg-red-600' : 'bg-gray-900'} flex items-center justify-center`}>
+                  <div className={`w-8 h-8 rounded-lg ${isSpotify ? 'bg-[#1DB954]' : 'bg-gray-900'} flex items-center justify-center`}>
                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                     </svg>
@@ -390,7 +390,7 @@ export default function GoalSelectionModal({
                     <p className="text-sm text-gray-600 dark:text-gray-300">{getUnitLabel()}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-black text-red-600">
+                    <div className="text-3xl font-black text-[#1DB954]">
                       {language === 'fr' ? `${calculateCustomPrice(customFollowers)}€` : `$${calculateCustomPrice(customFollowers)}`}
                     </div>
                   </div>
@@ -405,7 +405,7 @@ export default function GoalSelectionModal({
                   onChange={(e) => handleCustomFollowersChange(parseInt(e.target.value))}
                   className="w-full h-2 rounded-full appearance-none cursor-pointer slider bg-gray-200 dark:bg-gray-800"
                   style={{
-                    background: `linear-gradient(to right, rgb(220 38 38) 0%, rgb(220 38 38) ${((customFollowers - 100) / (50000 - 100)) * 100}%, rgb(229 231 235) ${((customFollowers - 100) / (50000 - 100)) * 100}%, rgb(229 231 235) 100%)`
+                    background: `linear-gradient(to right, rgb(29 185 84) 0%, rgb(29 185 84) ${((customFollowers - 100) / (50000 - 100)) * 100}%, rgb(229 231 235) ${((customFollowers - 100) / (50000 - 100)) * 100}%, rgb(229 231 235) 100%)`
                   }}
                 />
                 

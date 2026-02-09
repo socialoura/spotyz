@@ -10,8 +10,8 @@ interface PaymentModalProps {
   amount: number;
   currency: string;
   onClose: () => void;
-  onSuccess?: (paymentIntentId: string, details?: { email: string; youtubeVideoUrl: string }) => void;
-  onCollectedDetails?: (details: { email: string; youtubeVideoUrl: string }) => void;
+  onSuccess?: (paymentIntentId: string, details?: { email: string; spotifyUrl: string }) => void;
+  onCollectedDetails?: (details: { email: string; spotifyUrl: string }) => void;
   productName?: string;
   language?: 'en' | 'fr';
   email?: string;
@@ -68,7 +68,7 @@ function PaymentForm({
   const [elementsReady, setElementsReady] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [customerEmail, setCustomerEmail] = useState(email || '');
-  const [youtubeVideoUrl, setYoutubeVideoUrl] = useState(orderDetails?.username || '');
+  const [spotifyTrackUrl, setSpotifyTrackUrl] = useState(orderDetails?.username || '');
   const [detailsError, setDetailsError] = useState<string | null>(null);
 
   // Language strings
@@ -131,8 +131,8 @@ function PaymentForm({
     if (!customerEmail.trim() || !isValidEmail(customerEmail)) {
       return language === 'fr' ? 'Veuillez entrer un email valide.' : 'Please enter a valid email.';
     }
-    if (!youtubeVideoUrl.trim()) {
-      return language === 'fr' ? 'Veuillez entrer le lien de votre vidéo YouTube.' : 'Please enter your YouTube video link.';
+    if (!spotifyTrackUrl.trim()) {
+      return language === 'fr' ? 'Veuillez entrer le lien de votre titre Spotify.' : 'Please enter your Spotify track link.';
     }
     return null;
   };
@@ -180,7 +180,7 @@ function PaymentForm({
         setPaymentIntentId(paymentIntent.id);
         setPaymentStatus('success');
 
-        const details = { email: customerEmail.trim(), youtubeVideoUrl: youtubeVideoUrl.trim() };
+        const details = { email: customerEmail.trim(), spotifyUrl: spotifyTrackUrl.trim() };
         if (onCollectedDetails) {
           onCollectedDetails(details);
         }
@@ -210,7 +210,7 @@ function PaymentForm({
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 email: customerEmail,
-                customerName: youtubeVideoUrl,
+                customerName: spotifyTrackUrl,
                 orderDetails: {
                   platform: orderDetails.platform,
                   followers: orderDetails.followers,
@@ -221,7 +221,7 @@ function PaymentForm({
                     month: 'long',
                     day: 'numeric',
                   }),
-                  videoUrl: youtubeVideoUrl.trim(),
+                  videoUrl: spotifyTrackUrl.trim(),
                 },
                 language,
               }),
@@ -243,7 +243,7 @@ function PaymentForm({
               body: JSON.stringify({
                 orderId,
                 email: customerEmail,
-                username: youtubeVideoUrl,
+                username: spotifyTrackUrl,
                 platform: orderDetails.platform,
                 followers: orderDetails.followers,
                 price: priceFormatted,
@@ -273,7 +273,7 @@ function PaymentForm({
     <div className="p-6 sm:p-8">
       {/* Header with gradient background */}
       <div className="mb-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-600 shadow-sm mb-4 border border-red-700/10">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1DB954] shadow-sm mb-4 border border-emerald-700/10">
           <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
           </svg>
@@ -287,7 +287,7 @@ function PaymentForm({
           </p>
         )}
         <div className="mt-4 flex items-center justify-center gap-2">
-          <span className="text-3xl font-black text-red-600">
+          <span className="text-3xl font-black text-[#1DB954]">
             {formatAmount(amount, currency)}
           </span>
           {originalAmount !== amount && (
@@ -317,7 +317,7 @@ function PaymentForm({
           )}
           <button
             onClick={handleClose}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 px-6 rounded-xl transition-all shadow-sm"
+            className="w-full bg-[#1DB954] hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-xl transition-all shadow-sm"
           >
             {t.close}
           </button>
@@ -359,23 +359,23 @@ function PaymentForm({
                   setDetailsError(null);
                 }}
                 placeholder={language === 'fr' ? 'vous@exemple.com' : 'you@example.com'}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm font-medium focus:border-red-600 focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm font-medium focus:border-[#1DB954] focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
               />
             </div>
 
             <div>
               <label className="block text-xs font-medium text-gray-600 uppercase tracking-wider mb-2 dark:text-gray-300">
-                {language === 'fr' ? 'Lien YouTube' : 'YouTube link'}
+                {language === 'fr' ? 'Lien Spotify' : 'Spotify link'}
               </label>
               <input
                 type="text"
-                value={youtubeVideoUrl}
+                value={spotifyTrackUrl}
                 onChange={(e) => {
-                  setYoutubeVideoUrl(e.target.value);
+                  setSpotifyTrackUrl(e.target.value);
                   setDetailsError(null);
                 }}
-                placeholder={language === 'fr' ? 'https://www.youtube.com/watch?v=...' : 'https://www.youtube.com/watch?v=...'}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm font-medium focus:border-red-600 focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
+                placeholder={language === 'fr' ? 'https://open.spotify.com/track/...' : 'https://open.spotify.com/track/...'}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-sm font-medium focus:border-[#1DB954] focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
               />
             </div>
           </div>
@@ -440,7 +440,7 @@ function PaymentForm({
                     value={promoCode || ''}
                     onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                     placeholder="PROMO20"
-                    className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 text-sm font-medium focus:border-red-600 focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
+                    className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 text-sm font-medium focus:border-[#1DB954] focus:ring-0 transition-colors dark:border-gray-800 dark:bg-gray-950 dark:text-white"
                     disabled={promoLoading}
                   />
                 </div>
@@ -448,7 +448,7 @@ function PaymentForm({
                   type="button"
                   onClick={onApplyPromo}
                   disabled={promoLoading || !promoCode?.trim()}
-                  className="px-5 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white text-sm font-bold rounded-xl transition-all shadow-sm disabled:shadow-none dark:disabled:bg-gray-800"
+                  className="px-5 py-3 bg-[#1DB954] hover:bg-emerald-600 disabled:bg-gray-300 text-white text-sm font-bold rounded-xl transition-all shadow-sm disabled:shadow-none dark:disabled:bg-gray-800"
                 >
                   {promoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : t.promoApply}
                 </button>
@@ -492,11 +492,11 @@ function PaymentForm({
                 id="terms"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                className="mt-0.5 h-5 w-5 text-red-600 focus:ring-red-500 border-gray-300 rounded-md bg-white dark:border-gray-700 dark:bg-gray-950"
+                className="mt-0.5 h-5 w-5 text-[#1DB954] focus:ring-emerald-500 border-gray-300 rounded-md bg-white dark:border-gray-700 dark:bg-gray-950"
               />
               <span className="ml-3 text-sm text-gray-700 group-hover:text-gray-900 transition-colors dark:text-gray-200 dark:group-hover:text-white">
                 {t.termsLabel}{' '}
-                <a href="#" className="text-red-600 hover:underline font-bold">
+                <a href="#" className="text-[#1DB954] hover:underline font-bold">
                   {t.termsLink}
                 </a>
                 .
@@ -508,7 +508,7 @@ function PaymentForm({
           <button
             type="submit"
             disabled={!stripe || !elements || isProcessing || !elementsReady || !acceptedTerms || !!validateDetails()}
-            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-xl transition-all shadow-sm disabled:shadow-none flex items-center justify-center text-lg dark:disabled:bg-gray-800"
+            className="w-full bg-[#1DB954] hover:bg-emerald-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-xl transition-all shadow-sm disabled:shadow-none flex items-center justify-center text-lg dark:disabled:bg-gray-800"
           >
             {isProcessing ? (
               <>

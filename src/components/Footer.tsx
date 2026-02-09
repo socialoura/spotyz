@@ -1,6 +1,6 @@
 import { Language } from '@/i18n/config';
 import Image from 'next/image';
-import { Play } from 'lucide-react';
+import { Music } from 'lucide-react';
 
 interface FooterProps {
   lang: Language;
@@ -10,8 +10,8 @@ export default function Footer({ lang }: FooterProps) {
   const currentYear = new Date().getFullYear();
   
   const footerText = lang === 'en' 
-    ? `© ${currentYear} ViewPlex. All rights reserved.`
-    : `© ${currentYear} ViewPlex. Tous droits réservés.`;
+    ? `© ${currentYear} Spotyz. All rights reserved.`
+    : `© ${currentYear} Spotyz. Tous droits réservés.`;
     
   const linksTitle = lang === 'en' ? 'Quick Links' : 'Liens rapides';
   const contactText = lang === 'en' ? 'Contact' : 'Contact';
@@ -25,18 +25,18 @@ export default function Footer({ lang }: FooterProps) {
             <div className="flex items-center gap-3 mb-4">
               <Image
                 src="/img/a-modern-flat-vector-logo-design-featuri_ZEbfVp__QiK-0wr5MrgGJg_ZFPYEbSKRM6a11TOK-IQCQ-removebg-preview.png"
-                alt="ViewPlex Logo"
+                alt="Spotyz Logo"
                 width={64}
                 height={64}
                 className="w-14 h-14"
               />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-red-600 text-white">
-                    <Play className="w-4 h-4" />
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[#1DB954] text-white">
+                    <Music className="w-4 h-4" />
                   </span>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                    ViewPlex
+                    Spotyz
                   </h3>
                 </div>
               </div>

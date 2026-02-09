@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Language } from '@/i18n/config';
 import { useRouter } from 'next/navigation';
-import { Plus, Minus, BarChart3, Calendar, MessageCircle, HeadphonesIcon, Play, CheckCircle2, ArrowRight, ShieldCheck, Zap, X } from 'lucide-react';
+import { Plus, Minus, BarChart3, Calendar, MessageCircle, HeadphonesIcon, Music, CheckCircle2, ArrowRight, ShieldCheck, Zap, X } from 'lucide-react';
 import ChatWidget from '@/components/ChatWidget';
 import ReviewsSection from '@/components/ReviewsSection';
 import PaymentModal from '@/components/PaymentModal';
@@ -21,9 +21,9 @@ export default function HomePage({ params }: PageProps) {
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedPack, setSelectedPack] = useState<{ views: number; amount: number } | null>(null);
-  const [checkoutDetails, setCheckoutDetails] = useState<{ email: string; youtubeVideoUrl: string } | null>(null);
+  const [checkoutDetails, setCheckoutDetails] = useState<{ email: string; spotifyUrl: string } | null>(null);
   const [heroSelectionError, setHeroSelectionError] = useState<string>('');
-  const [customViews, setCustomViews] = useState<number>(200);
+  const [customStreams, setCustomStreams] = useState<number>(200);
   const [packsLoading, setPacksLoading] = useState(true);
   const [regularPacks, setRegularPacks] = useState<RegularPack[]>([]);
 
@@ -50,7 +50,7 @@ export default function HomePage({ params }: PageProps) {
 
   const getCurrency = () => (lang === 'fr' ? 'eur' : 'usd');
 
-  const formatViewsLabel = (views: number) => {
+  const formatStreamsLabel = (views: number) => {
     if (views >= 1000) {
       const value = views / 1000;
       const decimals = Number.isInteger(value) ? 0 : 1;
@@ -103,7 +103,7 @@ export default function HomePage({ params }: PageProps) {
           if (!Number.isFinite(views) || views <= 0 || !Number.isFinite(priceFloat) || priceFloat <= 0) return acc;
 
           const amount = Math.round(priceFloat * 100);
-          const label = formatViewsLabel(views);
+          const label = formatStreamsLabel(views);
           
           const originalRaw = pkg.original_price ?? pkg.originalPrice;
           const originalFloat = typeof originalRaw === 'number' ? originalRaw : parseFloat(String(originalRaw || ''));
@@ -156,25 +156,25 @@ export default function HomePage({ params }: PageProps) {
 
   const handlePaymentSuccess = async (
     paymentIntentIdParam: string,
-    details?: { email: string; youtubeVideoUrl: string }
+    details?: { email: string; spotifyUrl: string }
   ) => {
     setIsPaymentModalOpen(false);
 
     const email = details?.email || checkoutDetails?.email || '';
-    const youtubeVideoUrl = details?.youtubeVideoUrl || checkoutDetails?.youtubeVideoUrl || '';
+    const spotifyUrl = details?.spotifyUrl || checkoutDetails?.spotifyUrl || '';
 
     try {
       const response = await fetch('/api/orders/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: youtubeVideoUrl,
+          username: spotifyUrl,
           email,
-          platform: 'youtube',
+          platform: 'spotify',
           followers: selectedPack?.views || 0,
           amount: selectedPack?.amount || 0,
           paymentId: paymentIntentIdParam,
-          youtubeVideoUrl,
+          spotifyUrl,
         }),
       });
 
@@ -192,7 +192,7 @@ export default function HomePage({ params }: PageProps) {
       email: email,
       views: String(selectedPack?.views || 0),
       amount: String(selectedPack?.amount || 0),
-      video: youtubeVideoUrl,
+      video: checkoutDetails?.spotifyUrl || '',
     });
     router.push(`/${lang}/thank-you?${thankYouParams.toString()}`);
   };
@@ -200,13 +200,13 @@ export default function HomePage({ params }: PageProps) {
   const content = {
     en: {
       hero: {
-        headline: 'YouTube Video Visibility',
-        subheadline: 'Choose an exposure package, paste your video link, and run a compliant visibility campaign with secure checkout.',
+        headline: 'Spotify Music Visibility',
+        subheadline: 'Choose a streams package, paste your track link, and run a compliant visibility campaign with secure checkout.',
         cta: 'Start visibility campaign',
       },
       services: {
         title: 'Our Services',
-        subtitle: 'A simple workflow designed for YouTube video discovery',
+        subtitle: 'A simple workflow designed for Spotify music discovery',
         items: [
           {
             title: 'Visibility Packages',
@@ -220,7 +220,7 @@ export default function HomePage({ params }: PageProps) {
           },
           {
             title: 'Secure Payments',
-            description: 'Checkout securely by credit card. No password needed, only your video link.',
+            description: 'Checkout securely by credit card. No password needed, only your track link.',
             icon: MessageCircle,
           },
           {
@@ -256,20 +256,20 @@ export default function HomePage({ params }: PageProps) {
           },
           {
             question: 'Which platforms do you support?',
-            answer: 'We currently focus on YouTube video visibility packages.',
+            answer: 'We currently focus on Spotify music visibility packages.',
           },
         ],
       },
     },
     fr: {
       hero: {
-        headline: 'Visibilité de votre vidéo YouTube',
-        subheadline: 'Choisissez un forfait d\'exposition, collez le lien de votre vidéo et lancez une campagne de visibilité conforme avec paiement sécurisé.',
+        headline: 'Visibilité de votre musique Spotify',
+        subheadline: 'Choisissez un forfait de streams, collez le lien de votre titre et lancez une campagne de visibilité avec paiement sécurisé.',
         cta: 'Lancer la campagne',
       },
       services: {
         title: 'Nos Services',
-        subtitle: 'Un parcours simple pensé pour la découverte sur YouTube',
+        subtitle: 'Un parcours simple pensé pour la découverte sur Spotify',
         items: [
           {
             title: 'Forfaits de visibilité',
@@ -283,7 +283,7 @@ export default function HomePage({ params }: PageProps) {
           },
           {
             title: 'Paiement sécurisé',
-            description: 'Paiement sécurisé par carte bancaire. Aucun mot de passe requis, seulement le lien de la vidéo.',
+            description: 'Paiement sécurisé par carte bancaire. Aucun mot de passe requis, seulement le lien du titre.',
             icon: MessageCircle,
           },
           {
@@ -319,7 +319,7 @@ export default function HomePage({ params }: PageProps) {
           },
           {
             question: 'Quelles plateformes supportez-vous ?',
-            answer: 'Nous proposons actuellement des forfaits de visibilité pour les vidéos YouTube.',
+            answer: 'Nous proposons actuellement des forfaits de visibilité pour la musique sur Spotify.',
           },
         ],
       },
@@ -345,7 +345,7 @@ export default function HomePage({ params }: PageProps) {
     <div className="bg-white dark:bg-gray-950">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(1200px_circle_at_10%_20%,rgba(239,68,68,0.10),transparent_55%),radial-gradient(900px_circle_at_90%_35%,rgba(239,68,68,0.06),transparent_55%)]" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(1200px_circle_at_10%_20%,rgba(29,185,84,0.10),transparent_55%),radial-gradient(900px_circle_at_90%_35%,rgba(29,185,84,0.06),transparent_55%)]" />
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(2,6,23,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(2,6,23,0.04)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30 dark:opacity-15" />
         <div className="absolute inset-0 pointer-events-none [mask-image:radial-gradient(60%_55%_at_50%_35%,black,transparent)] bg-gradient-to-b from-white/0 via-white/40 to-white dark:from-gray-950/0 dark:via-gray-950/70 dark:to-gray-950" />
 
@@ -354,17 +354,17 @@ export default function HomePage({ params }: PageProps) {
             <div className="lg:col-span-5">
               <div className="inline-flex items-center gap-3">
                 <span className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 dark:text-white">
-                  {lang === 'fr' ? 'Faites la promotion de votre vidéo YouTube' : 'Promote your YouTube video'}
+                  {lang === 'fr' ? 'Boostez votre musique sur Spotify' : 'Boost your music on Spotify'}
                 </span>
-                <span className="inline-flex items-center rounded-lg bg-red-600 px-3 py-1.5 text-sm font-black text-white">
+                <span className="inline-flex items-center rounded-lg bg-[#1DB954] px-3 py-1.5 text-sm font-black text-white">
                   {lang === 'fr' ? 'Instantané' : 'Instantly'}
                 </span>
               </div>
 
               <p className="mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
                 {lang === 'fr'
-                  ? 'ViewPlex vous aide à lancer une campagne publicitaire pour promouvoir votre vidéo sur YouTube via Google Ads. Choisissez une option, payez en toute sécurité et démarrez rapidement.'
-                  : 'ViewPlex helps you launch an ad campaign to promote your video on YouTube via Google Ads. Choose an option, checkout securely, and get started fast.'}
+                  ? 'Spotyz vous aide à booster la visibilité de vos titres sur Spotify. Choisissez un pack de streams, payez en toute sécurité et démarrez rapidement.'
+                  : 'Spotyz helps you boost the visibility of your tracks on Spotify. Choose a streams pack, checkout securely, and get started fast.'}
               </p>
 
               <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
@@ -373,7 +373,7 @@ export default function HomePage({ params }: PageProps) {
                   <span>{lang === 'fr' ? 'Paiement sécurisé' : 'Secure payment'}</span>
                 </div>
                 <div className="inline-flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-red-600" />
+                  <CheckCircle2 className="h-4 w-4 text-[#1DB954]" />
                   <span>{lang === 'fr' ? 'Qualité élevée' : 'High quality'}</span>
                 </div>
                 <div className="inline-flex items-center gap-2">
@@ -387,7 +387,7 @@ export default function HomePage({ params }: PageProps) {
               <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-950">
                 <div className="border-b border-gray-200 bg-gray-50 px-6 py-3 dark:border-gray-800 dark:bg-gray-900">
                   <div className="text-sm font-black text-gray-900 dark:text-white">
-                    {lang === 'fr' ? 'Vues' : 'Impressions'}
+                    {lang === 'fr' ? 'Streams' : 'Streams'}
                   </div>
                 </div>
 
@@ -395,8 +395,8 @@ export default function HomePage({ params }: PageProps) {
                   <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-600 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
                     <span className="font-bold">{lang === 'fr' ? 'Info' : 'Info'}:</span>{' '}
                     {lang === 'fr'
-                      ? 'Choisissez un pack. Le paiement s\'ouvre ensuite et vous ajoutez votre email + lien YouTube.'
-                      : 'Pick a pack. Checkout opens next and you’ll add your email + YouTube link.'}
+                      ? 'Choisissez un pack. Le paiement s\'ouvre ensuite et vous ajoutez votre email + lien Spotify.'
+                      : 'Pick a pack. Checkout opens next and you’ll add your email + Spotify link.'}
                   </div>
 
                   <div className="mt-4 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -421,80 +421,80 @@ export default function HomePage({ params }: PageProps) {
                       ))
                     ) : (
                       regularPacks.map((offer) => {
-                        const isSelected = selectedPack?.views === offer.views;
+                        const isSelected = selectedPack?.streams === offer.streams;
                         return (
-                        <button
-                          key={`regular-${offer.views}-${offer.amount}`}
-                          type="button"
-                          onClick={() => {
-                            setHeroSelectionError('');
-                            setSelectedPack({ views: offer.views, amount: offer.amount });
-                          }}
-                          className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
-                            isSelected
-                              ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
-                              : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
-                          }`}
-                        >
-                          <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
-                            <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.12),transparent_55%)]" />
-                          </div>
+                          <button
+                            key={`regular-${offer.streams}-${offer.amount}`}
+                            type="button"
+                            onClick={() => {
+                              setHeroSelectionError('');
+                              setSelectedPack({ streams: offer.streams, amount: offer.amount });
+                            }}
+                            className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
+                              isSelected
+                                ? 'border-[#1DB954] bg-emerald-50 shadow-sm dark:bg-emerald-950/30'
+                                : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
+                            }`}
+                          >
+                            <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                              <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(29,185,84,0.12),transparent_55%)]" />
+                            </div>
 
-                          <div className="flex items-center justify-between">
-                            <div>
-                              {offer.badge && (
-                                <div className="mb-2">
-                                  <div className="inline-flex items-center rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
-                                    {offer.badge}
+                            <div className="flex items-center justify-between">
+                              <div>
+                                {offer.badge && (
+                                  <div className="mb-2">
+                                    <div className="inline-flex items-center rounded-full bg-[#1DB954] px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
+                                      {offer.badge}
+                                    </div>
                                   </div>
+                                )}
+                                <div className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
+                                  {offer.label}
                                 </div>
-                              )}
-                              <div className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
-                                {offer.label}
+                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                  {lang === 'fr' ? 'streams' : 'streams'}
+                                </div>
                               </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400">
-                                {lang === 'fr' ? 'vues' : 'impressions'}
+                              <div className="text-right">
+                                <div className="text-sm sm:text-base font-black text-[#1DB954]">
+                                  {formatHeroPrice(offer.amount)}
+                                </div>
+                                {offer.original && (
+                                  <div className="text-xs text-gray-400 line-through dark:text-gray-500">
+                                    {formatHeroPrice(offer.original)}
+                                  </div>
+                                )}
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-sm sm:text-base font-black text-red-600">
-                                {formatHeroPrice(offer.amount)}
-                              </div>
-                              {offer.original && (
-                                <div className="text-xs text-gray-400 line-through dark:text-gray-500">
-                                  {formatHeroPrice(offer.original)}
-                                </div>
-                              )}
-                            </div>
-                          </div>
 
-                          <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">{lang === 'fr' ? 'Sélectionner' : 'Select'}</span>
-                            <span className={`h-2.5 w-2.5 rounded-full ${isSelected ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-800'}`} />
-                          </div>
-                        </button>
+                            <div className="mt-3 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                              <span className="font-semibold">{lang === 'fr' ? 'Sélectionner' : 'Select'}</span>
+                              <span className={`h-2.5 w-2.5 rounded-full ${isSelected ? 'bg-[#1DB954]' : 'bg-gray-200 dark:bg-gray-800'}`} />
+                            </div>
+                          </button>
                         );
                       })
                     )}
                     {(() => {
-                      const customAmount = Math.round(customViews * 0.4);
-                      const isCustomSelected = selectedPack?.views === customViews;
+                      const customAmount = Math.round(customStreams * 0.4);
+                      const isCustomSelected = selectedPack?.streams === customStreams;
 
                       return (
                         <button
                           type="button"
                           onClick={() => {
                             setHeroSelectionError('');
-                            setSelectedPack({ views: customViews, amount: customAmount });
+                            setSelectedPack({ streams: customStreams, amount: customAmount });
                           }}
                           className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
                             isCustomSelected
-                              ? 'border-red-600 bg-red-50 shadow-sm dark:bg-red-950/30'
+                              ? 'border-[#1DB954] bg-emerald-50 shadow-sm dark:bg-emerald-950/30'
                               : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
                           }`}
                         >
                           <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isCustomSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
-                            <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(239,68,68,0.10),transparent_55%)]" />
+                            <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(29,185,84,0.10),transparent_55%)]" />
                           </div>
 
                           <div className="flex items-start justify-between gap-6">
@@ -505,15 +505,15 @@ export default function HomePage({ params }: PageProps) {
                                 </div>
                               </div>
                               <div className="text-xl font-black text-gray-900 dark:text-white">
-                                {formatViewsLabel(customViews)}
+                                {formatStreamsLabel(customStreams)}
                               </div>
                               <div className="text-xs text-gray-500 dark:text-gray-400">
-                                {lang === 'fr' ? 'vues' : 'impressions'}
+                                {lang === 'fr' ? 'streams' : 'streams'}
                               </div>
                             </div>
 
                             <div className="text-right">
-                              <div className="text-xl font-black text-red-600">
+                              <div className="text-xl font-black text-[#1DB954]">
                                 {formatHeroPrice(customAmount)}
                               </div>
                               <div className="text-xs text-gray-400 dark:text-gray-500">
@@ -528,13 +528,13 @@ export default function HomePage({ params }: PageProps) {
                               min={200}
                               max={1000000}
                               step={100}
-                              value={customViews}
+                              value={customStreams}
                               onChange={(e) => {
                                 const next = parseInt(e.target.value, 10);
                                 if (!Number.isFinite(next)) return;
                                 setHeroSelectionError('');
-                                setCustomViews(next);
-                                setSelectedPack({ views: next, amount: Math.round(next * 0.4) });
+                                setCustomStreams(next);
+                                setSelectedPack({ streams: next, amount: Math.round(next * 0.4) });
                               }}
                               className="slider w-full"
                             />
@@ -553,7 +553,7 @@ export default function HomePage({ params }: PageProps) {
                   </div>
 
                   {heroSelectionError && (
-                    <div className="mt-4 text-sm text-red-700 dark:text-red-200">
+                    <div className="mt-4 text-sm text-emerald-700 dark:text-emerald-200">
                       {heroSelectionError}
                     </div>
                   )}
@@ -561,26 +561,26 @@ export default function HomePage({ params }: PageProps) {
                   <button
                     type="button"
                     onClick={handleHeroBuyNow}
-                    className="mt-4 w-full rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black py-3 px-6 transition-colors"
+                    className="mt-4 w-full rounded-2xl bg-[#1DB954] hover:bg-emerald-600 text-white font-black py-3 px-6 transition-colors"
                   >
                     {lang === 'fr' ? 'Acheter maintenant' : 'Buy now'}
                   </button>
 
                   <div className="mt-4 hidden grid-cols-2 gap-3 border-t border-gray-200 pt-4 text-sm text-gray-700 dark:border-gray-800 dark:text-gray-200 sm:grid">
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-red-600" />
-                      <span>{lang === 'fr' ? 'Promotion via Google Ads' : 'Promotion via Google Ads'}</span>
+                      <CheckCircle2 className="h-4 w-4 text-[#1DB954]" />
+                      <span>{lang === 'fr' ? 'Promotion sur Spotify' : 'Spotify promotion'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-red-600" />
-                      <span>{lang === 'fr' ? 'Ciblage & diffusion progressive' : 'Targeting & progressive delivery'}</span>
+                      <CheckCircle2 className="h-4 w-4 text-[#1DB954]" />
+                      <span>{lang === 'fr' ? 'Streams progressifs & naturels' : 'Progressive & natural streams'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-red-600" />
+                      <CheckCircle2 className="h-4 w-4 text-[#1DB954]" />
                       <span>{lang === 'fr' ? 'Démarrage rapide' : 'Instant start'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-red-600" />
+                      <CheckCircle2 className="h-4 w-4 text-[#1DB954]" />
                       <span>{lang === 'fr' ? 'Confidentialité & sécurité' : 'Privacy & safety'}</span>
                     </div>
                   </div>
@@ -593,7 +593,7 @@ export default function HomePage({ params }: PageProps) {
 
       {/* How It Works */}
       <section className="py-6 sm:py-12 lg:py-16 bg-white relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_10%_30%,rgba(239,68,68,0.06),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_10%_30%,rgba(29,185,84,0.06),transparent_55%)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center mb-6">
@@ -602,24 +602,24 @@ export default function HomePage({ params }: PageProps) {
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
               {lang === 'fr'
-                ? 'Sélectionnez un pack, renseignez votre email + lien YouTube, puis payez en toute sécurité.'
-                : 'Select a package, add your email + YouTube link, then checkout securely.'}
+                ? 'Sélectionnez un pack, renseignez votre email + lien Spotify, puis payez en toute sécurité.'
+                : 'Select a package, add your email + Spotify link, then checkout securely.'}
             </p>
-            <div className="w-20 h-1 bg-red-600 mx-auto rounded-full mt-6" />
+            <div className="w-20 h-1 bg-[#1DB954] mx-auto rounded-full mt-6" />
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 border border-red-200">
-                  <BarChart3 className="h-6 w-6 text-red-700" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200">
+                  <BarChart3 className="h-6 w-6 text-emerald-700" />
                 </div>
                 <div>
                   <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '1) Pack' : '1) Package'}</div>
                   <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
                     {lang === 'fr'
-                      ? 'Choisissez votre niveau de vues. Les packs viennent directement depuis l’admin.'
-                      : 'Choose the view package that fits your goal. Packages are loaded from admin pricing.'}
+                      ? 'Choisissez votre niveau de streams. Les packs viennent directement depuis l’admin.'
+                      : 'Choose the streams package that fits your goal. Packages are loaded from admin pricing.'}
                   </div>
                 </div>
               </div>
@@ -628,14 +628,14 @@ export default function HomePage({ params }: PageProps) {
             <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-50 border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-                  <Play className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+                  <Music className="h-6 w-6 text-gray-700 dark:text-gray-200" />
                 </div>
                 <div>
                   <div className="text-sm font-black text-gray-900 dark:text-white">{lang === 'fr' ? '2) Infos' : '2) Details'}</div>
                   <div className="mt-2 text-sm text-gray-600 leading-relaxed dark:text-gray-300">
                     {lang === 'fr'
-                      ? 'Dans le paiement, ajoutez votre email et le lien de votre vidéo YouTube.'
-                      : 'Inside checkout, add your email and your YouTube video link.'}
+                      ? 'Dans le paiement, ajoutez votre email et le lien de votre titre Spotify.'
+                      : 'Inside checkout, add your email and your Spotify track link.'}
                   </div>
                 </div>
               </div>
@@ -670,7 +670,7 @@ export default function HomePage({ params }: PageProps) {
       </section>
 
       <section className="py-8 sm:py-12 lg:py-16 bg-gray-50 relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_80%_20%,rgba(239,68,68,0.06),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_80%_20%,rgba(29,185,84,0.06),transparent_55%)]" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl mb-4 dark:text-white">
@@ -681,7 +681,7 @@ export default function HomePage({ params }: PageProps) {
                 ? 'Une approche orientée visibilité et découverte, avec un setup simple et un paiement sécurisé.'
                 : 'A visibility and discovery-oriented approach, with simple setup and secure checkout.'}
             </p>
-            <div className="w-20 h-1 bg-red-600 mx-auto rounded-full mt-6" />
+            <div className="w-20 h-1 bg-[#1DB954] mx-auto rounded-full mt-6" />
           </div>
 
           <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-950">
@@ -689,7 +689,7 @@ export default function HomePage({ params }: PageProps) {
               <div className="min-w-[720px]">
                 <div className="grid grid-cols-4 gap-0 border-b border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
                   <div className="p-5 text-sm font-bold text-gray-600 dark:text-gray-300">{lang === 'fr' ? 'Critère' : 'Criteria'}</div>
-                  <div className="p-5 text-sm font-black text-red-700 bg-red-50/60 dark:bg-red-950/25 dark:text-red-200">ViewPlex</div>
+                  <div className="p-5 text-sm font-black text-emerald-700 bg-emerald-50/60 dark:bg-emerald-950/25 dark:text-emerald-200">Spotyz</div>
                   <div className="p-5 text-sm font-bold text-gray-600 dark:text-gray-300">{lang === 'fr' ? 'Sponsoring' : 'Sponsorships'}</div>
                   <div className="p-5 text-sm font-bold text-gray-600 dark:text-gray-300">{lang === 'fr' ? 'Options aléatoires' : 'Random options'}</div>
                 </div>
@@ -764,7 +764,7 @@ export default function HomePage({ params }: PageProps) {
           <div className="mt-10 flex justify-center">
             <button
               onClick={scrollToHero}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 px-7 py-4 text-base font-black text-white shadow-sm transition-all"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1DB954] hover:bg-emerald-600 px-7 py-4 text-base font-black text-white shadow-sm transition-all"
             >
               <span>{lang === 'fr' ? 'Lancer une campagne' : 'Start a campaign'}</span>
               <ArrowRight className="h-5 w-5" />
@@ -775,7 +775,7 @@ export default function HomePage({ params }: PageProps) {
 
       {/* FAQ Section */}
       <section id="faq" className="py-8 sm:py-12 lg:py-16 bg-gray-50 relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#1DB954]/5 rounded-full blur-3xl" />
         
         <div className="relative mx-auto max-w-4xl px-6 lg:px-8">
           <div className="text-center mb-10">
@@ -785,7 +785,7 @@ export default function HomePage({ params }: PageProps) {
             <p className="text-lg text-gray-600 dark:text-gray-300">
               {t.faq.subtitle}
             </p>
-            <div className="w-20 h-1 bg-red-600 mx-auto rounded-full mt-6" />
+            <div className="w-20 h-1 bg-[#1DB954] mx-auto rounded-full mt-6" />
           </div>
           
           <dl className="space-y-4">
@@ -802,7 +802,7 @@ export default function HomePage({ params }: PageProps) {
                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
                       {item.question}
                     </span>
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${openFaqIndex === index ? 'bg-red-600 rotate-180' : 'bg-gray-100'}`}>
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${openFaqIndex === index ? 'bg-[#1DB954] rotate-180' : 'bg-gray-100'}`}>
                       {openFaqIndex === index ? (
                         <Minus className="h-4 w-4 text-white" />
                       ) : (
@@ -823,7 +823,7 @@ export default function HomePage({ params }: PageProps) {
       </section>
 
       <section id="services" className="py-8 sm:py-12 lg:py-16 bg-white relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_0%,rgba(239,68,68,0.08),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_0%,rgba(29,185,84,0.08),transparent_55%)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center mb-8">
@@ -835,14 +835,14 @@ export default function HomePage({ params }: PageProps) {
                 ? 'Des options simples pour lancer une campagne de visibilité vidéo. Vous gardez le contrôle et la mise en place est rapide.'
                 : 'Simple options to start a video visibility campaign. You stay in control and setup is fast.'}
             </p>
-            <div className="w-20 h-1 bg-red-600 mx-auto rounded-full mt-6" />
+            <div className="w-20 h-1 bg-[#1DB954] mx-auto rounded-full mt-6" />
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-950">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 opacity-60 dark:from-gray-200 dark:via-gray-400 dark:to-gray-200" />
               <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
-                <div className="absolute inset-0 bg-[radial-gradient(700px_circle_at_20%_0%,rgba(239,68,68,0.10),transparent_60%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(700px_circle_at_20%_0%,rgba(29,185,84,0.10),transparent_60%)]" />
               </div>
               <div className="flex items-start justify-between gap-6">
                 <div>
@@ -885,12 +885,12 @@ export default function HomePage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="group relative overflow-visible rounded-3xl border-2 border-red-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-gray-950 dark:border-red-900">
+            <div className="group relative overflow-visible rounded-3xl border-2 border-emerald-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-gray-950 dark:border-emerald-900">
               <div className="pointer-events-none absolute inset-0 opacity-60">
-                <div className="absolute inset-0 bg-[radial-gradient(800px_circle_at_50%_0%,rgba(239,68,68,0.18),transparent_60%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(800px_circle_at_50%_0%,rgba(29,185,84,0.18),transparent_60%)]" />
               </div>
               <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-20">
-                <div className="rounded-full bg-red-600 text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider shadow-sm ring-1 ring-red-700/20">
+                <div className="rounded-full bg-[#1DB954] text-white text-[10px] font-black px-3 py-1 uppercase tracking-wider shadow-sm ring-1 ring-emerald-700/20">
                   {lang === 'fr' ? 'Populaire' : 'Most popular'}
                 </div>
               </div>
@@ -905,8 +905,8 @@ export default function HomePage({ params }: PageProps) {
                     {lang === 'fr' ? 'Un bon équilibre pour booster la découverte.' : 'A balanced option to boost discovery.'}
                   </div>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center dark:bg-red-950/40 dark:border-red-900">
-                  <BarChart3 className="w-6 h-6 text-red-700" />
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center dark:bg-emerald-950/40 dark:border-emerald-900">
+                  <BarChart3 className="w-6 h-6 text-emerald-700" />
                 </div>
               </div>
 
@@ -927,7 +927,7 @@ export default function HomePage({ params }: PageProps) {
 
               <button
                 onClick={scrollToHero}
-                className="mt-8 w-full rounded-xl bg-red-600 hover:bg-red-700 text-white font-black py-3 px-5 transition-all shadow-sm hover:shadow-md active:scale-[0.99]"
+                className="mt-8 w-full rounded-xl bg-[#1DB954] hover:bg-emerald-600 text-white font-black py-3 px-5 transition-all shadow-sm hover:shadow-md active:scale-[0.99]"
               >
                 {lang === 'fr' ? 'Choisir Plus' : 'Choose Plus'}
               </button>
@@ -939,7 +939,7 @@ export default function HomePage({ params }: PageProps) {
             <div className="group relative overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-950">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gray-200 via-gray-400 to-gray-200 dark:from-gray-800 dark:via-gray-600 dark:to-gray-800" />
               <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
-                <div className="absolute inset-0 bg-[radial-gradient(700px_circle_at_80%_0%,rgba(239,68,68,0.10),transparent_60%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(700px_circle_at_80%_0%,rgba(29,185,84,0.10),transparent_60%)]" />
               </div>
               <div className="flex items-start justify-between gap-6">
                 <div>
@@ -1006,7 +1006,7 @@ export default function HomePage({ params }: PageProps) {
 
       {/* Reviews Section */}
       <section className="py-10 sm:py-14 bg-white relative overflow-hidden dark:bg-gray-950">
-        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_50%,rgba(239,68,68,0.06),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_20%_50%,rgba(29,185,84,0.06),transparent_55%)]" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 dark:text-white">
@@ -1034,10 +1034,10 @@ export default function HomePage({ params }: PageProps) {
           onClose={() => setIsPaymentModalOpen(false)}
           onCollectedDetails={(details) => setCheckoutDetails(details)}
           onSuccess={handlePaymentSuccess}
-          productName={`${lang === 'fr' ? 'Pack' : 'Package'} — ${formatViewsLabel(selectedPack.views)} ${lang === 'fr' ? 'vues' : 'views'}`}
+          productName={`${lang === 'fr' ? 'Pack' : 'Package'} — ${formatStreamsLabel(selectedPack.views)} ${lang === 'fr' ? 'vues' : 'views'}`}
           language={lang}
           orderDetails={{
-            platform: 'youtube',
+            platform: 'spotify',
             followers: selectedPack.views,
             username: '',
           }}

@@ -33,8 +33,8 @@ export async function sendOrderConfirmationEmail({
   const isEnglish = language === 'en';
 
   const subject = isEnglish
-    ? `Order Confirmation - ViewPlex #${orderDetails.orderId}`
-    : `Confirmation de commande - ViewPlex #${orderDetails.orderId}`;
+    ? `Order Confirmation - Spotyz #${orderDetails.orderId}`
+    : `Confirmation de commande - Spotyz #${orderDetails.orderId}`;
 
   const platformName = orderDetails.platform.charAt(0).toUpperCase() + orderDetails.platform.slice(1);
 
@@ -54,9 +54,9 @@ export async function sendOrderConfirmationEmail({
           
           <!-- Header with Logo -->
           <tr>
-            <td style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); padding: 40px 30px; text-align: center;">
+            <td style="background: linear-gradient(135deg, #1DB954 0%, #16a34a 100%); padding: 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
-                ViewPlex
+                Spotyz
               </h1>
               <p style="margin: 10px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">
                 ${isEnglish ? 'Order Confirmation' : 'Confirmation de commande'}
@@ -126,16 +126,16 @@ export async function sendOrderConfirmationEmail({
                       ${orderDetails.videoUrl ? `
                       <tr>
                         <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
-                          ${isEnglish ? 'Video link' : 'Lien de la vidéo'}
+                          ${isEnglish ? 'Track link' : 'Lien du titre'}
                         </td>
                         <td style="padding: 10px 0; color: #1f2937; font-size: 14px; font-weight: 600; text-align: right;">
-                          <a href="${orderDetails.videoUrl}" style="color: #DC2626; text-decoration: none;">${orderDetails.videoUrl}</a>
+                          <a href="${orderDetails.videoUrl}" style="color: #1DB954; text-decoration: none;">${orderDetails.videoUrl}</a>
                         </td>
                       </tr>
                       ` : ''}
                       <tr>
                         <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
-                          ${isEnglish ? 'Followers' : 'Abonnés'}
+                          ${isEnglish ? 'Streams' : 'Streams'}
                         </td>
                         <td style="padding: 10px 0; color: #1f2937; font-size: 14px; font-weight: 600; text-align: right;">
                           +${orderDetails.followers.toLocaleString()}
@@ -145,7 +145,7 @@ export async function sendOrderConfirmationEmail({
                         <td style="padding: 15px 0 0; color: #374151; font-size: 16px; font-weight: 600;">
                           ${isEnglish ? 'Total' : 'Total'}
                         </td>
-                        <td style="padding: 15px 0 0; color: #DC2626; font-size: 20px; font-weight: 700; text-align: right;">
+                        <td style="padding: 15px 0 0; color: #1DB954; font-size: 20px; font-weight: 700; text-align: right;">
                           ${orderDetails.price}
                         </td>
                       </tr>
@@ -159,10 +159,10 @@ export async function sendOrderConfirmationEmail({
           <!-- Info Box -->
           <tr>
             <td style="padding: 0 30px 30px;">
-              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #FEF2F2; border-radius: 12px; border-left: 4px solid #DC2626;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #F0FDF4; border-radius: 12px; border-left: 4px solid #1DB954;">
                 <tr>
                   <td style="padding: 20px;">
-                    <p style="margin: 0; color: #991B1B; font-size: 14px; line-height: 1.6;">
+                    <p style="margin: 0; color: #166534; font-size: 14px; line-height: 1.6;">
                       <strong>${isEnglish ? 'What happens next?' : 'Et maintenant ?'}</strong><br>
                       ${isEnglish 
                         ? 'Your campaign is being set up. You will receive updates within 24-48 hours. Delivery is progressive for a natural distribution.'
@@ -180,10 +180,10 @@ export async function sendOrderConfirmationEmail({
             <td style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
               <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px;">
                 ${isEnglish ? 'Questions? Contact us at' : 'Des questions ? Contactez-nous à'}
-                <a href="mailto:support@view-plex.com" style="color: #DC2626; text-decoration: none;"> support@view-plex.com</a>
+                <a href="mailto:support@spotyz.com" style="color: #1DB954; text-decoration: none;"> support@spotyz.com</a>
               </p>
               <p style="margin: 0; color: #9ca3af; font-size: 12px;">
-                © ${new Date().getFullYear()} ViewPlex. ${isEnglish ? 'All rights reserved.' : 'Tous droits réservés.'}
+                © ${new Date().getFullYear()} Spotyz. ${isEnglish ? 'All rights reserved.' : 'Tous droits réservés.'}
               </p>
             </td>
           </tr>
@@ -207,14 +207,14 @@ export async function sendOrderConfirmationEmail({
     const from =
       process.env.RESEND_FROM ||
       process.env.RESEND_FROM_EMAIL ||
-      'ViewPlex <onboarding@resend.dev>';
+      'Spotyz <onboarding@resend.dev>';
 
     const { data, error } = await resend.emails.send({
       from,
       to: [to],
       subject,
       html: htmlContent,
-      replyTo: 'support@view-plex.com',
+      replyTo: 'support@spotyz.com',
     });
 
     if (error) {

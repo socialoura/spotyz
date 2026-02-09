@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Language } from '@/i18n/config';
-import { CheckCircle2, Download, Mail, Clock, Shield, ArrowRight, Copy, Check, Play } from 'lucide-react';
+import { CheckCircle2, Download, Mail, Clock, Shield, ArrowRight, Copy, Check, Music } from 'lucide-react';
 
 interface PageProps {
   params: { lang: string };
@@ -74,9 +74,9 @@ export default function ThankYouPage({ params }: PageProps) {
       orderId: 'Order ID',
       email: 'Email',
       package: 'Package',
-      views: 'views',
+      views: 'streams',
       total: 'Total Paid',
-      videoUrl: 'Video URL',
+      videoUrl: 'Track URL',
       whatNext: 'What happens next?',
       steps: [
         {
@@ -85,9 +85,9 @@ export default function ThankYouPage({ params }: PageProps) {
           description: 'Our team is configuring your visibility campaign. This usually takes 1-2 hours.',
         },
         {
-          icon: Play,
+          icon: Music,
           title: 'Progressive Delivery',
-          description: 'Views are delivered gradually over 24-72 hours for natural distribution.',
+          description: 'Streams are delivered gradually over 24-72 hours for natural distribution.',
         },
         {
           icon: Mail,
@@ -108,9 +108,9 @@ export default function ThankYouPage({ params }: PageProps) {
       orderId: 'N° de commande',
       email: 'Email',
       package: 'Pack',
-      views: 'vues',
+      views: 'streams',
       total: 'Total Payé',
-      videoUrl: 'URL de la vidéo',
+      videoUrl: 'URL du titre',
       whatNext: 'Et maintenant ?',
       steps: [
         {
@@ -119,9 +119,9 @@ export default function ThankYouPage({ params }: PageProps) {
           description: 'Notre équipe configure votre campagne de visibilité. Cela prend généralement 1-2 heures.',
         },
         {
-          icon: Play,
+          icon: Music,
           title: 'Livraison Progressive',
-          description: 'Les vues sont livrées progressivement sur 24-72 heures pour une distribution naturelle.',
+          description: 'Les streams sont livrés progressivement sur 24-72 heures pour une distribution naturelle.',
         },
         {
           icon: Mail,
@@ -157,7 +157,7 @@ export default function ThankYouPage({ params }: PageProps) {
               <div
                 className="w-3 h-3 rounded-sm"
                 style={{
-                  backgroundColor: ['#FF0000', '#10B981', '#3B82F6', '#F59E0B', '#EC4899', '#8B5CF6'][Math.floor(Math.random() * 6)],
+                  backgroundColor: ['#1DB954', '#10B981', '#3B82F6', '#F59E0B', '#EC4899', '#8B5CF6'][Math.floor(Math.random() * 6)],
                   transform: `rotate(${Math.random() * 360}deg)`,
                 }}
               />
@@ -183,7 +183,7 @@ export default function ThankYouPage({ params }: PageProps) {
         {/* Order Card */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden mb-8">
           {/* Card Header */}
-          <div className="bg-gradient-to-r from-red-600 to-red-500 px-6 py-5">
+          <div className="bg-gradient-to-r from-[#1DB954] to-emerald-500 px-6 py-5">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <Download className="w-5 h-5" />
@@ -224,8 +224,8 @@ export default function ThankYouPage({ params }: PageProps) {
                 )}
 
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
-                    <Play className="w-5 h-5 text-red-600 dark:text-red-400" />
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+                    <Music className="w-5 h-5 text-[#1DB954] dark:text-emerald-400" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{t.package}</p>
@@ -238,8 +238,8 @@ export default function ThankYouPage({ params }: PageProps) {
                 {videoUrl && (
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                      <svg className="w-5 h-5 text-[#1DB954]" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
                       </svg>
                     </div>
                     <div className="min-w-0 flex-1">
@@ -255,7 +255,7 @@ export default function ThankYouPage({ params }: PageProps) {
               {/* Right Column - Total */}
               <div className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-800/50 rounded-2xl">
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{t.total}</p>
-                <p className="text-4xl font-black text-red-600">{formattedAmount}</p>
+                <p className="text-4xl font-black text-[#1DB954]">{formattedAmount}</p>
                 <div className="mt-3 flex items-center gap-1.5 text-green-600 dark:text-green-400">
                   <CheckCircle2 className="w-4 h-4" />
                   <span className="text-sm font-medium">
@@ -280,7 +280,7 @@ export default function ThankYouPage({ params }: PageProps) {
         {/* What Happens Next */}
         <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800 p-6 sm:p-8 mb-8">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-red-600" />
+            <Clock className="w-5 h-5 text-[#1DB954]" />
             {t.whatNext}
           </h3>
           
@@ -291,7 +291,7 @@ export default function ThankYouPage({ params }: PageProps) {
                   <div className="hidden sm:block absolute top-8 left-full w-full h-0.5 bg-gradient-to-r from-gray-200 to-transparent dark:from-gray-700" style={{ width: '50%' }} />
                 )}
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-4 shadow-lg shadow-red-500/20">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1DB954] to-emerald-600 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/20">
                     <step.icon className="w-7 h-7 text-white" />
                   </div>
                   <h4 className="font-bold text-gray-900 dark:text-white mb-2">{step.title}</h4>
@@ -317,7 +317,7 @@ export default function ThankYouPage({ params }: PageProps) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href={`/${lang}`}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-red-500/20"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#1DB954] hover:bg-emerald-600 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-500/20"
           >
             {t.backHome}
             <ArrowRight className="w-5 h-5" />
@@ -327,8 +327,8 @@ export default function ThankYouPage({ params }: PageProps) {
         {/* Support Footer */}
         <p className="text-center mt-8 text-sm text-gray-500 dark:text-gray-400">
           {t.support}{' '}
-          <a href="mailto:support@view-plex.com" className="text-red-600 hover:underline font-medium">
-            support@view-plex.com
+          <a href="mailto:support@spotyz.com" className="text-[#1DB954] hover:underline font-medium">
+            support@spotyz.com
           </a>
         </p>
       </div>

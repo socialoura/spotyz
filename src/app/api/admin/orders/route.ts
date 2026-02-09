@@ -120,9 +120,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { email, youtubeUrl, packageId, impressions, price, stripeTransactionId, promoCode, discountAmount } = await request.json();
+    const { email, spotifyUrl, packageId, impressions, price, stripeTransactionId, promoCode, discountAmount } = await request.json();
 
-    if (!email || !youtubeUrl || !impressions || !price) {
+    if (!email || !spotifyUrl || !impressions || !price) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
 
     await sql`
       INSERT INTO youtube_orders (order_id, email, youtube_url, package_id, impressions, price, stripe_transaction_id, promo_code, discount_amount)
-      VALUES (${orderId}, ${email}, ${youtubeUrl}, ${packageId || null}, ${impressions}, ${price}, ${stripeTransactionId || null}, ${promoCode || null}, ${discountAmount || 0})
+      VALUES (${orderId}, ${email}, ${spotifyUrl}, ${packageId || null}, ${impressions}, ${price}, ${stripeTransactionId || null}, ${promoCode || null}, ${discountAmount || 0})
     `;
 
     return NextResponse.json({ success: true, orderId });

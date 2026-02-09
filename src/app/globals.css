@@ -8,7 +8,7 @@
 }
 
 .dark:root {
-  --background: #0a0a0a;
+  --background: #191414;
   --foreground: #ededed;
 }
 
@@ -35,41 +35,41 @@ input[type="range"].slider::-webkit-slider-thumb {
   appearance: none;
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, rgb(220 38 38), rgb(239 68 68));
+  background: linear-gradient(135deg, rgb(29 185 84), rgb(30 215 96));
   cursor: pointer;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.35);
   transition: all 0.2s ease;
 }
 
 input[type="range"].slider::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 6px 16px rgba(29, 185, 84, 0.5);
 }
 
 input[type="range"].slider::-moz-range-thumb {
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, rgb(220 38 38), rgb(239 68 68));
+  background: linear-gradient(135deg, rgb(29 185 84), rgb(30 215 96));
   cursor: pointer;
   border-radius: 50%;
   border: none;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.35);
   transition: all 0.2s ease;
 }
 
 input[type="range"].slider::-moz-range-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 6px 16px rgba(29, 185, 84, 0.5);
 }
 
 /* Dark mode slider thumb */
 .dark input[type="range"].slider::-webkit-slider-thumb {
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.6);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.6);
 }
 
 .dark input[type="range"].slider::-moz-range-thumb {
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.6);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.6);
 }
 
 /* Hero Section Animations */

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Language, languages } from '@/i18n/config';
 import ThemeToggle from './ThemeToggle';
-import { Menu, X, Play } from 'lucide-react';
+import { Menu, X, Music } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
 import Image from 'next/image';
 
@@ -52,7 +52,7 @@ export default function Header({ lang }: HeaderProps) {
               <div className="relative w-44 h-12 sm:w-52 sm:h-14 shrink-0 overflow-visible">
                 <Image
                   src="/img/a-modern-flat-vector-logo-design-featuri_ZEbfVp__QiK-0wr5MrgGJg_ZFPYEbSKRM6a11TOK-IQCQ-removebg-preview.png"
-                  alt="ViewPlex"
+                  alt="Spotyz"
                   fill
                   priority
                   sizes="(min-width: 640px) 256px, 208px"
@@ -66,28 +66,28 @@ export default function Header({ lang }: HeaderProps) {
           <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
             <Link
               href={`/${lang}`}
-              className="inline-flex items-center gap-2 text-base font-semibold text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+              className="inline-flex items-center gap-2 text-base font-semibold text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
             >
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-red-600 text-white">
-                <Play className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-[#1DB954] text-white">
+                <Music className="w-3.5 h-3.5" />
               </span>
               {lang === 'en' ? 'Homepage' : 'Accueil'}
             </Link>
             <Link
               href={`/${lang}/pricing`}
-              className="text-base font-semibold text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+              className="text-base font-semibold text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
             >
               {lang === 'en' ? 'Pricing' : 'Tarifs'}
             </Link>
             <Link
               href={`/${lang}/contact`}
-              className="text-base font-semibold text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+              className="text-base font-semibold text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
             >
               {lang === 'en' ? 'Contact' : 'Contact'}
             </Link>
             <Link
               href={`/${lang}/faq`}
-              className="text-base font-semibold text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+              className="text-base font-semibold text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
             >
               FAQ
             </Link>
@@ -140,31 +140,31 @@ export default function Header({ lang }: HeaderProps) {
             <nav className="flex flex-col space-y-4">
               <Link
                 href={`/${lang}`}
-                className="inline-flex items-center gap-2 text-base font-medium text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+                className="inline-flex items-center gap-2 text-base font-medium text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-red-600 text-white">
-                  <Play className="w-3.5 h-3.5" />
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-[#1DB954] text-white">
+                  <Music className="w-3.5 h-3.5" />
                 </span>
                 {lang === 'en' ? 'Homepage' : 'Accueil'}
               </Link>
               <Link
                 href={`/${lang}/pricing`}
-                className="text-base font-medium text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+                className="text-base font-medium text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {lang === 'en' ? 'Pricing' : 'Tarifs'}
               </Link>
               <Link
                 href={`/${lang}/contact`}
-                className="text-base font-medium text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+                className="text-base font-medium text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {lang === 'en' ? 'Contact' : 'Contact'}
               </Link>
               <Link
                 href={`/${lang}/faq`}
-                className="text-base font-medium text-gray-700 hover:text-red-600 transition-colors dark:text-gray-200 dark:hover:text-red-500"
+                className="text-base font-medium text-gray-700 hover:text-emerald-500 transition-colors dark:text-gray-200 dark:hover:text-emerald-400"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 FAQ
@@ -173,7 +173,7 @@ export default function Header({ lang }: HeaderProps) {
               {/* Language Switcher */}
               <Link
                 href={toggleLanguage()}
-                className="flex items-center gap-2 text-base font-medium text-gray-700 hover:text-red-600 pt-4 border-t border-gray-200 transition-colors dark:text-gray-200 dark:hover:text-red-500 dark:border-gray-800"
+                className="flex items-center gap-2 text-base font-medium text-gray-700 hover:text-emerald-500 pt-4 border-t border-gray-200 transition-colors dark:text-gray-200 dark:hover:text-emerald-400 dark:border-gray-800"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <ReactCountryFlag

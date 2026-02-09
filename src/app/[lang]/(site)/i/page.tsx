@@ -116,7 +116,7 @@ export default function InstagramPage({ params }: PageProps) {
         cta: 'CONTINUE',
       },
       difference: {
-        title: 'What makes Socialoura different?',
+        title: 'What makes Spotyz different?',
         cards: [
           {
             title: 'Authentic Marketing Only',
@@ -206,7 +206,7 @@ export default function InstagramPage({ params }: PageProps) {
         cta: 'CONTINUER',
       },
       difference: {
-        title: 'Qu\'est-ce qui rend Socialoura différent ?',
+        title: 'Qu\'est-ce qui rend Spotyz différent ?',
         cards: [
           {
             title: 'Marketing authentique uniquement',

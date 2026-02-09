@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ['card'],
       // Add metadata for tracking (optional)
       metadata: {
-        integration_source: 'socialoura',
+        integration_source: 'spotyz',
       },
     });
 

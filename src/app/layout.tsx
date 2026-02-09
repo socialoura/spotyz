@@ -11,10 +11,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ViewPlex - Promouvoir sa vidéo YouTube",
-  description: "Augmentez la visibilité de vos vidéos YouTube via des campagnes publicitaires (Google Ads). Choisissez un pack, paiement sécurisé, mise en place rapide.",
-  keywords: ["promotion youtube", "visibilité youtube", "google ads youtube", "publicité youtube", "campagne youtube"],
-  authors: [{ name: "ViewPlex" }],
+  title: "Spotyz - Boostez votre musique sur Spotify",
+  description: "Augmentez la visibilité de vos titres Spotify via des campagnes de promotion. Choisissez un pack, paiement sécurisé, mise en place rapide.",
+  keywords: ["promotion spotify", "streams spotify", "playlist spotify", "auditeurs spotify", "campagne spotify"],
+  authors: [{ name: "Spotyz" }],
 };
 
 export default function RootLayout({
