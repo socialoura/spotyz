@@ -534,7 +534,7 @@ export default function HomePage({ params }: PageProps) {
                                 if (!Number.isFinite(next)) return;
                                 setHeroSelectionError('');
                                 setCustomStreams(next);
-                                setSelectedPack({ streams: next, amount: Math.round(next * 0.4) });
+                                setSelectedPack({ views: next, amount: Math.round(next * 0.4) });
                               }}
                               className="slider w-full"
                             />
