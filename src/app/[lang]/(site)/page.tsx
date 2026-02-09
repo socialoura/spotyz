@@ -421,14 +421,14 @@ export default function HomePage({ params }: PageProps) {
                       ))
                     ) : (
                       regularPacks.map((offer) => {
-                        const isSelected = selectedPack?.streams === offer.streams;
+                        const isSelected = selectedPack?.views === offer.views;
                         return (
                           <button
-                            key={`regular-${offer.streams}-${offer.amount}`}
+                            key={`regular-${offer.views}-${offer.amount}`}
                             type="button"
                             onClick={() => {
                               setHeroSelectionError('');
-                              setSelectedPack({ streams: offer.streams, amount: offer.amount });
+                              setSelectedPack({ views: offer.views, amount: offer.amount });
                             }}
                             className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
                               isSelected
@@ -478,14 +478,14 @@ export default function HomePage({ params }: PageProps) {
                     )}
                     {(() => {
                       const customAmount = Math.round(customStreams * 0.4);
-                      const isCustomSelected = selectedPack?.streams === customStreams;
+                      const isCustomSelected = selectedPack?.views === customStreams;
 
                       return (
                         <button
                           type="button"
                           onClick={() => {
                             setHeroSelectionError('');
-                            setSelectedPack({ streams: customStreams, amount: customAmount });
+                            setSelectedPack({ views: customStreams, amount: customAmount });
                           }}
                           className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
                             isCustomSelected
