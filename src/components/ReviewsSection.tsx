@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Language } from '@/i18n/config';
+import RatingBadge from '@/components/RatingBadge';
 
 interface ReviewsSectionProps {
   lang: Language;
@@ -219,26 +220,27 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
           </p>
           
           {/* Stats */}
-          <div className="flex items-center justify-center gap-8 mt-8">
-            <div className="text-center">
-              <div className="text-3xl font-black text-gray-900 dark:text-white">
-                4.9/5
+          <div className="mt-8 flex flex-col items-center gap-6">
+            <RatingBadge
+              rating={4.9}
+              maxRating={5}
+              reviewCountLabel={lang === 'fr' ? 'Avis vérifiés' : 'Verified reviews'}
+              className="bg-gray-900/90"
+            />
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:text-gray-200">
+                <span className="font-black text-gray-900 dark:text-white">50K+</span>{' '}
+                {lang === 'en' ? 'orders processed' : 'commandes traitées'}
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">{lang === 'en' ? 'Average rating' : 'Note moyenne'}</div>
-            </div>
-            <div className="w-px h-12 bg-gray-200 dark:bg-gray-800" />
-            <div className="text-center">
-              <div className="text-3xl font-black text-gray-900 dark:text-white">
-                50K+
+              <div className="rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:text-gray-200">
+                <span className="font-black text-gray-900 dark:text-white">10M+</span>{' '}
+                {lang === 'en' ? 'campaign streams delivered' : 'streams livrés'}
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">{lang === 'en' ? 'Orders processed' : 'Commandes traitées'}</div>
-            </div>
-            <div className="w-px h-12 bg-gray-200 dark:bg-gray-800" />
-            <div className="text-center">
-              <div className="text-3xl font-black text-gray-900 dark:text-white">
-                10M+
+              <div className="rounded-2xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:text-gray-200">
+                <span className="font-black text-gray-900 dark:text-white">24/7</span>{' '}
+                {lang === 'en' ? 'support' : 'support'}
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">{lang === 'en' ? 'Campaigns launched' : 'Campagnes lancées'}</div>
             </div>
           </div>
         </div>
@@ -364,6 +366,9 @@ export default function ReviewsSection({ lang, platform = 'all' }: ReviewsSectio
 
         {/* Trust Badges */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:text-gray-200">
+            {lang === 'en' ? 'Trusted by independent artists & labels' : 'Adopté par des artistes & labels indépendants'}
+          </div>
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
