@@ -13,6 +13,8 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Package | null>(null);
   const [form, setForm] = useState({ impressions: '', price: '', originalPrice: '', isActive: true, description: '' });
+  const [saveError, setSaveError] = useState<string>('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const getAuthHeaders = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` });
 
@@ -28,34 +30,83 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
    };
 
   const handleSave = async () => {
+    setSaveError('');
+
+    const impressions = Number(form.impressions);
+    const price = Number(form.price);
+    const originalPrice = Number(form.originalPrice);
+
+    if (!Number.isFinite(impressions) || impressions <= 0) {
+      setSaveError('Invalid impressions');
+      return;
+    }
+    if (!Number.isFinite(price) || price <= 0) {
+      setSaveError('Invalid price');
+      return;
+    }
+    if (!Number.isFinite(originalPrice) || originalPrice <= 0) {
+      setSaveError('Invalid original price');
+      return;
+    }
+
     const body = {
-      impressions: parseInt(form.impressions),
-      price: parseFloat(form.price),
-      originalPrice: parseFloat(form.originalPrice),
+      impressions,
+      price,
+      originalPrice,
       isActive: form.isActive,
       description: form.description,
     };
 
-    if (editing) {
-      await fetch('/api/admin/pricing', { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify({ id: editing.id, ...body }) });
-    } else {
-      await fetch('/api/admin/pricing', { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(body) });
-    }
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/admin/pricing', {
+        method: editing ? 'PUT' : 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(editing ? { id: editing.id, ...body } : body),
+      });
 
-    setShowModal(false);
-    setEditing(null);
-    setForm({ impressions: '', price: '', originalPrice: '', isActive: true, description: '' });
-    onRefresh();
+      if (!res.ok) {
+        let message = 'Failed to save package';
+        try {
+          const data = await res.json();
+          if (data?.error) message = String(data.error);
+        } catch {
+          // ignore
+        }
+        setSaveError(message);
+        return;
+      }
+
+      setShowModal(false);
+      setEditing(null);
+      setForm({ impressions: '', price: '', originalPrice: '', isActive: true, description: '' });
+      onRefresh();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this package?')) return;
-    await fetch(`/api/admin/pricing?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+    setSaveError('');
+    const res = await fetch(`/api/admin/pricing?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+    if (!res.ok) {
+      let message = 'Failed to delete package';
+      try {
+        const data = await res.json();
+        if (data?.error) message = String(data.error);
+      } catch {
+        // ignore
+      }
+      setSaveError(message);
+      return;
+    }
     onRefresh();
   };
 
   const handleEdit = (pkg: Package) => {
     setEditing(pkg);
+    setSaveError('');
     setForm({
       impressions: pkg.impressions.toString(),
       price: pkg.price.toString(),
@@ -68,6 +119,7 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
 
   const handleDuplicate = (pkg: Package) => {
     setEditing(null);
+    setSaveError('');
     setForm({
       impressions: (pkg.impressions + 100).toString(),
       price: pkg.price.toString(),
@@ -126,6 +178,11 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold text-white mb-4">{editing ? 'Edit Package' : 'New Package'}</h3>
+            {saveError && (
+              <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {saveError}
+              </div>
+            )}
             <div className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Impressions</label>
@@ -151,8 +208,24 @@ export default function PricingTab({ packages, token, onRefresh }: Props) {
               </div>
             </div>
             <div className="flex justify-end space-x-3 mt-6">
-              <button onClick={() => { setShowModal(false); setEditing(null); }} className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white">Cancel</button>
-              <button onClick={handleSave} className="px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700">Save</button>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  setEditing(null);
+                  setSaveError('');
+                }}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white"
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-gradient-to-r from-[#1DB954] to-emerald-600 rounded-lg text-white hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={isSaving}
+              >
+                {isSaving ? 'Saving...' : 'Save'}
+              </button>
             </div>
           </div>
         </div>

@@ -79,16 +79,26 @@ export async function POST(request: NextRequest) {
 
     const { impressions, price, originalPrice, isActive, description } = await request.json();
 
-    if (!impressions || !price || !originalPrice) {
+    const impressionsNumber = Number(impressions);
+    const priceNumber = Number(price);
+    const originalPriceNumber = Number(originalPrice);
+
+    if (!Number.isFinite(impressionsNumber) || impressionsNumber <= 0) {
+      return NextResponse.json({ error: 'Invalid impressions' }, { status: 400 });
+    }
+    if (!Number.isFinite(priceNumber) || priceNumber <= 0) {
+      return NextResponse.json({ error: 'Invalid price' }, { status: 400 });
+    }
+    if (!Number.isFinite(originalPriceNumber) || originalPriceNumber <= 0) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const discount = Math.round((1 - price / originalPrice) * 100);
-    const id = `pkg_${impressions >= 1000 ? (impressions / 1000) + 'k' : impressions}`;
+    const discount = Math.round((1 - priceNumber / originalPriceNumber) * 100);
+    const id = `pkg_${impressionsNumber >= 1000 ? (impressionsNumber / 1000) + 'k' : impressionsNumber}`;
 
     await sql`
       INSERT INTO packages (id, impressions, price, original_price, discount_percentage, is_active, description)
-      VALUES (${id}, ${impressions}, ${price}, ${originalPrice}, ${discount}, ${isActive !== false}, ${description || null})
+      VALUES (${id}, ${impressionsNumber}, ${priceNumber}, ${originalPriceNumber}, ${discount}, ${isActive !== false}, ${description || null})
     `;
 
     return NextResponse.json({ success: true, id });
@@ -107,25 +117,64 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id, price, originalPrice, isActive, description } = await request.json();
+    const { id, impressions, price, originalPrice, isActive, description } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: 'Package ID required' }, { status: 400 });
     }
 
     const updates: string[] = [];
-    if (price !== undefined) updates.push(`price = ${price}`);
-    if (originalPrice !== undefined) updates.push(`original_price = ${originalPrice}`);
-    if (isActive !== undefined) updates.push(`is_active = ${isActive}`);
-    if (description !== undefined) updates.push(`description = '${description}'`);
+    const values: Array<string | number | boolean | null> = [];
+    let index = 1;
+
+    const impressionsNumber = impressions === undefined ? undefined : Number(impressions);
+    const priceNumber = price === undefined ? undefined : Number(price);
+    const originalPriceNumber = originalPrice === undefined ? undefined : Number(originalPrice);
+
+    if (impressions !== undefined) {
+      if (!Number.isFinite(impressionsNumber) || (impressionsNumber as number) <= 0) {
+        return NextResponse.json({ error: 'Invalid impressions' }, { status: 400 });
+      }
+      updates.push(`impressions = $${index++}`);
+      values.push(impressionsNumber as number);
+    }
+
+    if (price !== undefined) {
+      if (!Number.isFinite(priceNumber) || (priceNumber as number) <= 0) {
+        return NextResponse.json({ error: 'Invalid price' }, { status: 400 });
+      }
+      updates.push(`price = $${index++}`);
+      values.push(priceNumber as number);
+    }
+
+    if (originalPrice !== undefined) {
+      if (!Number.isFinite(originalPriceNumber) || (originalPriceNumber as number) <= 0) {
+        return NextResponse.json({ error: 'Invalid originalPrice' }, { status: 400 });
+      }
+      updates.push(`original_price = $${index++}`);
+      values.push(originalPriceNumber as number);
+    }
+
+    if (isActive !== undefined) {
+      updates.push(`is_active = $${index++}`);
+      values.push(Boolean(isActive));
+    }
+
+    if (description !== undefined) {
+      updates.push(`description = $${index++}`);
+      values.push(description ? String(description) : null);
+    }
 
     if (price !== undefined && originalPrice !== undefined) {
-      const discount = Math.round((1 - price / originalPrice) * 100);
-      updates.push(`discount_percentage = ${discount}`);
+      const discount = Math.round((1 - (priceNumber as number) / (originalPriceNumber as number)) * 100);
+      updates.push(`discount_percentage = $${index++}`);
+      values.push(discount);
     }
 
     if (updates.length > 0) {
-      await sql.query(`UPDATE packages SET ${updates.join(', ')} WHERE id = $1`, [id]);
+      updates.push(`created_at = created_at`);
+      values.push(id);
+      await sql.query(`UPDATE packages SET ${updates.join(', ')} WHERE id = $${index}`, values);
     }
 
     return NextResponse.json({ success: true });
