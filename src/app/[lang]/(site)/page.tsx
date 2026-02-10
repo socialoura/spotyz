@@ -345,49 +345,88 @@ export default function HomePage({ params }: PageProps) {
     <div className="bg-white dark:bg-gray-950">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(1200px_circle_at_10%_20%,rgba(29,185,84,0.10),transparent_55%),radial-gradient(900px_circle_at_90%_35%,rgba(29,185,84,0.06),transparent_55%)]" />
+        {/* Animated background gradients */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_10%_20%,rgba(29,185,84,0.15),transparent_55%),radial-gradient(900px_circle_at_90%_35%,rgba(29,185,84,0.10),transparent_55%)] animate-pulse-glow" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#1DB954]/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}} />
+        </div>
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(2,6,23,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(2,6,23,0.04)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30 dark:opacity-15" />
         <div className="absolute inset-0 pointer-events-none [mask-image:radial-gradient(60%_55%_at_50%_35%,black,transparent)] bg-gradient-to-b from-white/0 via-white/40 to-white dark:from-gray-950/0 dark:via-gray-950/70 dark:to-gray-950" />
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 pt-8 pb-8 sm:pt-14 sm:pb-12 lg:px-8 lg:pt-20 lg:pb-16">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-center lg:gap-10">
-            <div className="lg:col-span-5">
-              <div className="inline-flex items-center gap-3">
-                <span className="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 dark:text-white">
-                  {lang === 'fr' ? 'Boostez votre musique sur Spotify' : 'Boost your music on Spotify'}
-                </span>
-                <span className="inline-flex items-center rounded-lg bg-[#1DB954] px-3 py-1.5 text-sm font-black text-white">
-                  {lang === 'fr' ? 'Instantané' : 'Instantly'}
+            <div className="lg:col-span-5 animate-slide-up">
+              {/* Animated badge */}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 px-4 py-2 shadow-sm dark:border-emerald-900 dark:from-emerald-950/50 dark:to-green-950/50 animate-scale-in">
+                <div className="h-2 w-2 rounded-full bg-[#1DB954] animate-pulse" />
+                <span className="text-sm font-bold text-emerald-900 dark:text-emerald-100">
+                  {lang === 'fr' ? '🎵 Plateforme #1 pour artistes' : '🎵 #1 Platform for Artists'}
                 </span>
               </div>
 
-              <p className="mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+              <div className="space-y-4">
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight">
+                  <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent dark:from-white dark:via-gray-100 dark:to-white animate-gradient">
+                    {lang === 'fr' ? 'Boostez' : 'Boost'}
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-[#1DB954] via-emerald-500 to-[#1ed760] bg-clip-text text-transparent animate-gradient">
+                    {lang === 'fr' ? 'votre musique' : 'your music'}
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent dark:from-white dark:via-gray-100 dark:to-white animate-gradient">
+                    {lang === 'fr' ? 'sur Spotify' : 'on Spotify'}
+                  </span>
+                </h1>
+              </div>
+
+              <p className="mt-6 text-xl leading-relaxed text-gray-600 dark:text-gray-300 animate-slide-up animate-delay-100">
                 {lang === 'fr'
                   ? 'Spotyz vous aide à booster la visibilité de vos titres sur Spotify. Choisissez un pack de streams, payez en toute sécurité et démarrez rapidement.'
                   : 'Spotyz helps you boost the visibility of your tracks on Spotify. Choose a streams pack, checkout securely, and get started fast.'}
               </p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
-                <div className="inline-flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 text-green-600" />
-                  <span>{lang === 'fr' ? 'Paiement sécurisé' : 'Secure payment'}</span>
+              <div className="mt-8 flex flex-wrap items-center gap-4 animate-slide-up animate-delay-200">
+                <div className="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 shadow-sm transition-all hover:border-emerald-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-emerald-700">
+                  <div className="rounded-lg bg-green-100 p-1.5 dark:bg-green-900/30">
+                    <ShieldCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Paiement sécurisé' : 'Secure payment'}</span>
                 </div>
-                <div className="inline-flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-[#1DB954]" />
-                  <span>{lang === 'fr' ? 'Qualité élevée' : 'High quality'}</span>
+                <div className="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 shadow-sm transition-all hover:border-emerald-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-emerald-700">
+                  <div className="rounded-lg bg-emerald-100 p-1.5 dark:bg-emerald-900/30">
+                    <CheckCircle2 className="h-4 w-4 text-[#1DB954]" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Qualité élevée' : 'High quality'}</span>
                 </div>
-                <div className="inline-flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-gray-900 dark:text-gray-200" />
-                  <span>{lang === 'fr' ? 'Démarrage rapide' : 'Instant start'}</span>
+                <div className="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 shadow-sm transition-all hover:border-emerald-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-emerald-700">
+                  <div className="rounded-lg bg-gray-100 p-1.5 dark:bg-gray-800">
+                    <Zap className="h-4 w-4 text-gray-900 dark:text-gray-200" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">{lang === 'fr' ? 'Démarrage rapide' : 'Instant start'}</span>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-7">
-              <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-950">
-                <div className="border-b border-gray-200 bg-gray-50 px-6 py-3 dark:border-gray-800 dark:bg-gray-900">
-                  <div className="text-sm font-black text-gray-900 dark:text-white">
-                    {lang === 'fr' ? 'Streams' : 'Streams'}
+            <div className="lg:col-span-7 animate-slide-up animate-delay-300">
+              <div className="group relative rounded-3xl border border-gray-200 bg-white shadow-lg overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-emerald-200 dark:border-gray-800 dark:bg-gray-950 dark:hover:border-emerald-800">
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#1DB954]/5 via-emerald-500/5 to-[#1ed760]/5 blur-xl" />
+                </div>
+                
+                <div className="relative border-b border-gray-200 bg-gradient-to-r from-gray-50 to-emerald-50/30 px-6 py-4 dark:border-gray-800 dark:from-gray-900 dark:to-emerald-950/20">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Music className="h-5 w-5 text-[#1DB954]" />
+                      <div className="text-sm font-black text-gray-900 dark:text-white">
+                        {lang === 'fr' ? 'Choisissez vos Streams' : 'Choose your Streams'}
+                      </div>
+                    </div>
+                    <div className="rounded-full bg-[#1DB954]/10 px-3 py-1 text-xs font-bold text-[#1DB954]">
+                      {lang === 'fr' ? 'Populaire' : 'Popular'}
+                    </div>
                   </div>
                 </div>
 
@@ -430,29 +469,36 @@ export default function HomePage({ params }: PageProps) {
                               setHeroSelectionError('');
                               setSelectedPack({ views: offer.views, amount: offer.amount });
                             }}
-                            className={`group relative overflow-hidden rounded-2xl border px-4 py-3 text-left transition-all duration-200 dark:bg-gray-950 ${
+                            className={`group relative overflow-hidden rounded-2xl border px-4 py-3.5 text-left transition-all duration-300 hover-lift ${
                               isSelected
-                                ? 'border-[#1DB954] bg-emerald-50 shadow-sm dark:bg-emerald-950/30'
-                                : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
+                                ? 'border-[#1DB954] bg-gradient-to-br from-emerald-50 to-green-50 shadow-lg shadow-emerald-500/20 dark:from-emerald-950/40 dark:to-green-950/40 dark:shadow-emerald-500/10'
+                                : 'border-gray-200 bg-white hover:border-emerald-300 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950 dark:hover:border-emerald-700'
                             }`}
                           >
-                            <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
-                              <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(29,185,84,0.12),transparent_55%)]" />
+                            {/* Animated gradient background */}
+                            <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 ${isSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                              <div className="absolute inset-0 bg-[radial-gradient(600px_circle_at_50%_50%,rgba(29,185,84,0.15),transparent_70%)] animate-pulse-glow" />
+                            </div>
+                            
+                            {/* Shine effect on hover */}
+                            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                             </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="relative flex items-center justify-between">
                               <div>
                                 {offer.badge && (
                                   <div className="mb-2">
-                                    <div className="inline-flex items-center rounded-full bg-[#1DB954] px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-sm">
+                                    <div className="inline-flex items-center rounded-full bg-gradient-to-r from-[#1DB954] to-emerald-500 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-md shadow-emerald-500/30 animate-glow-pulse">
+                                      <span className="mr-1">🔥</span>
                                       {offer.badge}
                                     </div>
                                   </div>
                                 )}
-                                <div className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
+                                <div className="text-base sm:text-lg font-black text-gray-900 dark:text-white transition-colors group-hover:text-[#1DB954]">
                                   {offer.label}
                                 </div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                                   {lang === 'fr' ? 'streams' : 'streams'}
                                 </div>
                               </div>
@@ -487,27 +533,34 @@ export default function HomePage({ params }: PageProps) {
                             setHeroSelectionError('');
                             setSelectedPack({ views: customStreams, amount: customAmount });
                           }}
-                          className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-200 dark:bg-gray-950 ${
+                          className={`group relative col-span-full overflow-hidden rounded-2xl border px-5 py-5 text-left transition-all duration-300 hover-lift ${
                             isCustomSelected
-                              ? 'border-[#1DB954] bg-emerald-50 shadow-sm dark:bg-emerald-950/30'
-                              : 'border-gray-200 bg-white hover:border-gray-300 hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:hover:border-gray-700'
+                              ? 'border-[#1DB954] bg-gradient-to-br from-emerald-50 to-green-50 shadow-lg shadow-emerald-500/20 dark:from-emerald-950/40 dark:to-green-950/40 dark:shadow-emerald-500/10'
+                              : 'border-gray-200 bg-white hover:border-emerald-300 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950 dark:hover:border-emerald-700'
                           }`}
                         >
-                          <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity ${isCustomSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
-                            <div className="absolute inset-0 bg-[radial-gradient(500px_circle_at_20%_20%,rgba(29,185,84,0.10),transparent_55%)]" />
+                          {/* Animated gradient background */}
+                          <div className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 ${isCustomSelected ? 'opacity-100' : 'group-hover:opacity-100'}`}>
+                            <div className="absolute inset-0 bg-[radial-gradient(600px_circle_at_50%_50%,rgba(29,185,84,0.15),transparent_70%)] animate-pulse-glow" />
+                          </div>
+                          
+                          {/* Shine effect on hover */}
+                          <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                           </div>
 
-                          <div className="flex items-start justify-between gap-6">
+                          <div className="relative flex items-start justify-between gap-6">
                             <div>
                               <div className="mb-2">
-                                <div className="inline-flex items-center rounded-full bg-gray-900 px-2.5 py-1 text-[10px] font-black text-white uppercase tracking-wider dark:bg-gray-800">
-                                  {lang === 'fr' ? 'Custom' : 'Custom'}
+                                <div className="inline-flex items-center rounded-full bg-gradient-to-r from-gray-900 to-gray-700 px-3 py-1.5 text-[10px] font-black text-white uppercase tracking-wider shadow-md dark:from-gray-800 dark:to-gray-700">
+                                  <span className="mr-1">⚡</span>
+                                  {lang === 'fr' ? 'Personnalisé' : 'Custom'}
                                 </div>
                               </div>
-                              <div className="text-xl font-black text-gray-900 dark:text-white">
+                              <div className="text-xl font-black text-gray-900 transition-colors group-hover:text-[#1DB954] dark:text-white">
                                 {formatStreamsLabel(customStreams)}
                               </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                              <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                                 {lang === 'fr' ? 'streams' : 'streams'}
                               </div>
                             </div>
@@ -516,8 +569,8 @@ export default function HomePage({ params }: PageProps) {
                               <div className="text-xl font-black text-[#1DB954]">
                                 {formatHeroPrice(customAmount)}
                               </div>
-                              <div className="text-xs text-gray-400 dark:text-gray-500">
-                                {lang === 'fr' ? 'Estimation indicative' : 'Indicative estimate'}
+                              <div className="text-xs font-medium text-gray-400 dark:text-gray-500">
+                                {lang === 'fr' ? 'Estimation' : 'Estimate'}
                               </div>
                             </div>
                           </div>
@@ -561,9 +614,20 @@ export default function HomePage({ params }: PageProps) {
                   <button
                     type="button"
                     onClick={handleHeroBuyNow}
-                    className="mt-4 w-full rounded-2xl bg-[#1DB954] hover:bg-emerald-600 text-white font-black py-3 px-6 transition-colors"
+                    className="group relative mt-6 w-full overflow-hidden rounded-2xl bg-gradient-to-r from-[#1DB954] via-emerald-500 to-[#1ed760] p-[2px] transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/50 animate-gradient"
                   >
-                    {lang === 'fr' ? 'Acheter maintenant' : 'Buy now'}
+                    <div className="relative rounded-2xl bg-gradient-to-r from-[#1DB954] to-emerald-600 px-6 py-4 transition-all group-hover:from-emerald-600 group-hover:to-[#1DB954]">
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-base font-black text-white">
+                          {lang === 'fr' ? 'Acheter maintenant' : 'Buy now'}
+                        </span>
+                        <ArrowRight className="h-5 w-5 text-white transition-transform group-hover:translate-x-1" />
+                      </div>
+                      {/* Shine effect */}
+                      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                      </div>
+                    </div>
                   </button>
 
                   <div className="mt-4 hidden grid-cols-2 gap-3 border-t border-gray-200 pt-4 text-sm text-gray-700 dark:border-gray-800 dark:text-gray-200 sm:grid">
