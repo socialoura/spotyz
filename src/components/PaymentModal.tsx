@@ -191,7 +191,7 @@ function PaymentForm({
         // Google Ads Conversion Tracking
         if (typeof window !== 'undefined' && (window as typeof window & { gtag?: (...args: unknown[]) => void }).gtag) {
           (window as typeof window & { gtag: (...args: unknown[]) => void }).gtag('event', 'conversion', {
-            'send_to': 'AW-17929444405/GDjKCNbTlPIbELW4tuVC',
+            'send_to': 'AW-17898687645/6BHZCKTqmPcbEJ2Z4dZC',
             'value': amount / 100,
             'currency': currency.toUpperCase(),
             'transaction_id': paymentIntent.id
