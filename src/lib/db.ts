@@ -241,8 +241,8 @@ export async function getStripeSettings() {
     `;
     
     return {
-      secretKey: secretResult.rows.length > 0 ? secretResult.rows[0].value : null,
-      publishableKey: publishableResult.rows.length > 0 ? publishableResult.rows[0].value : null,
+      secretKey: secretResult.rows.length > 0 ? String(secretResult.rows[0].value || '') || null : null,
+      publishableKey: publishableResult.rows.length > 0 ? String(publishableResult.rows[0].value || '') || null : null,
     };
   } catch (error) {
     console.error('Error fetching Stripe settings:', error);
