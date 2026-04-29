@@ -7,6 +7,8 @@ import { Plus, Minus, BarChart3, Calendar, MessageCircle, HeadphonesIcon, Music,
 import ChatWidget from '@/components/ChatWidget';
 import ReviewsSection from '@/components/ReviewsSection';
 import PaymentModal from '@/components/PaymentModal';
+import { trackCheckoutStarted, trackOrderCompleted, identifyUser } from '@/lib/analytics';
+import { getConversionAttribution } from '@/lib/attribution';
 
 interface PageProps {
   params: { lang: string };
@@ -45,6 +47,11 @@ export default function HomePage({ params }: PageProps) {
       return;
     }
     setHeroSelectionError('');
+    trackCheckoutStarted({
+      packageId: `pkg_${selectedPack.views}`,
+      price: selectedPack.amount / 100,
+      impressions: selectedPack.views,
+    });
     setIsPaymentModalOpen(true);
   };
 
@@ -163,6 +170,8 @@ export default function HomePage({ params }: PageProps) {
     const email = details?.email || checkoutDetails?.email || '';
     const spotifyUrl = details?.spotifyUrl || checkoutDetails?.spotifyUrl || '';
 
+    const attribution = getConversionAttribution();
+
     try {
       const response = await fetch('/api/orders/create', {
         method: 'POST',
@@ -175,10 +184,21 @@ export default function HomePage({ params }: PageProps) {
           amount: selectedPack?.amount || 0,
           paymentId: paymentIntentIdParam,
           spotifyUrl,
+          attribution,
         }),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        if (email) identifyUser(email);
+        trackOrderCompleted({
+          orderId: data.orderId || paymentIntentIdParam,
+          amount: (selectedPack?.amount || 0) / 100,
+          packageId: selectedPack ? `pkg_${selectedPack.views}` : undefined,
+          impressions: selectedPack?.views,
+          email,
+        });
+      } else {
         const data = await response.json().catch(() => ({}));
         console.error('Order creation failed:', data);
       }

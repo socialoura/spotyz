@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { sql } from '@/lib/sql';
+import { captureServerEvent } from '@/lib/posthog-server';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -21,7 +22,17 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    const { username, email, platform, followers, amount, paymentId, spotifyUrl } = body;
+    const {
+      username,
+      email,
+      platform,
+      followers,
+      amount,
+      paymentId,
+      spotifyUrl,
+      attribution,
+      posthogDistinctId,
+    } = body;
 
     // Validate required fields
     if (!username || !platform || !followers || !amount || !paymentId) {
@@ -38,16 +49,26 @@ export async function POST(request: NextRequest) {
     const forwarded = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
     const country = await getCountryFromIP(forwarded);
 
-    // Ensure country column exists
+    // Ensure attribution columns exist
     try {
       await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS country VARCHAR(10) DEFAULT 'Unknown'`;
-    } catch { /* column may already exist */ }
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS utm_source VARCHAR(255)`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS utm_medium VARCHAR(255)`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS utm_campaign VARCHAR(255)`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS utm_term VARCHAR(255)`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS utm_content VARCHAR(255)`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS referrer TEXT`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS referring_domain VARCHAR(255)`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS landing_page TEXT`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS gclid VARCHAR(255)`;
+      await sql`ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS fbclid VARCHAR(255)`;
+    } catch { /* columns may already exist */ }
 
     // Check if order already exists (idempotency)
     const existing = await sql`
       SELECT id FROM public.orders WHERE payment_id = ${paymentId}
     `;
-    
+
     if (existing.rows.length > 0) {
       return NextResponse.json({
         success: true,
@@ -56,7 +77,20 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Insert new order with all required fields
+    const attr = (attribution || {}) as {
+      utm_source?: string;
+      utm_medium?: string;
+      utm_campaign?: string;
+      utm_term?: string;
+      utm_content?: string;
+      referrer?: string;
+      referring_domain?: string;
+      landing_page?: string;
+      gclid?: string;
+      fbclid?: string;
+    };
+
+    // Insert new order with attribution fields
     const result = await sql`
       INSERT INTO public.orders (
         username,
@@ -72,6 +106,16 @@ export async function POST(request: NextRequest) {
         order_status,
         youtube_video_url,
         country,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_term,
+        utm_content,
+        referrer,
+        referring_domain,
+        landing_page,
+        gclid,
+        fbclid,
         created_at
       ) VALUES (
         ${username},
@@ -87,6 +131,16 @@ export async function POST(request: NextRequest) {
         'pending',
         ${spotifyUrl || null},
         ${country},
+        ${attr.utm_source || null},
+        ${attr.utm_medium || null},
+        ${attr.utm_campaign || null},
+        ${attr.utm_term || null},
+        ${attr.utm_content || null},
+        ${attr.referrer || null},
+        ${attr.referring_domain || null},
+        ${attr.landing_page || null},
+        ${attr.gclid || null},
+        ${attr.fbclid || null},
         NOW()
       )
       RETURNING id, created_at
@@ -94,6 +148,29 @@ export async function POST(request: NextRequest) {
 
     const newOrder = result.rows[0];
     console.log('[ORDER CREATED]', { id: newOrder.id, username, platform, amount });
+
+    // Server-side PostHog tracking (independent of client ad-blockers)
+    const distinctId = email || posthogDistinctId || String(newOrder.id);
+    captureServerEvent({
+      distinctId,
+      event: 'order_completed_server',
+      properties: {
+        order_id: String(newOrder.id),
+        amount: amountInEuros,
+        impressions: followers,
+        platform,
+        country,
+        email: email || undefined,
+        utm_source: attr.utm_source,
+        utm_medium: attr.utm_medium,
+        utm_campaign: attr.utm_campaign,
+        utm_term: attr.utm_term,
+        utm_content: attr.utm_content,
+        referring_domain: attr.referring_domain,
+        gclid: attr.gclid,
+        fbclid: attr.fbclid,
+      },
+    }).catch(() => { /* non-blocking */ });
 
     return NextResponse.json({
       success: true,

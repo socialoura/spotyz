@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { sql } from '@/lib/sql';
 
 export async function GET() {
   try {
     // Check if environment variables are set
     const envCheck = {
-      POSTGRES_URL: !!process.env.POSTGRES_URL,
+      DATABASE_URL: !!process.env.DATABASE_URL,
     };
 
-    if (!envCheck.POSTGRES_URL) {
+    if (!envCheck.DATABASE_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -45,7 +45,7 @@ export async function GET() {
         error: 'Database connection failed',
         details: error instanceof Error ? error.message : 'Unknown error',
         envCheck: {
-          POSTGRES_URL: !!process.env.POSTGRES_URL,
+          DATABASE_URL: !!process.env.DATABASE_URL,
         }
       },
       { status: 500 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { sql } from '@/lib/sql';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
     const secretResult = await sql`SELECT value FROM settings WHERE key = 'stripe_secret_key'`;
     const publishableResult = await sql`SELECT value FROM settings WHERE key = 'stripe_publishable_key'`;
 
-    const secretKey = secretResult.rows.length > 0 ? secretResult.rows[0].value : '';
-    const publishableKey = publishableResult.rows.length > 0 ? publishableResult.rows[0].value : '';
+    const secretKey = secretResult.rows.length > 0 ? String(secretResult.rows[0].value) : '';
+    const publishableKey = publishableResult.rows.length > 0 ? String(publishableResult.rows[0].value) : '';
 
     const maskedSecret = secretKey ? secretKey.slice(0, 7) + '...' + secretKey.slice(-4) : '';
 

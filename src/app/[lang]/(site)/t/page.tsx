@@ -10,6 +10,8 @@ import Image from 'next/image';
 import ChatWidget from '@/components/ChatWidget';
 import ReviewsSection from '@/components/ReviewsSection';
 import TrustedBrands from '@/components/TrustedBrands';
+import { trackCheckoutStarted, trackOrderCompleted, identifyUser } from '@/lib/analytics';
+import { getConversionAttribution } from '@/lib/attribution';
 
 interface PageProps {
   params: { lang: string };
@@ -55,6 +57,12 @@ export default function TikTokPage({ params }: PageProps) {
     setSelectedGoal(goal);
     setEmail(emailParam);
     setIsGoalModalOpen(false);
+    trackCheckoutStarted({
+      packageId: `pkg_${goal.followers}`,
+      price: goal.price,
+      impressions: goal.followers,
+      email: emailParam,
+    });
     setIsPaymentModalOpen(true);
   };
 
@@ -65,8 +73,9 @@ export default function TikTokPage({ params }: PageProps) {
     setShowToast(true);
     
     // Save order to database
+    const attribution = getConversionAttribution();
     try {
-      await fetch('/api/orders/create', {
+      const response = await fetch('/api/orders/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,8 +87,20 @@ export default function TikTokPage({ params }: PageProps) {
           followers: selectedGoal?.followers || 0,
           amount: selectedGoal ? Math.round(selectedGoal.price * 100) : 0,
           paymentId: paymentIntentIdParam,
+          attribution,
         }),
       });
+      if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        if (email) identifyUser(email);
+        trackOrderCompleted({
+          orderId: data.orderId || paymentIntentIdParam,
+          amount: selectedGoal?.price || 0,
+          packageId: selectedGoal ? `pkg_${selectedGoal.followers}` : undefined,
+          impressions: selectedGoal?.followers,
+          email,
+        });
+      }
     } catch (error) {
       console.error('Error saving order:', error);
     }

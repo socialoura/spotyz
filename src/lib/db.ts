@@ -1,7 +1,7 @@
-import { sql } from '@vercel/postgres';
+import { sql } from '@/lib/sql';
 
 export function isDBConfigured() {
-  return !!process.env.POSTGRES_URL;
+  return !!process.env.DATABASE_URL;
 }
 
 export async function initDatabase() {
@@ -401,7 +401,7 @@ export async function getAllPromoCodes(): Promise<PromoCode[]> {
     const result = await sql`
       SELECT * FROM promo_codes ORDER BY created_at DESC
     `;
-    return result.rows as PromoCode[];
+    return result.rows as unknown as PromoCode[];
   } catch (error) {
     console.error('Error fetching promo codes:', error);
     return [];
@@ -413,7 +413,7 @@ export async function getPromoCodeByCode(code: string): Promise<PromoCode | null
     const result = await sql`
       SELECT * FROM promo_codes WHERE UPPER(code) = UPPER(${code})
     `;
-    return result.rows.length > 0 ? result.rows[0] as PromoCode : null;
+    return result.rows.length > 0 ? result.rows[0] as unknown as PromoCode : null;
   } catch (error) {
     console.error('Error fetching promo code:', error);
     return null;
@@ -433,7 +433,7 @@ export async function createPromoCode(data: {
       VALUES (${data.code.toUpperCase()}, ${data.discount_type}, ${data.discount_value}, ${data.max_uses || null}, ${data.expires_at || null})
       RETURNING *
     `;
-    return result.rows[0] as PromoCode;
+    return result.rows[0] as unknown as PromoCode;
   } catch (error) {
     console.error('Error creating promo code:', error);
     throw error;
